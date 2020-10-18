@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Core.Interfaces.Infrastructure;
 using CleanArchitecture.Core.Interfaces.Queries;
 using CleanArchitecture.Domain.Entities;
 using Microsoft.EntityFrameworkCore;

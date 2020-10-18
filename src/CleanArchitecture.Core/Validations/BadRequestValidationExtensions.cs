@@ -1,0 +1,15 @@
+﻿using CleanArchitecture.Domain.Exceptions;
+
+namespace CleanArchitecture.Core.Validations
+{
+    public static class BadRequestValidationExtensions
+    {
+        public static void AssertIsTrue(this bool value, string errorMessage)
+        {
+            if (!value)
+            {
+                throw new BadRequestException(errorMessage);
+            }
+        }
+    }
+}

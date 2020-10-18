@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CleanArchitecture.Services.BillCategory;
-using CleanArchitecture.Services.BillCategory.Models;
+using CleanArchitecture.Core.Interfaces.Services.BillCategory;
+using CleanArchitecture.Core.Interfaces.Services.BillCategory.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

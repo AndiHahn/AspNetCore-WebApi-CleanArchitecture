@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
 using CleanArchitecture.Core;
-using CleanArchitecture.Core.Helper;
+using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Core.Interfaces.Models;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Infrastructure.Data;
 using CleanArchitecture.Web;
@@ -92,16 +93,16 @@ namespace CleanArchitecture.FunctionalTests.Helper
 
         private UserEntity GetTestUserEntity()
         {
-            string salt = PasswordHelper.CreateSalt(Constants.Authentication.SALT_SIZE);
-            string pwHash = PasswordHelper.GenerateHash("password", salt);
+            var password = new HashedPassword();
+            password.WithPlainPasswordAndSaltSize("password", Constants.Authentication.SALT_SIZE);
 
             return new UserEntity()
             {
                 FirstName = "Test",
                 LastName = "User",
                 UserName = "Testuser",
-                Password = pwHash,
-                Salt = salt
+                Password = password.Hash,
+                Salt = password.Salt
             };
         }
     }

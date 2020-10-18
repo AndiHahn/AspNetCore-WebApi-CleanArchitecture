@@ -1,11 +1,15 @@
 ﻿using System.Text;
 using CleanArchitecture.Core;
 using CleanArchitecture.Core.Configurations;
-using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Core.Interfaces.Infrastructure;
+using CleanArchitecture.Core.Services;
+using CleanArchitecture.Core.Services.ServiceRegistration;
+using CleanArchitecture.Domain.Exceptions;
 using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Data;
-using CleanArchitecture.Services;
+using CleanArchitecture.Infrastructure.Services.AzureStorage;
+using CleanArchitecture.Infrastructure.Services.Email;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -35,7 +39,8 @@ namespace CleanArchitecture.Web.Extensions
         public static void ConfigureAppSettings(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
-            services.Configure<BlobStorageConfiguration>(configuration.GetSection("BlobStorage"));
+            services.Configure<AzureStorageConfiguration>(configuration.GetSection("AzureStorage"));
+            services.Configure<SendGridConfiguration>(configuration.GetSection("SendGrid"));
         }
 
         public static IServiceCollection ConfigureJwtAuthentication(this IServiceCollection services, IConfiguration configuration)

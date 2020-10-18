@@ -1,6 +1,6 @@
-﻿using CleanArchitecture.Core.Helper;
-using CleanArchitecture.Core.Exceptions;
+﻿using CleanArchitecture.Core.Validations;
 using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Domain.Exceptions;
 using Xunit;
 
 namespace CleanArchitecture.UnitTests.ApplicationCore

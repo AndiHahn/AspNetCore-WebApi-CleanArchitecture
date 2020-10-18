@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Bogus;
 using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.IntegrationTests.Helper;
+using CleanArchitecture.IntegrationTests.Setup.Database;
 using CleanArchitecture.Tests.Shared.Builder.Account;
 using CleanArchitecture.Tests.Shared.Builder.Bill;
 using CleanArchitecture.Tests.Shared.Builder.User;
@@ -19,7 +19,7 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
         public async Task BillQueryWithRelations_ShouldReturnBillsWithRelations_Correctly()
         {
             var billEntity = CreateBasicBillEntity();
-            var context = BudgetContextHelper.CreateInMemoryDataContext(db =>
+            var context = BudgetContext.CreateInMemoryDataContext(db =>
             {
                 db.Bill.Add(billEntity);
             });
@@ -35,7 +35,7 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
         [Fact]
         public async Task BillQueryWithRelations_ShouldReturnEmptyResult_IfNoDataAvailable()
         {
-            var context = BudgetContextHelper.CreateInMemoryDataContext();
+            var context = BudgetContext.CreateInMemoryDataContext();
 
             var result = await context.BillQueries.WithRelations().ToListAsync();
             Assert.Empty(result);
@@ -45,7 +45,7 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
         public async Task BillQueryWithRelationsOrderedByData_ShouldBillsOrderedByDate_Correctly()
         {
             var billEntities = CreateBillEntitiesWithRandomDates();
-            var context = BudgetContextHelper.CreateInMemoryDataContext(db =>
+            var context = BudgetContext.CreateInMemoryDataContext(db =>
             {
                 foreach (var billEntity in billEntities)
                 {

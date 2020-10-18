@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Text;
-using CleanArchitecture.Core.QueryParameter.Models;
+using CleanArchitecture.Core.Interfaces.Models.QueryParameter;
 
 namespace CleanArchitecture.Core.QueryParameter.Filter.Expressions
 {

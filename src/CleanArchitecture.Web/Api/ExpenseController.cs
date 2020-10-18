@@ -1,12 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using CleanArchitecture.Core.Interfaces.Services.Expense;
+using CleanArchitecture.Core.Interfaces.Services.Expense.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using CleanArchitecture.Services.Expense;
-using CleanArchitecture.Services.Expense.Models;
 
 namespace CleanArchitecture.Web.Api
 {

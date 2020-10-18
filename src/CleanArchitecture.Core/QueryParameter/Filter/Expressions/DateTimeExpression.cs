@@ -2,8 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using CleanArchitecture.Core.Exceptions;
-using CleanArchitecture.Core.QueryParameter.Models;
+using CleanArchitecture.Core.Interfaces.Models.QueryParameter;
+using CleanArchitecture.Domain.Exceptions;
 
 namespace CleanArchitecture.Core.QueryParameter.Filter.Expressions
 {

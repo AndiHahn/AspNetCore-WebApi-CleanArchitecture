@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CleanArchitecture.Services.Account;
-using CleanArchitecture.Services.Account.Models;
+using CleanArchitecture.Core.Interfaces.Services.Account;
+using CleanArchitecture.Core.Interfaces.Services.Account.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +31,15 @@ namespace CleanArchitecture.Web.Api
         {
             logger.LogInformation("Get all available accounts...");
             return Ok(await accountService.GetAllAsync());
+        }
+
+        [HttpGet("{id}")]
+        [ProducesResponseType(typeof(AccountModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetById(int id)
+        {
+            return Ok(await accountService.GetByIdAsync(id));
         }
     }
 }

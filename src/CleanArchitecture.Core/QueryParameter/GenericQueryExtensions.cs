@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
-using CleanArchitecture.Core.Exceptions;
+using CleanArchitecture.Core.Interfaces.Models.QueryParameter;
 using CleanArchitecture.Core.QueryParameter.Filter;
-using CleanArchitecture.Core.QueryParameter.Models;
 using CleanArchitecture.Domain.Base;
+using CleanArchitecture.Domain.Exceptions;
 
 namespace CleanArchitecture.Core.QueryParameter
 {

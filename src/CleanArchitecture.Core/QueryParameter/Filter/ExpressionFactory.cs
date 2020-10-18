@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
-using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Core.QueryParameter.Filter.Expressions;
+using CleanArchitecture.Domain.Exceptions;
 
 namespace CleanArchitecture.Core.QueryParameter.Filter
 {

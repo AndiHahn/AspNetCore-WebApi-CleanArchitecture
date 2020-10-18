@@ -2,10 +2,10 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.QueryParameter.Models;
+using CleanArchitecture.Core.Interfaces.Models;
+using CleanArchitecture.Core.Interfaces.Services.Bill.Models;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.FunctionalTests.Helper;
-using CleanArchitecture.Services.Bill.Models;
 using CleanArchitecture.Tests.Shared.Builder.Account;
 using CleanArchitecture.Tests.Shared.Builder.Bill;
 using CleanArchitecture.Tests.Shared.Builder.User;

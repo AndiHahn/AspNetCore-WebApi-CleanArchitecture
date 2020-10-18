@@ -2,10 +2,10 @@
 using System.Linq;
 using System.Threading.Tasks;
 using CleanArchitecture.Core.QueryParameter;
-using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.IntegrationTests.Helper;
+using CleanArchitecture.Domain.Exceptions;
 using CleanArchitecture.IntegrationTests.QueryParameter.TestData;
+using CleanArchitecture.IntegrationTests.Setup.Database;
 using CleanArchitecture.Tests.Shared.Builder.Account;
 using CleanArchitecture.Tests.Shared.Builder.Bill;
 using CleanArchitecture.Tests.Shared.Builder.User;
@@ -20,7 +20,7 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
         public async Task ApplyPaging_ShouldReturnPagedResult_Correctly()
         {
             var billEntities = CreateBillEntities();
-            var context = BudgetContextHelper.CreateInMemoryDataContext(db =>
+            var context = BudgetContext.CreateInMemoryDataContext(db =>
             {
                 foreach (var bill in billEntities)
                 {
@@ -35,7 +35,7 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
         [Fact]
         public async Task ApplyPaging_ShouldThrowException_IfPagingParametersAreNull()
         {
-            var context = BudgetContextHelper.CreateInMemoryDataContext();
+            var context = BudgetContext.CreateInMemoryDataContext();
             await Assert.ThrowsAsync<BadRequestException>(() =>
                             context.Bill.ApplyPaging(null).ToListAsync());
         }
@@ -44,7 +44,7 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
         public async Task ApplyPaging_ShouldThrowException_IfPageSizeIsZero()
         {
             var billEntities = CreateBillEntities();
-            var context = BudgetContextHelper.CreateInMemoryDataContext(db =>
+            var context = BudgetContext.CreateInMemoryDataContext(db =>
             {
                 foreach (var bill in billEntities)
                 {

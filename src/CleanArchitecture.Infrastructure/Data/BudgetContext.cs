@@ -1,10 +1,11 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Core.Interfaces.Infrastructure;
 using CleanArchitecture.Core.Interfaces.Queries;
 using CleanArchitecture.Domain.Base;
 using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Domain.Exceptions;
 using CleanArchitecture.Infrastructure.Data.Config;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

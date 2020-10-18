@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Helper;
 using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Core.Interfaces.Infrastructure;
+using CleanArchitecture.Core.Interfaces.Models;
 using CleanArchitecture.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,13 +24,16 @@ namespace CleanArchitecture.Infrastructure.Data
         {
             if (!await context.User.AnyAsync())
             {
+                var password = new HashedPassword();
+                password.WithPlainPasswordAndSaltSize("password", Constants.Authentication.SALT_SIZE);
+
                 context.User.Add(new UserEntity()
                 {
                     FirstName = "FirstName",
                     LastName = "LastName",
                     UserName = "username",
-                    Password = PasswordHelper.GenerateHash("password", "salt"),
-                    Salt = "salt"
+                    Password = password.Hash,
+                    Salt = password.Salt
                 });
 
                 await context.SaveChangesAsync();
