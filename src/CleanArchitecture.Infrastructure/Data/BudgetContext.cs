@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Interfaces.Infrastructure;
 using CleanArchitecture.Core.Interfaces.Queries;
 using CleanArchitecture.Domain.Base;
@@ -40,9 +39,8 @@ namespace CleanArchitecture.Infrastructure.Data
             UserAccountModelBuilder.ApplyModelBuilder(modelBuilder);
         }
 
-        public async Task CreateAndMigrateAsync()
+        public async Task MigrateAsync()
         {
-            await Database.EnsureCreatedAsync();
             await Database.MigrateAsync();
         }
 

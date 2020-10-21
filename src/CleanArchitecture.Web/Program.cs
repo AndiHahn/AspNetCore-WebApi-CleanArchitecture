@@ -1,6 +1,5 @@
 using System;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Interfaces.Infrastructure;
 using CleanArchitecture.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
@@ -20,15 +19,18 @@ namespace CleanArchitecture.Web
             {
                 var services = scope.ServiceProvider;
                 var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger<Program>();
+
                 try
                 {
+                    logger.LogInformation("Starting database migration...");
                     var context = services.GetRequiredService<IBudgetContext>();
-                    await context.CreateAndMigrateAsync();
+                    await context.MigrateAsync();
                     await BudgetContextSeed.SeedAsync(context);
+                    logger.LogInformation("Finished database migration.");
                 }
                 catch (Exception ex)
                 {
-                    var logger = loggerFactory.CreateLogger<Program>();
                     logger.LogError(ex, "An error occurred seeding the DB.");
                 }
             }

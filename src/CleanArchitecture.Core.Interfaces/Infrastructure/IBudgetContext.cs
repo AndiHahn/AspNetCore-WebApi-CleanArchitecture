@@ -17,7 +17,7 @@ namespace CleanArchitecture.Core.Interfaces.Infrastructure
         DbSet<IncomeEntity> Income { get; set; }
         DbSet<BillCategoryEntity> BillCategory { get; set; }
         IBillQueries BillQueries { get; }
-        Task CreateAndMigrateAsync();
+        Task MigrateAsync();
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         EntityEntry Entry(object entity);
     }
