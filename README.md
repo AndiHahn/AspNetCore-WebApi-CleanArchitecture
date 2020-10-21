@@ -2,6 +2,9 @@
 
 This repository shows clean architecture in practice in a ASP .NET Core Api Project.  
 
+See detailed Information regarding clean architecture concept in the Wiki:  
+[Wiki Clean Architecture](https://github.com/AndiHahn/AspNetCore-WebApi-CleanArchitecture/wiki)  
+
 ## Technology Stack  
 - ASP.NET Core (3.1)  
 - Entity Framework Core (3.1.1)  
@@ -16,6 +19,3 @@ This repository shows clean architecture in practice in a ASP .NET Core Api Proj
 Jwt Authentication is used.  
 Token is provided on endpoint /api/User/authenticate with Username: username, Password: password.  
 Token can be set globally in swagger "Bearer << token >>"
-
-See detailed Information regarding clean architecture concept in the Wiki:
-[Wiki Clean Architecture](https://github.com/AndiHahn/AspNetCore-WebApi-CleanArchitecture/wiki)
