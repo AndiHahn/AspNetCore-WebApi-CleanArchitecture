@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Interfaces.Infrastructure;
 using CleanArchitecture.Core.Interfaces.Services.Account;
 using CleanArchitecture.Core.Interfaces.Services.Account.Models;
@@ -31,8 +30,6 @@ namespace CleanArchitecture.Core.Services
 
         public async Task<AccountModel> GetByIdAsync(int id)
         {
-            //return (await context.Account.FindAsync(id)).AssertEntityFound(id).ToModel();
-
             var entity = (await context.Account.FindAsync(id)).AssertEntityFound(id);
             return mapper.Map<AccountModel>(entity);
         }
