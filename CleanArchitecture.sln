@@ -23,9 +23,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Infrastru
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Web", "src\CleanArchitecture.Web\CleanArchitecture.Web.csproj", "{7E31B52A-0249-44D0-8638-959C83180BE1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Core.Services", "src\CleanArchitecture.Core.Services\CleanArchitecture.Core.Services.csproj", "{D9E6221C-D9C4-45BB-B7D0-6DFDC1D41640}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Core.Interfaces", "src\CleanArchitecture.Core.Interfaces\CleanArchitecture.Core.Interfaces.csproj", "{B5C71948-B30C-4E82-AC32-C2142396BF38}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Core.Interfaces", "src\CleanArchitecture.Core.Interfaces\CleanArchitecture.Core.Interfaces.csproj", "{B5C71948-B30C-4E82-AC32-C2142396BF38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,10 +63,6 @@ Global
 		{7E31B52A-0249-44D0-8638-959C83180BE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E31B52A-0249-44D0-8638-959C83180BE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E31B52A-0249-44D0-8638-959C83180BE1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D9E6221C-D9C4-45BB-B7D0-6DFDC1D41640}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D9E6221C-D9C4-45BB-B7D0-6DFDC1D41640}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D9E6221C-D9C4-45BB-B7D0-6DFDC1D41640}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D9E6221C-D9C4-45BB-B7D0-6DFDC1D41640}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B5C71948-B30C-4E82-AC32-C2142396BF38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B5C71948-B30C-4E82-AC32-C2142396BF38}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5C71948-B30C-4E82-AC32-C2142396BF38}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -86,7 +80,6 @@ Global
 		{ED9D2E1E-9CDF-400A-9F25-FCC6664CFE86} = {54045955-91CC-45F2-8E5F-6FE1B35FE8A1}
 		{110339C8-81F9-48F7-BD30-79B175964403} = {54045955-91CC-45F2-8E5F-6FE1B35FE8A1}
 		{7E31B52A-0249-44D0-8638-959C83180BE1} = {54045955-91CC-45F2-8E5F-6FE1B35FE8A1}
-		{D9E6221C-D9C4-45BB-B7D0-6DFDC1D41640} = {54045955-91CC-45F2-8E5F-6FE1B35FE8A1}
 		{B5C71948-B30C-4E82-AC32-C2142396BF38} = {54045955-91CC-45F2-8E5F-6FE1B35FE8A1}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

@@ -1,10 +1,7 @@
 ﻿using System.Text;
 using CleanArchitecture.Core;
 using CleanArchitecture.Core.Configurations;
-using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Interfaces.Infrastructure;
-using CleanArchitecture.Core.Services;
-using CleanArchitecture.Core.Services.ServiceRegistration;
 using CleanArchitecture.Domain.Exceptions;
 using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Data;
@@ -27,7 +24,6 @@ namespace CleanArchitecture.Web.Extensions
             string connectionString = configuration.GetConnectionString("ApplicationDbConnection");
             services.AddDbContext<IBudgetContext, BudgetContext>(options => options.UseSqlServer(connectionString));
 
-            services.RegisterServices();
             services.RegisterInfrastructure();
             services.RegisterCore();
 
