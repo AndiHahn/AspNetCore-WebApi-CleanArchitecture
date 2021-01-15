@@ -1,13 +1,13 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Core.Interfaces.Infrastructure;
-using CleanArchitecture.Core.Interfaces.Queries;
+using CleanArchitecture.Core.Interfaces.SqlQueries;
 using CleanArchitecture.Domain.Base;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Exceptions;
 using CleanArchitecture.Infrastructure.Data.Config;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace CleanArchitecture.Infrastructure.Data
 {
@@ -23,7 +23,7 @@ namespace CleanArchitecture.Infrastructure.Data
         public DbSet<BillCategoryEntity> BillCategory { get; set; }
 
         //Queries
-        public IBillQueries BillQueries { get; private set; }
+        public IBillQueries BillQueries { get; }
 
         public BudgetContext(DbContextOptions<BudgetContext> options,
                              IBillQueries billQueries)
@@ -44,10 +44,11 @@ namespace CleanArchitecture.Infrastructure.Data
             await Database.MigrateAsync();
         }
 
-        public async override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             try
             {
+                SetExpectedVersionForVersionableEntities();
                 return await base.SaveChangesAsync(cancellationToken);
             }
             catch (DbUpdateConcurrencyException ex)
@@ -64,9 +65,19 @@ namespace CleanArchitecture.Infrastructure.Data
             }
         }
 
-        public override EntityEntry Entry(object entity)
+        private void SetExpectedVersionForVersionableEntities()
         {
-            return base.Entry(entity);
+            ChangeTracker.DetectChanges();
+            var modifiedEntities = ChangeTracker.Entries().Where(x => x.State == EntityState.Modified);
+
+            foreach (var entityEntry in modifiedEntities)
+            {
+                if (entityEntry.Entity is VersionableEntity versionableEntity)
+                {
+                    var versionProperty = Entry(entityEntry.Entity).Property(nameof(VersionableEntity.Version));
+                    versionProperty.OriginalValue = versionableEntity.Version;
+                }
+            }
         }
     }
 }

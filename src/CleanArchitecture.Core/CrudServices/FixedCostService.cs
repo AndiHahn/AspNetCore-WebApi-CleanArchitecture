@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Interfaces.Infrastructure;
 using CleanArchitecture.Core.Interfaces.Services.FixedCost;
 using CleanArchitecture.Core.Interfaces.Services.FixedCost.Models;
@@ -12,7 +11,7 @@ using CleanArchitecture.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace CleanArchitecture.Core.Services
+namespace CleanArchitecture.Core.CrudServices
 {
     public class FixedCostService : IFixedCostService
     {

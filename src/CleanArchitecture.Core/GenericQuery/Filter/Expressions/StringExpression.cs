@@ -1,11 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 using CleanArchitecture.Core.Interfaces.Models.QueryParameter;
+using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitecture.Core.QueryParameter.Filter.Expressions
+namespace CleanArchitecture.Core.GenericQuery.Filter.Expressions
 {
     public class StringExpression<TEntity> : IExpression<TEntity>
     {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using CleanArchitecture.Core.Interfaces.Queries;
+using CleanArchitecture.Core.CrudServices;
 using CleanArchitecture.Core.Interfaces.Services.Account;
 using CleanArchitecture.Core.Interfaces.Services.Account.Models;
 using CleanArchitecture.Core.Interfaces.Services.Bill;
@@ -14,8 +14,8 @@ using CleanArchitecture.Core.Interfaces.Services.Income;
 using CleanArchitecture.Core.Interfaces.Services.Income.Models;
 using CleanArchitecture.Core.Interfaces.Services.User;
 using CleanArchitecture.Core.Interfaces.Services.User.Models;
-using CleanArchitecture.Core.Queries;
-using CleanArchitecture.Core.Services;
+using CleanArchitecture.Core.UseCases.BudgetPlan;
+using CleanArchitecture.Core.UseCases.Expenses;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CleanArchitecture.Core
@@ -24,14 +24,8 @@ namespace CleanArchitecture.Core
     {
         public static void RegisterCore(this IServiceCollection services)
         {
-            services.RegisterQueries();
             services.RegisterServices();
             services.ConfigureModelMapper();
-        }
-
-        private static void RegisterQueries(this IServiceCollection services)
-        {
-            services.AddScoped<IBillQueries, BillQueries>();
         }
 
         private static void RegisterServices(this IServiceCollection services)

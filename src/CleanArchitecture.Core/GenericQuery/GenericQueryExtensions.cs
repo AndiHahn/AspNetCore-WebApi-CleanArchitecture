@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Dynamic.Core;
+using CleanArchitecture.Core.GenericQuery.Filter;
 using CleanArchitecture.Core.Interfaces.Models.QueryParameter;
-using CleanArchitecture.Core.QueryParameter.Filter;
 using CleanArchitecture.Domain.Base;
 using CleanArchitecture.Domain.Exceptions;
 
-namespace CleanArchitecture.Core.QueryParameter
+namespace CleanArchitecture.Core.GenericQuery
 {
     public static class GenericQueryExtensions
     {
         public static IQueryable<TEntity> ApplyQueryParameter<TEntity, TSortingFields, TFilterField>(
-                                                                                this IQueryable<TEntity> query,
-                                                                                QueryParameter<TSortingFields, TFilterField> queryParameter)
+                this IQueryable<TEntity> query,
+                QueryParameter<TSortingFields, TFilterField> queryParameter)
             where TEntity : BaseEntity
             where TSortingFields : Enum
             where TFilterField : Enum
@@ -23,11 +23,13 @@ namespace CleanArchitecture.Core.QueryParameter
                             .ApplyOrderBy(queryParameter.Sorting)
                             .ApplyPaging(queryParameter);
             }
+
             return query;
         }
 
-        public static IQueryable<TEntity> ApplyFilter<TEntity, TFilterField>(this IQueryable<TEntity> query,
-                                                                             IFilterParameter<TFilterField> filterParameter)
+        public static IQueryable<TEntity> ApplyFilter<TEntity, TFilterField>(
+                this IQueryable<TEntity> query,
+                IFilterParameter<TFilterField> filterParameter)
             where TEntity : BaseEntity where TFilterField : Enum
         {
             if (filterParameter != null)
@@ -38,11 +40,13 @@ namespace CleanArchitecture.Core.QueryParameter
                                                                filterParameter.FilterOperation,
                                                                filterParameter.FilterValue));
             }
+
             return query;
         }
 
-        public static IQueryable<TEntity> ApplyOrderBy<TEntity, TSortingField>(this IQueryable<TEntity> query,
-                                                                               ISortingParameter<TSortingField> sortingParameter)
+        public static IQueryable<TEntity> ApplyOrderBy<TEntity, TSortingField>(
+                this IQueryable<TEntity> query,
+                ISortingParameter<TSortingField> sortingParameter)
             where TEntity : BaseEntity where TSortingField : Enum
         {
             if (sortingParameter != null)
@@ -67,6 +71,7 @@ namespace CleanArchitecture.Core.QueryParameter
                 int skip = pagingParameter.PageIndex * pagingParameter.PageSize;
                 return query.Skip(skip).Take(pagingParameter.PageSize);
             }
+
             return query;
         }
     }

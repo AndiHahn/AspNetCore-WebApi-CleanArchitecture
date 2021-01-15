@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces.Queries;
+using CleanArchitecture.Core.Interfaces.SqlQueries;
 using CleanArchitecture.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;

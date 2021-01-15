@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
-using CleanArchitecture.Core.QueryParameter.Filter.Expressions;
+using CleanArchitecture.Core.GenericQuery.Filter.Expressions;
 using CleanArchitecture.Domain.Exceptions;
 
-namespace CleanArchitecture.Core.QueryParameter.Filter
+namespace CleanArchitecture.Core.GenericQuery.Filter
 {
     public class ExpressionFactory<TEntity> : IExpressionFactory<TEntity>
     {

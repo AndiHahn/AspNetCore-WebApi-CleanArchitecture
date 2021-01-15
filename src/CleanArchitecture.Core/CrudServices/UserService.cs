@@ -7,18 +7,18 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using CleanArchitecture.Core.Configurations;
+using CleanArchitecture.Core.GenericQuery;
 using CleanArchitecture.Core.Interfaces.Infrastructure;
 using CleanArchitecture.Core.Interfaces.Models;
 using CleanArchitecture.Core.Interfaces.Services.User;
 using CleanArchitecture.Core.Interfaces.Services.User.Models;
-using CleanArchitecture.Core.QueryParameter;
 using CleanArchitecture.Core.Validations;
 using CleanArchitecture.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CleanArchitecture.Core.Services
+namespace CleanArchitecture.Core.CrudServices
 {
     public class UserService : IUserService
     {

@@ -38,7 +38,7 @@ namespace CleanArchitecture.FunctionalTests
                 db.Bill.Add(billEntity);
             });
 
-            var response = await authorizedClient.GetAsync("/api/bill");
+            var response = await authorizedClient.GetAsync("/api/bill?AccountIds=1");
             var result = await ApiResultHelper.GetModelFromResponseAsync<PagedResult<BillModel>>(response);
 
             response.EnsureSuccessStatusCode();
@@ -107,7 +107,7 @@ namespace CleanArchitecture.FunctionalTests
             Assert.Equal(entity.Price, model.Price);
             Assert.Equal(entity.Date, model.Date);
             Assert.Equal(entity.Notes, model.Notes);
-            Assert.Equal(entity.BillCategory.Name, model.Category);
+            Assert.Equal(entity.BillCategory.Id, model.CategoryId);
         }
     }
 }

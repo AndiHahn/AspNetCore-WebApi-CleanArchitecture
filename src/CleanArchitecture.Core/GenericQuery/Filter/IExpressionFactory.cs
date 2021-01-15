@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Core.QueryParameter.Filter
+﻿namespace CleanArchitecture.Core.GenericQuery.Filter
 {
     public interface IExpressionFactory<TEntity>
     {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Interfaces.Infrastructure;
 using CleanArchitecture.Core.Interfaces.Services.Expense;
 using CleanArchitecture.Core.Interfaces.Services.Expense.Models;
@@ -10,7 +9,7 @@ using CleanArchitecture.Core.Validations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace CleanArchitecture.Core.Services
+namespace CleanArchitecture.Core.UseCases.Expenses
 {
     public class ExpenseService : IExpenseService
     {
@@ -40,10 +39,13 @@ namespace CleanArchitecture.Core.Services
         {
             (await context.Account.FindAsync(accountId))
                                   .AssertEntityFound(accountId);
-            return await context.BillQueries.WithCategoryByAccountIdBetweenDate(accountId, fromDate, toDate)
-                                            .GroupBy(b => b.BillCategory.Name)
-                                            .Select(g => new ExpenseModel(g.Key, g.Sum(b => b.Price)))
-                                            .ToListAsync();
+            return await context.Bill
+                .Include(b => b.BillCategory)
+                .Where(b => b.AccountId == accountId &&
+                            b.Date >= fromDate && b.Date <= toDate)
+                .GroupBy(b => b.BillCategory.Name)
+                .Select(g => new ExpenseModel(g.Key, g.Sum(b => b.Price)))
+                .ToListAsync();
         }
 
         private IEnumerable<ExpenseModel> AggregateResults(IList<IEnumerable<ExpenseModel>> result)

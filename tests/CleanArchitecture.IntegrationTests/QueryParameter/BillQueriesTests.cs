@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Bogus;
+using CleanArchitecture.Core.Interfaces.Services.Bill.Models;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.IntegrationTests.Setup.Database;
 using CleanArchitecture.Tests.Shared.Builder.Account;
 using CleanArchitecture.Tests.Shared.Builder.Bill;
 using CleanArchitecture.Tests.Shared.Builder.User;
-using Microsoft.EntityFrameworkCore;
 using Xunit;
 
 namespace CleanArchitecture.IntegrationTests.QueryParameter
@@ -16,33 +16,46 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
     public class BillQueriesTests
     {
         [Fact]
-        public async Task BillQueryWithRelations_ShouldReturnBillsWithRelations_Correctly()
+        public async Task Query_ShouldReturn_CorrectNumberOfBills()
         {
-            var billEntity = CreateBasicBillEntity();
+            var billEntity1 = CreateBasicBillEntity();
+            var billEntity2 = CreateBasicBillEntity();
             var context = BudgetContext.CreateInMemoryDataContext(db =>
             {
-                db.Bill.Add(billEntity);
+                db.Bill.Add(billEntity1);
+                db.Bill.Add(billEntity2);
             });
 
-            var result = await context.BillQueries.WithRelations().ToListAsync();
-            var billWithRelations = result.First();
+            var queryParameter = new BillQueryParameter
+            {
+                PageIndex = 0,
+                PageSize = 10
+            };
 
-            Assert.NotNull(billWithRelations.Account);
-            Assert.NotNull(billWithRelations.BillCategory);
-            Assert.NotNull(billWithRelations.User);
+            var result = await context.BillQueries.QueryAsync(queryParameter);
+
+            Assert.Equal(2, result.TotalCount);
+            Assert.Equal(2, result.Result.Count());
         }
 
         [Fact]
-        public async Task BillQueryWithRelations_ShouldReturnEmptyResult_IfNoDataAvailable()
+        public async Task Query_ShouldReturnEmptyResult_IfNoDataAvailable()
         {
             var context = BudgetContext.CreateInMemoryDataContext();
 
-            var result = await context.BillQueries.WithRelations().ToListAsync();
-            Assert.Empty(result);
+            var queryParameter = new BillQueryParameter
+            {
+                PageIndex = 0,
+                PageSize = 10
+            };
+
+            var result = await context.BillQueries.QueryAsync(queryParameter);
+            Assert.Equal(0, result.TotalCount);
+            Assert.Empty(result.Result);
         }
 
         [Fact]
-        public async Task BillQueryWithRelationsOrderedByData_ShouldBillsOrderedByDate_Correctly()
+        public async Task Query_ShouldReturnBills_OrderedByDateDescending()
         {
             var billEntities = CreateBillEntitiesWithRandomDates();
             var context = BudgetContext.CreateInMemoryDataContext(db =>
@@ -53,10 +66,16 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
                 }
             });
 
-            var result = await context.BillQueries.WithRelationsOrderedByDate().ToListAsync();
+            var queryParameter = new BillQueryParameter
+            {
+                PageIndex = 0,
+                PageSize = 10
+            };
 
-            DateTime previousDate = result.First().Date;
-            foreach (var bill in result)
+            var result = await context.BillQueries.QueryAsync(queryParameter);
+
+            DateTime previousDate = result.Result.First().Date;
+            foreach (var bill in result.Result)
             {
                 Assert.True(bill.Date <= previousDate);
                 previousDate = bill.Date;
@@ -82,7 +101,7 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
         {
             var faker = new Faker();
 
-            return new List<BillEntity>()
+            return new List<BillEntity>
             {
                 CreateBillEntityWithDate(faker.Date.Past()),
                 CreateBillEntityWithDate(faker.Date.Recent()),

@@ -25,6 +25,7 @@ namespace CleanArchitecture.Core.Interfaces.Services.Bill.Models
             entity.Price = Price ?? entity.Price;
             entity.Date = Date ?? entity.Date;
             entity.Notes = Notes ?? entity.Notes;
+            entity.Version = Version;
         }
     }
 }

@@ -9,7 +9,7 @@ using CleanArchitecture.Core.Interfaces.Services.Account.Models;
 using CleanArchitecture.Core.Validations;
 using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitecture.Core.Services
+namespace CleanArchitecture.Core.CrudServices
 {
     public class AccountService : IAccountService
     {

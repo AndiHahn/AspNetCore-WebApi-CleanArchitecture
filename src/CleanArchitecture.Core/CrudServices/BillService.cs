@@ -2,21 +2,19 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using CleanArchitecture.Core.DatabaseContext;
 using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Interfaces.Infrastructure;
 using CleanArchitecture.Core.Interfaces.Infrastructure.AzureStorage;
 using CleanArchitecture.Core.Interfaces.Models;
 using CleanArchitecture.Core.Interfaces.Services.Bill;
 using CleanArchitecture.Core.Interfaces.Services.Bill.Models;
-using CleanArchitecture.Core.QueryParameter;
 using CleanArchitecture.Core.Validations;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitecture.Core.Services
+namespace CleanArchitecture.Core.CrudServices
 {
     public class BillService : IBillService
     {
@@ -36,34 +34,27 @@ namespace CleanArchitecture.Core.Services
 
         public async Task<PagedResult<BillModel>> QueryAsync(BillQueryParameter queryParameter)
         {
-            var query = context.BillQueries.WithRelationsOrderedByDate();
-            query = query.ApplyFilter(queryParameter.Filter)
-                         .ApplyOrderBy(queryParameter.Sorting);
-            int totalCount = query.Count();
-            var queryResult = await query.ApplyPaging(queryParameter)
-                            .Select(b => mapper.Map<BillModel>(b)).ToListAsync();
+            var pagedResult = await context.BillQueries
+                .QueryAsync(queryParameter);
 
-            return new PagedResult<BillModel>(queryResult, totalCount);
+            return new PagedResult<BillModel>(
+                pagedResult.Result.Select(mapper.Map<BillModel>),
+                pagedResult.TotalCount);
         }
 
         public async Task<PagedResult<BillModel>> ListAsync(BillSearchParameter searchParameter)
         {
-            var query = context.BillQueries.WithRelationsByAccountIdsOrdered(searchParameter.AccountIds);
-            if (searchParameter.Search != null)
-            {
-                query = query.Where(b => b.ShopName.Contains(searchParameter.Search) ||
-                                         b.Notes.Contains(searchParameter.Search));
-            }
-            int totalCount = query.Count();
-            var result = await query.ApplyPaging(searchParameter)
-                                .Select(b => mapper.Map<BillModel>(b)).ToListAsync();
-            return new PagedResult<BillModel>(result, totalCount);
+            var pagedResult = await context.BillQueries
+                .SearchAsync(searchParameter);
+
+            return new PagedResult<BillModel>(
+                pagedResult.Result.Select(mapper.Map<BillModel>),
+                pagedResult.TotalCount);
         }
 
         public async Task<BillModel> GetByIdAsync(int id)
         {
-            var entity = (await context.BillQueries.WithRelations().FirstOrDefaultAsync(b => b.Id == id))
-                                             .AssertEntityFound(id);
+            var entity = (await context.Bill.FindAsync(id)).AssertEntityFound(id);
             return mapper.Map<BillModel>(entity);
         }
 
@@ -100,13 +91,13 @@ namespace CleanArchitecture.Core.Services
             }
         }
 
-        public async Task AddImageToBillAsync(int id, IFormFile image)
+        public async Task AddImageToBillAsync(int id, IFormFile file)
         {
             await EnsureBillAvailableAsync(id);
             string fileUrl = GetImagePath(id);
             var uploadModel = new BlobUploadModel();
-            await image.CopyToAsync(uploadModel.Content);
-            uploadModel.ContentType = image.ContentType;
+            await file.CopyToAsync(uploadModel.Content);
+            uploadModel.ContentType = file.ContentType;
             await blobStorageRepository.UploadBlobAsync(
                         Constants.ImageStorage.CONTAINER_NAME, fileUrl, uploadModel);
         }
@@ -115,7 +106,6 @@ namespace CleanArchitecture.Core.Services
         {
             var billEntity = (await context.Bill.FindAsync(id)).AssertEntityFound(id);
             updateModel.MergeIntoEntity(billEntity);
-            context.UpdateVersion(billEntity, updateModel.Version);
             await context.SaveChangesAsync();
             return await GetByIdAsync(id);
         }

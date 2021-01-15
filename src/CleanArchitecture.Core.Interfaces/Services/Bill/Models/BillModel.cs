@@ -7,10 +7,10 @@ namespace CleanArchitecture.Core.Interfaces.Services.Bill.Models
     public class BillModel
     {
         public int Id { get; set; }
-        public string Account { get; set; }
-        public string User { get; set; }
+        public int AccountId { get; set; }
+        public int UserId { get; set; }
         public string ShopName { get; set; }
-        public string Category { get; set; }
+        public int CategoryId { get; set; }
         public double Price { get; set; }
         public DateTime Date { get; set; }
         public string Notes { get; set; }
@@ -19,9 +19,7 @@ namespace CleanArchitecture.Core.Interfaces.Services.Bill.Models
         public static void ApplyMappingConfiguration(IMapperConfigurationExpression config)
         {
             config.CreateMap<BillEntity, BillModel>()
-                .ForMember(m => m.User, opt => opt.MapFrom(b => $"{b.User.FirstName} {b.User.LastName}"))
-                .ForMember(m => m.Account, opt => opt.MapFrom(b => b.Account.Name))
-                .ForMember(m => m.Category, opt => opt.MapFrom(b => b.BillCategory.Name));
+                .ForMember(m => m.CategoryId, opt => opt.MapFrom(b => b.BillCategoryId));
         }
     }
 
