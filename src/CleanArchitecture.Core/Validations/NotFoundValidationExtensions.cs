@@ -1,4 +1,5 @@
-﻿using CleanArchitecture.Core.Interfaces;
+﻿using System;
+using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Domain.Base;
 using CleanArchitecture.Domain.Exceptions;
 
@@ -13,6 +14,11 @@ namespace CleanArchitecture.Core.Validations
                 throw new NotFoundException($"{TryRemoveEntityPostfix(typeof(TEntity).Name)} not found.");
             }
             return entity;
+        }
+
+        public static TEntity AssertEntityFound<TEntity>(this TEntity entity, Guid id) where TEntity : BaseEntity
+        {
+            return AssertEntityFound<TEntity, Guid>(entity, id);
         }
 
         public static TEntity AssertEntityFound<TEntity>(this TEntity entity, int id) where TEntity : BaseEntity

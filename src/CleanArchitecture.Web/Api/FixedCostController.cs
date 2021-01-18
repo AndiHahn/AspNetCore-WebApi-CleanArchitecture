@@ -26,7 +26,7 @@ namespace CleanArchitecture.Web.Api
 
         [HttpGet("account")]
         [ProducesResponseType(typeof(IEnumerable<FixedCostModel>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetFixedCostsByAccountIds([FromQuery] IEnumerable<int> accounts)
+        public async Task<IActionResult> GetFixedCostsByAccountIds([FromQuery] IEnumerable<Guid> accounts)
         {
             logger.LogInformation("Get Incomes by accounts {accountIds}", accounts);
             return Ok(await fixedCostService.GetByAccountIdsAsync(accounts));
@@ -46,7 +46,7 @@ namespace CleanArchitecture.Web.Api
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteFixedCost(int id)
+        public async Task<IActionResult> DeleteFixedCost(Guid id)
         {
             logger.LogInformation("Delete fixed cost {id}", id);
             await fixedCostService.DeleteFixedCostAsync(id);

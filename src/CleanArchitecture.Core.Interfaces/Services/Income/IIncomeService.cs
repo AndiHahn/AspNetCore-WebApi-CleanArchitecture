@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanArchitecture.Core.Interfaces.Services.Income.Models;
 
@@ -6,8 +7,8 @@ namespace CleanArchitecture.Core.Interfaces.Services.Income
 {
     public interface IIncomeService
     {
-        Task<IEnumerable<IncomeModel>> GetByAccountIdsAsync(IEnumerable<int> accountIds);
+        Task<IEnumerable<IncomeModel>> GetByAccountIdsAsync(IEnumerable<Guid> accountIds);
         Task<IncomeModel> AddIncomeAsync(IncomeCreateModel createModel);
-        Task DeleteIncomeAsync(int id);
+        Task DeleteIncomeAsync(Guid id);
     }
 }

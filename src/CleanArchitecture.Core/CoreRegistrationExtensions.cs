@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Reflection;
+using AutoMapper;
 using CleanArchitecture.Core.CrudServices;
 using CleanArchitecture.Core.Interfaces.Services.Account;
 using CleanArchitecture.Core.Interfaces.Services.Account.Models;
@@ -6,16 +7,13 @@ using CleanArchitecture.Core.Interfaces.Services.Bill;
 using CleanArchitecture.Core.Interfaces.Services.Bill.Models;
 using CleanArchitecture.Core.Interfaces.Services.BillCategory;
 using CleanArchitecture.Core.Interfaces.Services.BillCategory.Models;
-using CleanArchitecture.Core.Interfaces.Services.BudgetPlan;
-using CleanArchitecture.Core.Interfaces.Services.Expense;
 using CleanArchitecture.Core.Interfaces.Services.FixedCost;
 using CleanArchitecture.Core.Interfaces.Services.FixedCost.Models;
 using CleanArchitecture.Core.Interfaces.Services.Income;
 using CleanArchitecture.Core.Interfaces.Services.Income.Models;
 using CleanArchitecture.Core.Interfaces.Services.User;
 using CleanArchitecture.Core.Interfaces.Services.User.Models;
-using CleanArchitecture.Core.UseCases.BudgetPlan;
-using CleanArchitecture.Core.UseCases.Expenses;
+using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace CleanArchitecture.Core
@@ -26,6 +24,7 @@ namespace CleanArchitecture.Core
         {
             services.RegisterServices();
             services.ConfigureModelMapper();
+            services.AddMediatR(Assembly.GetExecutingAssembly());
         }
 
         private static void RegisterServices(this IServiceCollection services)
@@ -33,10 +32,8 @@ namespace CleanArchitecture.Core
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBillService, BillService>();
             services.AddScoped<IAccountService, AccountService>();
-            services.AddScoped<IExpenseService, ExpenseService>();
             services.AddScoped<IIncomeService, IncomeService>();
             services.AddScoped<IFixedCostService, FixedCostService>();
-            services.AddScoped<IBudgetPlanService, BudgetPlanService>();
             services.AddScoped<IBillCategoryService, BillCategoryService>();
         }
 

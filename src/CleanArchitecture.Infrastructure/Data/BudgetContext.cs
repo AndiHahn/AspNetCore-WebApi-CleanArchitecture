@@ -37,6 +37,9 @@ namespace CleanArchitecture.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
             UserAccountModelBuilder.ApplyModelBuilder(modelBuilder);
+
+            //Soft deletable Entities
+            //modelBuilder.Entity<EntityType>().HasQueryFilter(p => !p.Deleted);
         }
 
         public async Task MigrateAsync()
@@ -49,6 +52,7 @@ namespace CleanArchitecture.Infrastructure.Data
             try
             {
                 SetExpectedVersionForVersionableEntities();
+                SetDeletedFlagForDeletedSoftDeletableEntities();
                 return await base.SaveChangesAsync(cancellationToken);
             }
             catch (DbUpdateConcurrencyException ex)
@@ -72,10 +76,25 @@ namespace CleanArchitecture.Infrastructure.Data
 
             foreach (var entityEntry in modifiedEntities)
             {
-                if (entityEntry.Entity is VersionableEntity versionableEntity)
+                if (entityEntry.Entity is IVersionableEntity versionableEntity)
                 {
-                    var versionProperty = Entry(entityEntry.Entity).Property(nameof(VersionableEntity.Version));
+                    var versionProperty = Entry(entityEntry.Entity).Property(nameof(IVersionableEntity.Version));
                     versionProperty.OriginalValue = versionableEntity.Version;
+                }
+            }
+        }
+
+        private void SetDeletedFlagForDeletedSoftDeletableEntities()
+        {
+            ChangeTracker.DetectChanges();
+            var deletedEntities = ChangeTracker.Entries().Where(x => x.State == EntityState.Deleted);
+
+            foreach (var entityEntry in deletedEntities)
+            {
+                if (entityEntry.Entity is ISoftDeletableEntity softDeletableEntity)
+                {
+                    entityEntry.State = EntityState.Unchanged;
+                    softDeletableEntity.Deleted = true;
                 }
             }
         }

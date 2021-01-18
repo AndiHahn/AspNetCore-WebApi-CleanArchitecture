@@ -6,6 +6,7 @@ namespace CleanArchitecture.Domain.Entities
     public class AccountEntity : BaseEntity
     {
         public string Name { get; set; }
+        public bool IsSharedAccount { get; set; }
 
         public virtual ICollection<BillEntity> Bills { get; set; }
         public virtual ICollection<UserAccountEntity> UserAccounts { get; set; }

@@ -36,7 +36,7 @@ namespace CleanArchitecture.Core.CrudServices
                                 .Select(b => mapper.Map<BillCategoryModel>(b));
         }
 
-        public async Task<BillCategoryModel> GetByIdAsync(int id)
+        public async Task<BillCategoryModel> GetByIdAsync(Guid id)
         {
             logger.LogInformation("Get bill category by id {id}", id);
             var entity = (await context.BillCategory.FindAsync(id)).AssertEntityFound(id);
@@ -53,7 +53,7 @@ namespace CleanArchitecture.Core.CrudServices
             return await GetByIdAsync(entity.Id);
         }
 
-        public async Task UpdateAsync(int id, BillCategoryUpdateModel updateModel)
+        public async Task UpdateAsync(Guid id, BillCategoryUpdateModel updateModel)
         {
             logger.LogInformation("Update bill category with id {id}", id);
             var entity = (await context.BillCategory.FindAsync(id)).AssertEntityFound(id);
@@ -62,7 +62,7 @@ namespace CleanArchitecture.Core.CrudServices
             logger.LogInformation("Successfully updated bill category.");
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             logger.LogInformation("Delete bill category with id {id}", id);
             var entity = (await context.BillCategory.FindAsync(id)).AssertEntityFound(id);

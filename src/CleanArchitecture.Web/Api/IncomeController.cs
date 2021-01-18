@@ -26,7 +26,7 @@ namespace CleanArchitecture.Web.Api
 
         [HttpGet("account")]
         [ProducesResponseType(typeof(IEnumerable<IncomeModel>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetIncomesByAccountIds([FromQuery] IEnumerable<int> accounts)
+        public async Task<IActionResult> GetIncomesByAccountIds([FromQuery] IEnumerable<Guid> accounts)
         {
             logger.LogInformation("Get incomes by account ids {accounts}", accounts);
             return Ok(await incomeService.GetByAccountIdsAsync(accounts));
@@ -46,7 +46,7 @@ namespace CleanArchitecture.Web.Api
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteIncome(int id)
+        public async Task<IActionResult> DeleteIncome(Guid id)
         {
             logger.LogInformation("Delete income {id}", id);
             await incomeService.DeleteIncomeAsync(id);

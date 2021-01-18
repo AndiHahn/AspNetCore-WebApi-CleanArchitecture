@@ -41,7 +41,7 @@ namespace CleanArchitecture.Web.Api
         [ProducesResponseType(typeof(BillModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             return Ok(await billService.GetByIdAsync(id));
         }
@@ -59,7 +59,7 @@ namespace CleanArchitecture.Web.Api
         [ProducesResponseType(typeof(BillModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateBill(int id, [FromBody] BillUpdateModel updateModel)
+        public async Task<IActionResult> UpdateBill(Guid id, [FromBody] BillUpdateModel updateModel)
         {
             return Ok(await billService.UpdateBillAsync(id, updateModel));
         }
@@ -68,7 +68,7 @@ namespace CleanArchitecture.Web.Api
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteBill(int id)
+        public async Task<IActionResult> DeleteBill(Guid id)
         {
             await billService.DeleteBillAsync(id);
             return NoContent();
@@ -79,7 +79,7 @@ namespace CleanArchitecture.Web.Api
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetImage(int id)
+        public async Task<IActionResult> GetImage(Guid id)
         {
             var image = await billService.GetImageAsync(id);
             if (image == null) { return NoContent(); }
@@ -90,7 +90,7 @@ namespace CleanArchitecture.Web.Api
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AddImage(int id, [FromForm] IFormFile image)
+        public async Task<IActionResult> AddImage(Guid id, [FromForm] IFormFile image)
         {
             await billService.AddImageToBillAsync(id, image);
             return NoContent();
@@ -100,7 +100,7 @@ namespace CleanArchitecture.Web.Api
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteImage(int id)
+        public async Task<IActionResult> DeleteImage(Guid id)
         {
             await billService.DeleteImageAsync(id);
             return NoContent();

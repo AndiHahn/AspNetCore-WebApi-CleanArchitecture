@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using CleanArchitecture.Core.Interfaces.Infrastructure.AzureStorage;
 using CleanArchitecture.Core.Interfaces.Models;
 using CleanArchitecture.Core.Interfaces.Services.Bill.Models;
@@ -10,13 +11,13 @@ namespace CleanArchitecture.Core.Interfaces.Services.Bill
     {
         Task<PagedResult<BillModel>> QueryAsync(BillQueryParameter queryParameter);
         Task<PagedResult<BillModel>> ListAsync(BillSearchParameter searchParameter);
-        Task<BillModel> GetByIdAsync(int id);
+        Task<BillModel> GetByIdAsync(Guid id);
         Task<BillModel> AddBillAsync(BillCreateModel createModel);
-        Task<BillModel> UpdateBillAsync(int id, BillUpdateModel updateModel);
-        Task DeleteBillAsync(int id);
-        Task<BlobDownloadModel> GetImageAsync(int id);
-        Task AddImageToBillAsync(int id, IFormFile file);
-        Task DeleteImageAsync(int id);
+        Task<BillModel> UpdateBillAsync(Guid id, BillUpdateModel updateModel);
+        Task DeleteBillAsync(Guid id);
+        Task<BlobDownloadModel> GetImageAsync(Guid id);
+        Task AddImageToBillAsync(Guid id, IFormFile file);
+        Task DeleteImageAsync(Guid id);
         Task<TimeRangeModel> GetAvailableTimeRangeAsync();
     }
 }

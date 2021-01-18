@@ -1,14 +1,16 @@
-﻿namespace CleanArchitecture.Domain.Entities
+﻿using System;
+
+namespace CleanArchitecture.Domain.Entities
 {
     public class UserAccountEntity
     {
-        public int AccountId { get; set; }
+        public Guid AccountId { get; set; }
         public AccountEntity Account { get; set; }
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         public UserEntity User { get; set; }
 
         public UserAccountEntity() { }
-        public UserAccountEntity(int accountId, int userId)
+        public UserAccountEntity(Guid accountId, Guid userId)
         {
             AccountId = accountId;
             UserId = userId;

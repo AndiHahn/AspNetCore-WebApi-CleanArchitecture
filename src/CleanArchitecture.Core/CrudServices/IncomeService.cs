@@ -29,7 +29,7 @@ namespace CleanArchitecture.Core.CrudServices
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IEnumerable<IncomeModel>> GetByAccountIdsAsync(IEnumerable<int> accountIds)
+        public async Task<IEnumerable<IncomeModel>> GetByAccountIdsAsync(IEnumerable<Guid> accountIds)
         {
             logger.LogInformation("Get by account ids...");
             var results = new List<IncomeModel>();
@@ -54,7 +54,7 @@ namespace CleanArchitecture.Core.CrudServices
             return mapper.Map<IncomeModel>(entity);
         }
 
-        public async Task DeleteIncomeAsync(int id)
+        public async Task DeleteIncomeAsync(Guid id)
         {
             logger.LogInformation("Delete income...");
             var entity = (await context.Income.FindAsync(id)).AssertEntityFound(id);
@@ -63,7 +63,7 @@ namespace CleanArchitecture.Core.CrudServices
             logger.LogInformation("Successfully deleted entity");
         }
 
-        private async Task<IEnumerable<IncomeModel>> GetByAccountId(int accountId)
+        private async Task<IEnumerable<IncomeModel>> GetByAccountId(Guid accountId)
         {
             (await context.Account.FindAsync(accountId)).AssertEntityFound(accountId);
             return (await context.Income.Include(i => i.Account)

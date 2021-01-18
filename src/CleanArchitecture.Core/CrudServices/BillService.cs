@@ -52,7 +52,7 @@ namespace CleanArchitecture.Core.CrudServices
                 pagedResult.TotalCount);
         }
 
-        public async Task<BillModel> GetByIdAsync(int id)
+        public async Task<BillModel> GetByIdAsync(Guid id)
         {
             var entity = (await context.Bill.FindAsync(id)).AssertEntityFound(id);
             return mapper.Map<BillModel>(entity);
@@ -66,7 +66,7 @@ namespace CleanArchitecture.Core.CrudServices
             return await GetByIdAsync(billEntity.Id);
         }
 
-        public async Task DeleteBillAsync(int id)
+        public async Task DeleteBillAsync(Guid id)
         {
             var billEntity = (await context.Bill.FindAsync(id)).AssertEntityFound(id);
             context.Bill.Remove(billEntity);
@@ -75,7 +75,7 @@ namespace CleanArchitecture.Core.CrudServices
             await context.SaveChangesAsync();
         }
 
-        public async Task<BlobDownloadModel> GetImageAsync(int id)
+        public async Task<BlobDownloadModel> GetImageAsync(Guid id)
         {
             await EnsureBillAvailableAsync(id);
             string imageUrl = GetImagePath(id);
@@ -91,7 +91,7 @@ namespace CleanArchitecture.Core.CrudServices
             }
         }
 
-        public async Task AddImageToBillAsync(int id, IFormFile file)
+        public async Task AddImageToBillAsync(Guid id, IFormFile file)
         {
             await EnsureBillAvailableAsync(id);
             string fileUrl = GetImagePath(id);
@@ -102,7 +102,7 @@ namespace CleanArchitecture.Core.CrudServices
                         Constants.ImageStorage.CONTAINER_NAME, fileUrl, uploadModel);
         }
 
-        public async Task<BillModel> UpdateBillAsync(int id, BillUpdateModel updateModel)
+        public async Task<BillModel> UpdateBillAsync(Guid id, BillUpdateModel updateModel)
         {
             var billEntity = (await context.Bill.FindAsync(id)).AssertEntityFound(id);
             updateModel.MergeIntoEntity(billEntity);
@@ -110,7 +110,7 @@ namespace CleanArchitecture.Core.CrudServices
             return await GetByIdAsync(id);
         }
 
-        public async Task DeleteImageAsync(int id)
+        public async Task DeleteImageAsync(Guid id)
         {
             await EnsureBillAvailableAsync(id);
             await blobStorageRepository.RemoveBlobAsync(
@@ -129,14 +129,14 @@ namespace CleanArchitecture.Core.CrudServices
             return new TimeRangeModel(firstBill.Date, lastBill.Date);
         }
 
-        private string GetImagePath(int billId)
+        private string GetImagePath(Guid billId)
         {
             return Constants.ImageStorage.IMAGES_FOLDER_NAME +
                    Constants.ImageStorage.FOLDER_DELIMITER +
                    billId;
         }
 
-        private async Task EnsureBillAvailableAsync(int id)
+        private async Task EnsureBillAvailableAsync(Guid id)
         {
             (await context.Bill.FindAsync(id)).AssertEntityFound(id);
         }

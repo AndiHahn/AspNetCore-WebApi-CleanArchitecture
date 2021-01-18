@@ -29,7 +29,7 @@ namespace CleanArchitecture.Core.CrudServices
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IEnumerable<FixedCostModel>> GetByAccountIdsAsync(IEnumerable<int> accountIds)
+        public async Task<IEnumerable<FixedCostModel>> GetByAccountIdsAsync(IEnumerable<Guid> accountIds)
         {
             logger.LogInformation("Get By account ids...");
             var results = new List<FixedCostModel>();
@@ -54,7 +54,7 @@ namespace CleanArchitecture.Core.CrudServices
             return mapper.Map<FixedCostModel>(entity);
         }
 
-        public async Task DeleteFixedCostAsync(int id)
+        public async Task DeleteFixedCostAsync(Guid id)
         {
             logger.LogInformation("Delete fixed cost...");
             var entity = (await context.FixedCost.FindAsync(id)).AssertEntityFound(id);
@@ -63,7 +63,7 @@ namespace CleanArchitecture.Core.CrudServices
             logger.LogInformation("Successfully deleted entity");
         }
 
-        private async Task<IEnumerable<FixedCostModel>> GetByAccountId(int accountId)
+        private async Task<IEnumerable<FixedCostModel>> GetByAccountId(Guid accountId)
         {
             (await context.Account.FindAsync(accountId)).AssertEntityFound(accountId);
             return (await context.FixedCost.Include(f => f.Account)

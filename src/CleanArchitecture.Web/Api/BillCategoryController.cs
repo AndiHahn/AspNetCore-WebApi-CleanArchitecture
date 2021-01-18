@@ -37,7 +37,7 @@ namespace CleanArchitecture.Web.Api
         [ProducesResponseType(typeof(BillCategoryModel), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             return Ok(await billCategoryService.GetByIdAsync(id));
         }
@@ -55,7 +55,7 @@ namespace CleanArchitecture.Web.Api
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id, [FromBody] BillCategoryUpdateModel updateModel)
+        public async Task<IActionResult> Update(Guid id, [FromBody] BillCategoryUpdateModel updateModel)
         {
             await billCategoryService.UpdateAsync(id, updateModel);
             return NoContent();
@@ -65,7 +65,7 @@ namespace CleanArchitecture.Web.Api
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             await billCategoryService.DeleteAsync(id);
             return NoContent();

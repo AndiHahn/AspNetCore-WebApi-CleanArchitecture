@@ -28,7 +28,7 @@ namespace CleanArchitecture.Core.CrudServices
                             .Select(e => mapper.Map<AccountModel>(e));
         }
 
-        public async Task<AccountModel> GetByIdAsync(int id)
+        public async Task<AccountModel> GetByIdAsync(Guid id)
         {
             var entity = (await context.Account.FindAsync(id)).AssertEntityFound(id);
             return mapper.Map<AccountModel>(entity);

@@ -2,9 +2,9 @@
 
 namespace CleanArchitecture.Domain.Base
 {
-    public abstract class VersionableEntity : BaseEntity
+    public interface IVersionableEntity
     {
         [Timestamp]
-        public byte[] Version { get; set; }
+        byte[] Version { get; set; }
     }
 }

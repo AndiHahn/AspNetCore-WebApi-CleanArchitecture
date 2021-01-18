@@ -11,9 +11,9 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 name: "Account",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(nullable: true)
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    IsSharedAccount = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -24,8 +24,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 name: "BillCategory",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Color = table.Column<string>(nullable: true)
                 },
@@ -38,8 +37,7 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 name: "User",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<Guid>(nullable: false),
                     FirstName = table.Column<string>(nullable: true),
                     LastName = table.Column<string>(nullable: true),
                     UserName = table.Column<string>(nullable: true),
@@ -55,9 +53,8 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 name: "FixedCost",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountId = table.Column<int>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false),
+                    AccountId = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Value = table.Column<double>(nullable: false),
                     Duration = table.Column<int>(nullable: false),
@@ -78,9 +75,8 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 name: "Income",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountId = table.Column<int>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false),
+                    AccountId = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     Value = table.Column<double>(nullable: false),
                     Duration = table.Column<int>(nullable: false)
@@ -100,17 +96,16 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 name: "Bill",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Version = table.Column<byte[]>(rowVersion: true, nullable: true),
-                    AccountId = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    BillCategoryId = table.Column<int>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false),
+                    AccountId = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<Guid>(nullable: false),
+                    BillCategoryId = table.Column<Guid>(nullable: false),
                     ShopName = table.Column<string>(nullable: true),
                     Price = table.Column<double>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     PictureURL = table.Column<string>(nullable: true),
-                    Notes = table.Column<string>(nullable: true)
+                    Notes = table.Column<string>(nullable: true),
+                    Version = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -139,8 +134,8 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 name: "UserAccount",
                 columns: table => new
                 {
-                    AccountId = table.Column<int>(nullable: false),
-                    UserId = table.Column<int>(nullable: false)
+                    AccountId = table.Column<Guid>(nullable: false),
+                    UserId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
