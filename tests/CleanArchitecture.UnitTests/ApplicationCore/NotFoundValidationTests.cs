@@ -1,4 +1,4 @@
-﻿using CleanArchitecture.Core.Validations;
+﻿using CleanArchitecture.Application.Validations;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Exceptions;
 using Xunit;

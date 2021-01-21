@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces.Services.Income;
-using CleanArchitecture.Core.Interfaces.Services.Income.Models;
+using CleanArchitecture.Core.Interfaces.CrudServices;
+using CleanArchitecture.Core.Models.Domain.Income;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

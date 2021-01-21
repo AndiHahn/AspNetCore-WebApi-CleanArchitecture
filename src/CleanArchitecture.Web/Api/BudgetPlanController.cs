@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces.Services.BudgetPlan.Models;
-using CleanArchitecture.Core.UseCases.BudgetPlan.Queries;
+using CleanArchitecture.Application.UseCases.BudgetPlan.Models;
+using CleanArchitecture.Application.UseCases.BudgetPlan.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

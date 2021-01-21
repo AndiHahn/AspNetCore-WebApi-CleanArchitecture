@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces.Models;
-using CleanArchitecture.Core.Interfaces.Services.Bill;
-using CleanArchitecture.Core.Interfaces.Services.Bill.Models;
+using CleanArchitecture.Core.Interfaces.CrudServices;
+using CleanArchitecture.Core.Models.Common;
+using CleanArchitecture.Core.Models.Domain.Bill;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

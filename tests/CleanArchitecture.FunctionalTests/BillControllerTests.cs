@@ -2,8 +2,8 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces.Models;
-using CleanArchitecture.Core.Interfaces.Services.Bill.Models;
+using CleanArchitecture.Core.Models.Common;
+using CleanArchitecture.Core.Models.Domain.Bill;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.FunctionalTests.Helper;
 using CleanArchitecture.Tests.Shared.Builder.Account;

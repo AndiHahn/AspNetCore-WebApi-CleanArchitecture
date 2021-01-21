@@ -1,6 +1,6 @@
-﻿using CleanArchitecture.Core.Interfaces.Infrastructure.AzureStorage;
-using CleanArchitecture.Core.Interfaces.Infrastructure.Email;
+﻿using CleanArchitecture.Core.Interfaces.Services;
 using CleanArchitecture.Core.Interfaces.SqlQueries;
+using CleanArchitecture.Domain.Interfaces;
 using CleanArchitecture.Infrastructure.Repositories;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
 using CleanArchitecture.Infrastructure.Services.Email;

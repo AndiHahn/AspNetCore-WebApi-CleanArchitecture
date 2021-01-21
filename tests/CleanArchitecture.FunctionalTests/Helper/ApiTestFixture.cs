@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Linq;
+using CleanArchitecture.Application;
 using CleanArchitecture.Core;
 using CleanArchitecture.Core.Interfaces;
-using CleanArchitecture.Core.Interfaces.Models;
+using CleanArchitecture.Core.Models.Common;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Infrastructure.Data;
 using CleanArchitecture.Web;

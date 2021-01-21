@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces.Infrastructure;
+using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Interfaces.SqlQueries;
 using CleanArchitecture.Domain.Base;
 using CleanArchitecture.Domain.Entities;

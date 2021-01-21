@@ -1,4 +1,4 @@
-﻿using CleanArchitecture.Core.Interfaces.Models;
+﻿using CleanArchitecture.Core.Models.Common;
 using Xunit;
 
 namespace CleanArchitecture.UnitTests.ApplicationCore

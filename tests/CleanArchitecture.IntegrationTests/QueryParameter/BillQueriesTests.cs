@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Bogus;
-using CleanArchitecture.Core.Interfaces.Services.Bill.Models;
+using CleanArchitecture.Core.Models.Domain.Bill;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.IntegrationTests.Setup.Database;
 using CleanArchitecture.Tests.Shared.Builder.Account;

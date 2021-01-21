@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using CleanArchitecture.Application;
 using CleanArchitecture.Core.Interfaces;
-using CleanArchitecture.Core.Interfaces.Infrastructure;
-using CleanArchitecture.Core.Interfaces.Models;
+using CleanArchitecture.Core.Models.Common;
 using CleanArchitecture.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 

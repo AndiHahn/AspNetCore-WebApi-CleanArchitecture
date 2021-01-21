@@ -1,7 +1,8 @@
 ﻿using System.Text;
+using CleanArchitecture.Application;
+using CleanArchitecture.Application.Configurations;
 using CleanArchitecture.Core;
-using CleanArchitecture.Core.Configurations;
-using CleanArchitecture.Core.Interfaces.Infrastructure;
+using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Domain.Exceptions;
 using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Data;

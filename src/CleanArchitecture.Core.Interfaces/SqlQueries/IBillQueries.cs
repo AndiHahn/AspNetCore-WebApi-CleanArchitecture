@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces.Infrastructure;
-using CleanArchitecture.Core.Interfaces.Models;
-using CleanArchitecture.Core.Interfaces.Services.Bill.Models;
+using CleanArchitecture.Core.Models.Common;
+using CleanArchitecture.Core.Models.Domain.Bill;
 using CleanArchitecture.Domain.Entities;
 
 namespace CleanArchitecture.Core.Interfaces.SqlQueries

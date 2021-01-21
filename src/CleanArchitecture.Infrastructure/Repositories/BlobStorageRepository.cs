@@ -2,8 +2,9 @@
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
-using CleanArchitecture.Core.Interfaces.Infrastructure.AzureStorage;
+using CleanArchitecture.Domain.BlobEntities;
 using CleanArchitecture.Domain.Exceptions;
+using CleanArchitecture.Domain.Interfaces;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
 
 namespace CleanArchitecture.Infrastructure.Repositories
@@ -17,7 +18,7 @@ namespace CleanArchitecture.Infrastructure.Repositories
             this.azureStorageClientFactory = azureStorageClientFactory ?? throw new ArgumentNullException(nameof(azureStorageClientFactory));
         }
 
-        public async Task<BlobDownloadModel> DownloadBlobAsync(string containerName, string blobUrl)
+        public async Task<BlobDownloadEntity> DownloadBlobAsync(string containerName, string blobUrl)
         {
             var blobClient = azureStorageClientFactory.GetBlobClient(containerName, blobUrl);
             if (!await blobClient.ExistsAsync())
@@ -27,7 +28,7 @@ namespace CleanArchitecture.Infrastructure.Repositories
 
             var blobDownloadInfo = (await blobClient.DownloadAsync()).Value;
 
-            return new BlobDownloadModel
+            return new BlobDownloadEntity
             {
                 Content = blobDownloadInfo.Content,
                 ContentType = blobDownloadInfo.ContentType,

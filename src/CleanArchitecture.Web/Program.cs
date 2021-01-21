@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces.Infrastructure;
+using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.GenericQuery;
-using CleanArchitecture.Core.Interfaces.Infrastructure;
-using CleanArchitecture.Core.Interfaces.Models;
-using CleanArchitecture.Core.Interfaces.Services.Bill.Models;
+using CleanArchitecture.Application.GenericQuery;
+using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Interfaces.SqlQueries;
+using CleanArchitecture.Core.Models.Common;
+using CleanArchitecture.Core.Models.Domain.Bill;
 using CleanArchitecture.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
