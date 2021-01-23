@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using CleanArchitecture.Domain.Entities;
 
 namespace CleanArchitecture.Tests.Shared.Builder.Bill
@@ -9,34 +10,35 @@ namespace CleanArchitecture.Tests.Shared.Builder.Bill
 
         public BillEntityBuilder()
         {
-            var billCategory = new BillCategoryEntity()
-            {
-                Name = "Category",
-                Color = "red"
-            };
-
-            bill = new BillEntity()
+            bill = new BillEntity
             {
                 ShopName = "ShopName",
                 Price = 10.21,
                 Notes = "Notes",
                 Date = DateTime.UtcNow,
-                PictureURL = "PictureUrl",
-                BillCategory = billCategory
+                Category = Domain.Enums.Category.Travelling,
+                UserBills = new List<UserBillEntity>()
             };
         }
 
-        public BillEntityBuilder WithAccount(AccountEntity account)
+        public BillEntityBuilder WithAccount(BankAccountEntity bankAccount)
         {
-            bill.AccountId = account.Id;
-            bill.Account = account;
+            bill.BankAccountId = bankAccount.Id;
+            bill.BankAccount = bankAccount;
             return this;
         }
 
-        public BillEntityBuilder WithUser(UserEntity user)
+        public BillEntityBuilder CreatedByUser(UserEntity user)
         {
-            bill.UserId = user.Id;
-            bill.User = user;
+            bill.CreatedByUserId = user.Id;
+            bill.UserBills.Add(new UserBillEntity
+            {
+                Bill = bill,
+                BillId = bill.Id,
+                User = user,
+                UserId = user.Id
+            });
+
             return this;
         }
 

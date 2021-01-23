@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Core.Interfaces.SqlQueries;
 using CleanArchitecture.Domain.Base;
 using CleanArchitecture.Domain.Entities;
@@ -16,11 +16,9 @@ namespace CleanArchitecture.Infrastructure.Data
         //DB Set's
         public DbSet<BillEntity> Bill { get; set; }
         public DbSet<UserEntity> User { get; set; }
-        public DbSet<AccountEntity> Account { get; set; }
-        public DbSet<UserAccountEntity> UserAccount { get; set; }
-        public DbSet<FixedCostEntity> FixedCost { get; set; }
-        public DbSet<IncomeEntity> Income { get; set; }
-        public DbSet<BillCategoryEntity> BillCategory { get; set; }
+        public DbSet<BankAccountEntity> BankAccount { get; set; }
+        public DbSet<UserBankAccountEntity> UserBankAccount { get; set; }
+        public DbSet<UserBillEntity> UserBill { get; set; }
 
         //Queries
         public IBillQueries BillQueries { get; }
@@ -36,7 +34,8 @@ namespace CleanArchitecture.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            UserAccountModelBuilder.ApplyModelBuilder(modelBuilder);
+            UserBankAccountModelBuilder.ApplyModelBuilder(modelBuilder);
+            UserBillModelBuilder.ApplyModelBuilder(modelBuilder);
 
             //Soft deletable Entities
             //modelBuilder.Entity<EntityType>().HasQueryFilter(p => !p.Deleted);

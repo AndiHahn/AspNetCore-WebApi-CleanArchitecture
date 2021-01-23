@@ -1,4 +1,5 @@
-﻿using CleanArchitecture.Domain.Entities;
+﻿using System;
+using CleanArchitecture.Domain.Entities;
 
 namespace CleanArchitecture.Tests.Shared.Builder.User
 {
@@ -6,10 +7,11 @@ namespace CleanArchitecture.Tests.Shared.Builder.User
     {
         private readonly UserEntity user;
 
-        public UserEntityBuilder()
+        public UserEntityBuilder(Guid userId = default)
         {
             user = new UserEntity()
             {
+                Id = userId != default ? userId : Guid.NewGuid(),
                 FirstName = "FirstName",
                 LastName = "LastName",
                 UserName = "UserName",

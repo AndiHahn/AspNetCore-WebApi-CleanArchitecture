@@ -1,6 +1,6 @@
 using System;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Infrastructure.Data;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,11 +23,14 @@ namespace CleanArchitecture.Web
 
                 try
                 {
-                    logger.LogInformation("Starting database migration...");
+                    logger.LogInformation("Start database migration...");
                     var context = services.GetRequiredService<IBudgetContext>();
                     await context.MigrateAsync();
-                    await BudgetContextSeed.SeedAsync(context);
                     logger.LogInformation("Finished database migration.");
+
+                    logger.LogInformation("Start seed database...");
+                    await BudgetContextSeed.SeedAsync(context);
+                    logger.LogInformation("Finished seeding database.");
                 }
                 catch (Exception ex)
                 {

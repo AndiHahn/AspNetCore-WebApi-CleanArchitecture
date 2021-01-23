@@ -72,7 +72,7 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
         {
             var accountEntity = new AccountEntityBuilder().Build();
             var userEntity = new UserEntityBuilder().Build();
-            return new BillEntityBuilder().WithAccount(accountEntity).WithUser(userEntity).Build();
+            return new BillEntityBuilder().WithAccount(accountEntity).CreatedByUser(userEntity).Build();
         }
     }
 }

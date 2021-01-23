@@ -1,11 +1,12 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using CleanArchitecture.Core.Models.Common;
 using CleanArchitecture.Core.Models.Domain.Bill;
 using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.FunctionalTests.Helper;
+using CleanArchitecture.FunctionalTests.Extensions;
+using CleanArchitecture.FunctionalTests.Fixture;
 using CleanArchitecture.Tests.Shared.Builder.Account;
 using CleanArchitecture.Tests.Shared.Builder.Bill;
 using CleanArchitecture.Tests.Shared.Builder.User;
@@ -14,32 +15,30 @@ using Xunit;
 
 namespace CleanArchitecture.FunctionalTests
 {
-    public class BillControllerTests : IClassFixture<ApiTestFixture>
+    public class BillControllerTests : IClassFixture<ApiFunctionalTestFixture>
     {
-        private readonly ApiTestFixture apiTestFixture;
+        private readonly ApiFunctionalTestFixture apiFunctionalTestFixture;
         private readonly HttpClient authorizedClient;
 
-        public BillControllerTests(ApiTestFixture apiTestFixture)
+        public BillControllerTests(ApiFunctionalTestFixture apiFunctionalTestFixture)
         {
-            this.apiTestFixture = apiTestFixture;
-            authorizedClient = apiTestFixture.CreateClient();
-            string token = ApiTokenHelper.GetToken();
-            authorizedClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            this.apiFunctionalTestFixture = apiFunctionalTestFixture;
+            authorizedClient = apiFunctionalTestFixture.CreateAuthorizedClient();
         }
 
         [Fact]
         public async Task GetBills_ShouldReturnBills_Correctly()
         {
-            var userEntity = new UserEntityBuilder().Build();
+            var userEntity = new UserEntityBuilder(apiFunctionalTestFixture.UserId).Build();
             var accountEntity = new AccountEntityBuilder().Build();
-            var billEntity = new BillEntityBuilder().WithAccount(accountEntity).WithUser(userEntity).Build();
-            apiTestFixture.SetupDatabase(db =>
+            var billEntity = new BillEntityBuilder().WithAccount(accountEntity).CreatedByUser(userEntity).Build();
+            apiFunctionalTestFixture.SetupDatabase(db =>
             {
                 db.Bill.Add(billEntity);
             });
 
-            var response = await authorizedClient.GetAsync("/api/bill?AccountIds=1");
-            var result = await ApiResultHelper.GetModelFromResponseAsync<PagedResult<BillModel>>(response);
+            var response = await authorizedClient.GetAsync("/api/bill");
+            var result = await response.ResolveAsync<PagedResult<BillModel>>();
 
             response.EnsureSuccessStatusCode();
             Assert.NotNull(result);
@@ -51,10 +50,10 @@ namespace CleanArchitecture.FunctionalTests
         [Fact]
         public async Task GetBills_ShouldReturnEmptyResult_IfNoDataAvailableInDatabase()
         {
-            apiTestFixture.SetupDatabase();
+            apiFunctionalTestFixture.SetupDatabase();
 
             var response = await authorizedClient.GetAsync("/api/bill");
-            var result = await ApiResultHelper.GetModelFromResponseAsync<PagedResult<BillModel>>(response);
+            var result = await response.ResolveAsync<PagedResult<BillModel>>();
 
             response.EnsureSuccessStatusCode();
             Assert.NotNull(result);
@@ -65,7 +64,7 @@ namespace CleanArchitecture.FunctionalTests
         [Fact]
         public async Task GetBills_ShouldReturnUnauthorized_IfRequestDoesNotContainBearerToken()
         {
-            var client = apiTestFixture.CreateClient();
+            var client = apiFunctionalTestFixture.CreateClient();
             var response = await client.GetAsync("/api/bill");
             Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
         }
@@ -73,16 +72,16 @@ namespace CleanArchitecture.FunctionalTests
         [Fact]
         public async Task GetBill_ShouldReturnBill_Correctly()
         {
-            var userEntity = new UserEntityBuilder().Build();
+            var userEntity = new UserEntityBuilder(apiFunctionalTestFixture.UserId).Build();
             var accountEntity = new AccountEntityBuilder().Build();
-            var billEntity = new BillEntityBuilder().WithAccount(accountEntity).WithUser(userEntity).Build();
-            apiTestFixture.SetupDatabase(db =>
+            var billEntity = new BillEntityBuilder().WithAccount(accountEntity).CreatedByUser(userEntity).Build();
+            apiFunctionalTestFixture.SetupDatabase(db =>
             {
                 db.Bill.Add(billEntity);
             });
 
             var response = await authorizedClient.GetAsync($"/api/bill/{billEntity.Id}");
-            var result = await ApiResultHelper.GetModelFromResponseAsync<BillModel>(response);
+            var result = await response.ResolveAsync<BillModel>();
 
             response.EnsureSuccessStatusCode();
             Assert.NotNull(result);
@@ -92,9 +91,9 @@ namespace CleanArchitecture.FunctionalTests
         [Fact]
         public async Task GetBill_ShouldReturnNotFound_IfIdIsNotAvailable()
         {
-            apiTestFixture.SetupDatabase();
-            var response = await authorizedClient.GetAsync($"/api/bill/4");
-            var result = await ApiResultHelper.GetModelFromResponseAsync<ProblemDetails>(response);
+            apiFunctionalTestFixture.SetupDatabase();
+            var response = await authorizedClient.GetAsync($"/api/bill/{Guid.NewGuid()}");
+            var result = await response.ResolveAsync<ProblemDetails>();
 
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
             Assert.Equal(404, result.Status);
@@ -107,7 +106,7 @@ namespace CleanArchitecture.FunctionalTests
             Assert.Equal(entity.Price, model.Price);
             Assert.Equal(entity.Date, model.Date);
             Assert.Equal(entity.Notes, model.Notes);
-            Assert.Equal(entity.BillCategory.Id, model.CategoryId);
+            Assert.Equal(entity.Category, model.Category);
         }
     }
 }

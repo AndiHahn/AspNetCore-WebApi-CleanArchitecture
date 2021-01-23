@@ -19,38 +19,21 @@ namespace CleanArchitecture.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.AccountEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Domain.Entities.BankAccountEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<bool>("IsSharedAccount")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Account");
-                });
-
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.BillCategoryEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<Guid>("OwnerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Color")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
 
-                    b.ToTable("BillCategory");
+                    b.ToTable("BankAccount");
                 });
 
             modelBuilder.Entity("CleanArchitecture.Domain.Entities.BillEntity", b =>
@@ -59,10 +42,13 @@ namespace CleanArchitecture.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AccountId")
+                    b.Property<Guid>("BankAccountId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BillCategoryId")
+                    b.Property<int>("Category")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("CreatedByUserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("Date")
@@ -71,98 +57,50 @@ namespace CleanArchitecture.Infrastructure.Migrations
                     b.Property<string>("Notes")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("PictureURL")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
                     b.Property<string>("ShopName")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<byte[]>("Version")
                         .HasColumnType("varbinary(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
-
-                    b.HasIndex("BillCategoryId");
-
-                    b.HasIndex("UserId");
+                    b.HasIndex("BankAccountId");
 
                     b.ToTable("Bill");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.FixedCostEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserBankAccountEntity", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AccountId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("CostCategory")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Duration")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.ToTable("FixedCost");
-                });
-
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.IncomeEntity", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("AccountId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Duration")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("float");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.ToTable("Income");
-                });
-
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserAccountEntity", b =>
-                {
-                    b.Property<Guid>("AccountId")
+                    b.Property<Guid>("BankAccountId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("AccountId", "UserId");
+                    b.HasKey("BankAccountId", "UserId");
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserAccount");
+                    b.ToTable("UserBankAccount");
+                });
+
+            modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserBillEntity", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BillId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("UserId", "BillId");
+
+                    b.HasIndex("BillId");
+
+                    b.ToTable("UserBill");
                 });
 
             modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserEntity", b =>
@@ -193,53 +131,38 @@ namespace CleanArchitecture.Infrastructure.Migrations
 
             modelBuilder.Entity("CleanArchitecture.Domain.Entities.BillEntity", b =>
                 {
-                    b.HasOne("CleanArchitecture.Domain.Entities.AccountEntity", "Account")
+                    b.HasOne("CleanArchitecture.Domain.Entities.BankAccountEntity", "BankAccount")
                         .WithMany("Bills")
-                        .HasForeignKey("AccountId")
+                        .HasForeignKey("BankAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
 
-                    b.HasOne("CleanArchitecture.Domain.Entities.BillCategoryEntity", "BillCategory")
-                        .WithMany()
-                        .HasForeignKey("BillCategoryId")
+            modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserBankAccountEntity", b =>
+                {
+                    b.HasOne("CleanArchitecture.Domain.Entities.BankAccountEntity", "BankAccount")
+                        .WithMany("UserBankAccounts")
+                        .HasForeignKey("BankAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CleanArchitecture.Domain.Entities.UserEntity", "User")
-                        .WithMany("Bills")
+                        .WithMany("UserAccounts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.FixedCostEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserBillEntity", b =>
                 {
-                    b.HasOne("CleanArchitecture.Domain.Entities.AccountEntity", "Account")
-                        .WithMany("FixedCosts")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.IncomeEntity", b =>
-                {
-                    b.HasOne("CleanArchitecture.Domain.Entities.AccountEntity", "Account")
-                        .WithMany("Income")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserAccountEntity", b =>
-                {
-                    b.HasOne("CleanArchitecture.Domain.Entities.AccountEntity", "Account")
-                        .WithMany("UserAccounts")
-                        .HasForeignKey("AccountId")
+                    b.HasOne("CleanArchitecture.Domain.Entities.BillEntity", "Bill")
+                        .WithMany("UserBills")
+                        .HasForeignKey("BillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("CleanArchitecture.Domain.Entities.UserEntity", "User")
-                        .WithMany("UserAccounts")
+                        .WithMany("UserBills")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

@@ -1,8 +1,7 @@
 ﻿using System.Text;
 using CleanArchitecture.Application;
 using CleanArchitecture.Application.Configurations;
-using CleanArchitecture.Core;
-using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Domain.Exceptions;
 using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Data;
@@ -77,52 +76,40 @@ namespace CleanArchitecture.Web.Extensions
             services.AddProblemDetails(opts =>
             {
                 opts.Map<BadRequestException>(ex =>
-                {
-                    return new Microsoft.AspNetCore.Mvc.ProblemDetails()
+                    new Microsoft.AspNetCore.Mvc.ProblemDetails
                     {
                         Title = "Bad Request",
                         Detail = ex.Message,
                         Status = 400,
-                        Type = "https://httpstatuses.com/400",
-                    };
-                });
+                        Type = "https://httpstatuses.com/400"
+                    });
+
+                opts.Map<ForbiddenException>(ex =>
+                    new Microsoft.AspNetCore.Mvc.ProblemDetails
+                    {
+                        Title = "Forbidden",
+                        Detail = ex.Message,
+                        Status = 403,
+                        Type = "https://httpstatuses.com/403"
+                    });
 
                 opts.Map<NotFoundException>(ex =>
-                {
-                    var problemDetails = new Microsoft.AspNetCore.Mvc.ProblemDetails()
+                    new Microsoft.AspNetCore.Mvc.ProblemDetails
                     {
                         Title = "Not Found",
                         Detail = ex.Message,
                         Status = 404,
                         Type = "https://httpstatuses.com/404"
-                    };
-
-                    problemDetails.Extensions.Add("ErrorNumber", 10);
-
-                    return problemDetails;
-                });
+                    });
 
                 opts.Map<ConflictException>(ex =>
-                {
-                    return new Microsoft.AspNetCore.Mvc.ProblemDetails()
+                    new Microsoft.AspNetCore.Mvc.ProblemDetails
                     {
                         Title = "Conflict",
                         Detail = ex.Message,
                         Status = 409,
                         Type = "https://httpstatuses.com/409"
-                    };
-                });
-
-                opts.Map<ProgrammingException>(ex =>
-                {
-                    return new Microsoft.AspNetCore.Mvc.ProblemDetails()
-                    {
-                        Title = "Programming Error",
-                        Detail = ex.Message,
-                        Status = 500,
-                        Type = "https://httpstatuses.com/500"
-                    };
-                });
+                    });
 
                 opts.IncludeExceptionDetails = (ctx, ex) =>
                 {

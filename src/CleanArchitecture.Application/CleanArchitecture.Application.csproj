@@ -22,9 +22,4 @@
     <ProjectReference Include="..\CleanArchitecture.Domain\CleanArchitecture.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UseCases\BudgetPlan\Commands\" />
-    <Folder Include="UseCases\Expenses\Commands\" />
-  </ItemGroup>
-
 </Project>

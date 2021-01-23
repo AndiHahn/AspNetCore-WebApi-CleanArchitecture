@@ -2,9 +2,9 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using CleanArchitecture.Core.Interfaces.Data.Repositories;
 using CleanArchitecture.Domain.BlobEntities;
 using CleanArchitecture.Domain.Exceptions;
-using CleanArchitecture.Domain.Interfaces;
 using CleanArchitecture.Infrastructure.Repositories;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
 using Microsoft.Extensions.Options;
@@ -25,17 +25,17 @@ namespace CleanArchitecture.IntegrationTests.Infrastructure
             var repository = await SetupRepositoryAsync();
             byte[] byteArray = Encoding.ASCII.GetBytes(uploadText);
             MemoryStream stream = new MemoryStream(byteArray);
-            var blobUpdateModel = new BlobUploadModel
+            var blobEntity = new BlobEntity
             {
                 Content = stream,
                 ContentType = "text/plain"
             };
 
-            await repository.UploadBlobAsync(containerName, blobUrl, blobUpdateModel);
+            await repository.UploadBlobAsync(containerName, blobUrl, blobEntity);
             var downloadedBlob = await repository.DownloadBlobAsync(containerName, blobUrl);
 
             Assert.NotNull(downloadedBlob);
-            Assert.Equal(blobUpdateModel.ContentType, downloadedBlob.ContentType);
+            Assert.Equal(blobEntity.ContentType, downloadedBlob.ContentType);
             StreamReader reader = new StreamReader(downloadedBlob.Content);
             string downloadedText = reader.ReadToEnd();
             Assert.Equal(uploadText, downloadedText);

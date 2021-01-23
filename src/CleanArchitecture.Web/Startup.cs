@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using CleanArchitecture.Web.Extensions;
+using CleanArchitecture.Web.Middleware;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -122,6 +123,7 @@ namespace CleanArchitecture.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseMiddleware<CurrentUserMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

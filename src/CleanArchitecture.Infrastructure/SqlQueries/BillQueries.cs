@@ -1,7 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.GenericQuery;
-using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Application.Services;
+using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Core.Interfaces.SqlQueries;
 using CleanArchitecture.Core.Models.Common;
 using CleanArchitecture.Core.Models.Domain.Bill;
@@ -13,6 +15,13 @@ namespace CleanArchitecture.Infrastructure.SqlQueries
     public class BillQueries : IBillQueries
     {
         private IBudgetContext context;
+
+        private readonly Guid currentUserId;
+
+        public BillQueries(ICurrentUserService currentUserService)
+        {
+            currentUserId = currentUserService.GetCurrentUserId();
+        }
 
         public void SetBudgetContext(IBudgetContext context)
         {
@@ -37,9 +46,11 @@ namespace CleanArchitecture.Infrastructure.SqlQueries
         public virtual async Task<PagedResult<BillEntity>> SearchAsync(
             BillSearchParameter searchParameter)
         {
-            var query = context.Bill
-                .OrderByDescending(b => b.Date)
-                .Where(b => searchParameter.AccountIds.Contains(b.AccountId));
+            var query = context.UserBill
+                .Include(ub => ub.Bill)
+                .Where(ub => ub.UserId == currentUserId ||
+                             ub.Bill.CreatedByUserId == currentUserId)
+                .Select(ub => ub.Bill);
 
             if (searchParameter.Search != null)
             {

@@ -1,25 +1,25 @@
 ﻿using System;
 using AutoMapper;
 using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Domain.Enums;
 
 namespace CleanArchitecture.Core.Models.Domain.Bill
 {
     public class BillModel
     {
         public Guid Id { get; set; }
-        public Guid AccountId { get; set; }
-        public Guid UserId { get; set; }
+        public Guid BankAccountId { get; set; }
+        public Guid CreatedByUserId { get; set; }
         public string ShopName { get; set; }
-        public Guid CategoryId { get; set; }
         public double Price { get; set; }
         public DateTime Date { get; set; }
         public string Notes { get; set; }
+        public Category Category { get; set; }
         public byte[] Version { get; set; }
 
         public static void ApplyMappingConfiguration(IMapperConfigurationExpression config)
         {
-            config.CreateMap<BillEntity, BillModel>()
-                .ForMember(m => m.CategoryId, opt => opt.MapFrom(b => b.BillCategoryId));
+            config.CreateMap<BillEntity, BillModel>();
         }
     }
 

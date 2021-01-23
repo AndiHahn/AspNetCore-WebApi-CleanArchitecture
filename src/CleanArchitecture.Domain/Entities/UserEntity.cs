@@ -11,7 +11,7 @@ namespace CleanArchitecture.Domain.Entities
         public string Password { get; set; }
         public string Salt { get; set; }
 
-        public virtual ICollection<BillEntity> Bills { get; set; }
-        public virtual ICollection<UserAccountEntity> UserAccounts { get; set; }
+        public virtual ICollection<UserBillEntity> UserBills { get; set; }
+        public virtual ICollection<UserBankAccountEntity> UserAccounts { get; set; }
     }
 }

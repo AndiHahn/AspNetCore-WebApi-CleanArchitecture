@@ -2,15 +2,16 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Application.Services;
 using CleanArchitecture.Application.Validations;
-using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Interfaces.CrudServices;
+using CleanArchitecture.Core.Interfaces.Data;
+using CleanArchitecture.Core.Interfaces.Data.Repositories;
 using CleanArchitecture.Core.Models.Common;
 using CleanArchitecture.Core.Models.Domain.Bill;
 using CleanArchitecture.Domain.BlobEntities;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Exceptions;
-using CleanArchitecture.Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,18 +19,23 @@ namespace CleanArchitecture.Application.CrudServices
 {
     public class BillService : IBillService
     {
-        private readonly IBudgetContext context;
         private readonly IMapper mapper;
+        private readonly IBudgetContext context;
         private readonly IBlobStorageRepository blobStorageRepository;
 
+        private readonly Guid currentUserId;
+
         public BillService(
-                    IBudgetContext context,
                     IMapper mapper,
+                    IBudgetContext context,
+                    ICurrentUserService currentUserService,
                     IBlobStorageRepository blobStorageRepository)
         {
-            this.context = context ?? throw new ArgumentNullException(nameof(context));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.context = context ?? throw new ArgumentNullException(nameof(context));
             this.blobStorageRepository = blobStorageRepository ?? throw new ArgumentNullException(nameof(blobStorageRepository));
+
+            currentUserId = currentUserService.GetCurrentUserId();
         }
 
         public async Task<PagedResult<BillModel>> QueryAsync(BillQueryParameter queryParameter)
@@ -38,7 +44,7 @@ namespace CleanArchitecture.Application.CrudServices
                 .QueryAsync(queryParameter);
 
             return new PagedResult<BillModel>(
-                pagedResult.Result.Select(mapper.Map<BillModel>),
+                pagedResult.Result.Where(b => b.CreatedByUserId == currentUserId).Select(mapper.Map<BillModel>),
                 pagedResult.TotalCount);
         }
 
@@ -48,63 +54,63 @@ namespace CleanArchitecture.Application.CrudServices
                 .SearchAsync(searchParameter);
 
             return new PagedResult<BillModel>(
-                pagedResult.Result.Select(mapper.Map<BillModel>),
+                pagedResult.Result.Where(b => b.CreatedByUserId == currentUserId).Select(mapper.Map<BillModel>),
                 pagedResult.TotalCount);
         }
 
         public async Task<BillModel> GetByIdAsync(Guid id)
         {
-            var entity = (await context.Bill.FindAsync(id)).AssertEntityFound(id);
+            var entity = await LoadBillAndEnsureAccessRightAsync(id);
             return mapper.Map<BillModel>(entity);
         }
 
-        public async Task<BillModel> AddBillAsync(BillCreateModel createModel)
+        public async Task<BillModel> CreateBillAsync(BillCreateModel createModel)
         {
             var billEntity = mapper.Map<BillEntity>(createModel);
-            context.Bill.Add(billEntity);
+            billEntity.CreatedByUserId = currentUserId;
+            var createdEntity = context.Bill.Add(billEntity).Entity;
             await context.SaveChangesAsync();
-            return await GetByIdAsync(billEntity.Id);
+            return mapper.Map<BillModel>(createdEntity);
         }
 
         public async Task DeleteBillAsync(Guid id)
         {
-            var billEntity = (await context.Bill.FindAsync(id)).AssertEntityFound(id);
+            var billEntity = await LoadBillAndEnsureAccessRightAsync(id);
+            if (billEntity.CreatedByUserId != currentUserId)
+            {
+                throw new ForbiddenException("Cannot delete bill from another user.");
+            }
+
             context.Bill.Remove(billEntity);
             await blobStorageRepository.RemoveBlobIfExistsAsync(
                         Constants.ImageStorage.CONTAINER_NAME, GetImagePath(id));
             await context.SaveChangesAsync();
         }
 
-        public async Task<BlobDownloadEntity> GetImageAsync(Guid id)
+        public async Task<BlobEntity> GetImageAsync(Guid id)
         {
-            await EnsureBillAvailableAsync(id);
+            await LoadBillAndEnsureAccessRightAsync(id);
             string imageUrl = GetImagePath(id);
-
-            try
-            {
-                return await blobStorageRepository.DownloadBlobAsync(
+            return await blobStorageRepository.DownloadBlobAsync(
                     Constants.ImageStorage.CONTAINER_NAME, imageUrl);
-            }
-            catch (NotFoundException)
-            {
-                return null;
-            }
         }
 
         public async Task AddImageToBillAsync(Guid id, IFormFile file)
         {
-            await EnsureBillAvailableAsync(id);
+            await LoadBillAndEnsureAccessRightAsync(id);
             string fileUrl = GetImagePath(id);
-            var uploadModel = new BlobUploadModel();
-            await file.CopyToAsync(uploadModel.Content);
-            uploadModel.ContentType = file.ContentType;
+
+            var entity = new BlobEntity();
+            await file.CopyToAsync(entity.Content);
+            entity.ContentType = file.ContentType;
+
             await blobStorageRepository.UploadBlobAsync(
-                        Constants.ImageStorage.CONTAINER_NAME, fileUrl, uploadModel);
+                        Constants.ImageStorage.CONTAINER_NAME, fileUrl, entity);
         }
 
         public async Task<BillModel> UpdateBillAsync(Guid id, BillUpdateModel updateModel)
         {
-            var billEntity = (await context.Bill.FindAsync(id)).AssertEntityFound(id);
+            var billEntity = await LoadBillAndEnsureAccessRightAsync(id);
             updateModel.MergeIntoEntity(billEntity);
             await context.SaveChangesAsync();
             return await GetByIdAsync(id);
@@ -112,7 +118,7 @@ namespace CleanArchitecture.Application.CrudServices
 
         public async Task DeleteImageAsync(Guid id)
         {
-            await EnsureBillAvailableAsync(id);
+            await LoadBillAndEnsureAccessRightAsync(id);
             await blobStorageRepository.RemoveBlobAsync(
                         Constants.ImageStorage.CONTAINER_NAME, GetImagePath(id));
         }
@@ -123,7 +129,7 @@ namespace CleanArchitecture.Application.CrudServices
             var lastBill = await context.Bill.OrderByDescending(b => b.Date).FirstOrDefaultAsync();
             if (firstBill == null || lastBill == null)
             {
-                throw new NotFoundException("No bill is available.");
+                return new TimeRangeModel();
             }
 
             return new TimeRangeModel(firstBill.Date, lastBill.Date);
@@ -136,9 +142,16 @@ namespace CleanArchitecture.Application.CrudServices
                    billId;
         }
 
-        private async Task EnsureBillAvailableAsync(Guid id)
+        private async Task<BillEntity> LoadBillAndEnsureAccessRightAsync(Guid billId)
         {
-            (await context.Bill.FindAsync(id)).AssertEntityFound(id);
+            var bill = (await context.Bill.FindAsync(billId)).AssertEntityFound(billId);
+
+            if (bill.CreatedByUserId != currentUserId)
+            {
+                throw new ForbiddenException($"Current user does not have access to bill {billId}");
+            }
+
+            return bill;
         }
     }
 }

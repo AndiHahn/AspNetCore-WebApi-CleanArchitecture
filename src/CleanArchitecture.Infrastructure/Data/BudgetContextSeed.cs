@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CleanArchitecture.Application;
-using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Core.Models.Common;
 using CleanArchitecture.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Infrastructure.Data
 {
-    public class BudgetContextSeed
+    public static class BudgetContextSeed
     {
         public static async Task SeedAsync(IBudgetContext context)
         {
-            await InsertBillCategoriesAsync(context);
             await InsertUserAsync(context);
             await InsertAccountAsync(context);
             await InsertUserAccountAsync(context);
@@ -36,15 +35,33 @@ namespace CleanArchitecture.Infrastructure.Data
                     Salt = password.Salt
                 });
 
+                var password2 = new HashedPassword();
+                password2.WithPlainPasswordAndSaltSize("password2", Constants.Authentication.SALT_SIZE);
+
+                context.User.Add(new UserEntity
+                {
+                    FirstName = "FirstName2",
+                    LastName = "LastName2",
+                    UserName = "username2",
+                    Password = password2.Hash,
+                    Salt = password2.Salt
+                });
+
                 await context.SaveChangesAsync();
             }
         }
 
         private static async Task InsertAccountAsync(IBudgetContext context)
         {
-            if (!await context.Account.AnyAsync())
+            if (!await context.BankAccount.AnyAsync())
             {
-                context.Account.Add(new AccountEntity("MyAccount"));
+                var user = await context.User.FirstOrDefaultAsync(u => u.UserName == "username");
+
+                context.BankAccount.Add(new BankAccountEntity
+                {
+                    Name = "account1",
+                    OwnerId = user.Id
+                });
 
                 await context.SaveChangesAsync();
             }
@@ -52,28 +69,15 @@ namespace CleanArchitecture.Infrastructure.Data
 
         private static async Task InsertUserAccountAsync(IBudgetContext context)
         {
-            if (!await context.UserAccount.AnyAsync())
+            if (!await context.UserBankAccount.AnyAsync())
             {
-                var user = await context.User.FirstOrDefaultAsync();
-                var account = await context.Account.FirstOrDefaultAsync();
+                var user = await context.User.FirstOrDefaultAsync(u => u.UserName == "username");
+                var account = await context.BankAccount.FirstOrDefaultAsync(a => a.Name == "account1");
 
                 if (user != null && account != null)
                 {
-                    context.UserAccount.Add(new UserAccountEntity(account.Id, user.Id));
+                    context.UserBankAccount.Add(new UserBankAccountEntity(account.Id, user.Id));
                 }
-
-                await context.SaveChangesAsync();
-            }
-        }
-
-        private static async Task InsertBillCategoriesAsync(IBudgetContext context)
-        {
-            if (!await context.BillCategory.AnyAsync())
-            {
-                context.BillCategory.Add(new BillCategoryEntity("Food"));
-                context.BillCategory.Add(new BillCategoryEntity("Restaurant"));
-                context.BillCategory.Add(new BillCategoryEntity("Flat"));
-                context.BillCategory.Add(new BillCategoryEntity("Clothes"));
 
                 await context.SaveChangesAsync();
             }
@@ -83,52 +87,51 @@ namespace CleanArchitecture.Infrastructure.Data
         {
             if (!await context.Bill.AnyAsync())
             {
-                var user = await context.User.FirstOrDefaultAsync();
-                var account = await context.Account.FirstOrDefaultAsync();
-                var categories = await context.BillCategory.ToListAsync();
+                var user = await context.User.FirstOrDefaultAsync(u => u.UserName == "username");
+                var account = await context.BankAccount.FirstOrDefaultAsync(a => a.Name == "account1");
 
-                context.Bill.Add(new BillEntity()
+                context.Bill.Add(new BillEntity
                 {
                     ShopName = "ShopName1",
                     Date = DateTime.UtcNow.AddDays(-7),
                     Notes = "Notes1",
                     Price = 4.44,
-                    UserId = user.Id,
-                    AccountId = account.Id,
-                    BillCategoryId = categories[0].Id
+                    CreatedByUserId = user.Id,
+                    BankAccountId = account.Id,
+                    Category = Domain.Enums.Category.Car
                 });
 
-                context.Bill.Add(new BillEntity()
+                context.Bill.Add(new BillEntity
                 {
                     ShopName = "ShopName2",
                     Date = DateTime.UtcNow.AddDays(-4),
                     Notes = "Notes2",
                     Price = 1.00,
-                    UserId = user.Id,
-                    AccountId = account.Id,
-                    BillCategoryId = categories[1].Id
+                    CreatedByUserId = user.Id,
+                    BankAccountId = account.Id,
+                    Category = Domain.Enums.Category.Travelling
                 });
 
-                context.Bill.Add(new BillEntity()
+                context.Bill.Add(new BillEntity
                 {
                     ShopName = "ShopName3",
                     Date = DateTime.UtcNow.AddDays(3),
                     Notes = "Notes3",
                     Price = 10.7,
-                    UserId = user.Id,
-                    AccountId = account.Id,
-                    BillCategoryId = categories[2].Id
+                    CreatedByUserId = user.Id,
+                    BankAccountId = account.Id,
+                    Category = Domain.Enums.Category.Sport
                 });
 
-                context.Bill.Add(new BillEntity()
+                context.Bill.Add(new BillEntity
                 {
                     ShopName = "ShopName4",
                     Date = DateTime.UtcNow.AddDays(7),
                     Notes = "Notes4",
                     Price = 8.4335,
-                    UserId = user.Id,
-                    AccountId = account.Id,
-                    BillCategoryId = categories[0].Id
+                    CreatedByUserId = user.Id,
+                    BankAccountId = account.Id,
+                    Category = Domain.Enums.Category.Gift
                 });
 
                 await context.SaveChangesAsync();

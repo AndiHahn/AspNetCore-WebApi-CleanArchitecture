@@ -9,8 +9,8 @@ using AutoMapper;
 using CleanArchitecture.Application.Configurations;
 using CleanArchitecture.Application.GenericQuery;
 using CleanArchitecture.Application.Validations;
-using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Interfaces.CrudServices;
+using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Core.Models.Common;
 using CleanArchitecture.Core.Models.Domain.User;
 using CleanArchitecture.Domain.Entities;
@@ -59,7 +59,7 @@ namespace CleanArchitecture.Application.CrudServices
         public async Task<IEnumerable<UserModel>> ListAsync(UserQueryParameter queryParameter)
         {
             return (await context.User.ApplyPaging(queryParameter).ToListAsync())
-                            .Select(u => mapper.Map<UserModel>(u));
+                            .Select(mapper.Map<UserModel>);
         }
 
         private string GenerateJwtToken(UserEntity user)
@@ -70,7 +70,7 @@ namespace CleanArchitecture.Application.CrudServices
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

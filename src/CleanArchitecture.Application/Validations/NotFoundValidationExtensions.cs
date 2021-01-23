@@ -31,6 +31,7 @@ namespace CleanArchitecture.Application.Validations
             {
                 throw new NotFoundException($"{TryRemoveEntityPostfix(typeof(TEntity).Name)} with id {id} not found.");
             }
+
             return entity;
         }
 
@@ -40,6 +41,7 @@ namespace CleanArchitecture.Application.Validations
             {
                 return entityName.Remove(entityName.Length - Constants.Common.ENTITY_POSTFIX.Length);
             }
+
             return entityName;
         }
     }

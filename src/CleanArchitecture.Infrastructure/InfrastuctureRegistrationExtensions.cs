@@ -1,6 +1,6 @@
-﻿using CleanArchitecture.Core.Interfaces.Services;
+﻿using CleanArchitecture.Core.Interfaces.Data.Repositories;
+using CleanArchitecture.Core.Interfaces.Services;
 using CleanArchitecture.Core.Interfaces.SqlQueries;
-using CleanArchitecture.Domain.Interfaces;
 using CleanArchitecture.Infrastructure.Repositories;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
 using CleanArchitecture.Infrastructure.Services.Email;
@@ -15,7 +15,7 @@ namespace CleanArchitecture.Infrastructure
         {
             services.AddScoped<IAzureStorageClientFactory, AzureStorageClientFactory>();
             services.AddScoped<IBlobStorageRepository, BlobStorageRepository>();
-            services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IEmailService, SendGridEmailService>();
 
             services.AddScoped<IBillQueries, BillQueries>();
         }

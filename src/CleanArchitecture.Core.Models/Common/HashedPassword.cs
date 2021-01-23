@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CleanArchitecture.Core.Models.Common
 {
-    public class HashedPassword : IEquatable<HashedPassword>
+    public sealed class HashedPassword : IEquatable<HashedPassword>
     {
         public string Salt { get; private set; }
         public string Hash { get; private set; }
@@ -34,7 +34,6 @@ namespace CleanArchitecture.Core.Models.Common
 
         private string CreateSalt(int saltSize)
         {
-            //Generate a cryptographic random number.
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
             byte[] buff = new byte[saltSize];
             rng.GetBytes(buff);

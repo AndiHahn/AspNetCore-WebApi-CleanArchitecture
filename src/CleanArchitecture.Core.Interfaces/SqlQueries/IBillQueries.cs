@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Core.Models.Common;
 using CleanArchitecture.Core.Models.Domain.Bill;
 using CleanArchitecture.Domain.Entities;

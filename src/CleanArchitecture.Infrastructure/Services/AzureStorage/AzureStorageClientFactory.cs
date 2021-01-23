@@ -41,12 +41,7 @@ namespace CleanArchitecture.Infrastructure.Services.AzureStorage
 
         public CloudTableClient GetTableClient()
         {
-            if (tableClient == null)
-            {
-                var storageAccount = CloudStorageAccount.Parse(storageConfiguration.ConnectionString);
-                tableClient = storageAccount.CreateCloudTableClient();
-            }
-
+            tableClient ??= CloudStorageAccount.Parse(storageConfiguration.ConnectionString).CreateCloudTableClient();
             return tableClient;
         }
 
@@ -78,11 +73,7 @@ namespace CleanArchitecture.Infrastructure.Services.AzureStorage
 
         private BlobContainerClient GetBlobContainerClient(string containerName)
         {
-            if (blobServiceClient == null)
-            {
-                blobServiceClient = new BlobServiceClient(storageConfiguration.ConnectionString);
-            }
-
+            blobServiceClient ??= new BlobServiceClient(storageConfiguration.ConnectionString);
             return blobServiceClient.GetBlobContainerClient(containerName.ToLower());
         }
     }

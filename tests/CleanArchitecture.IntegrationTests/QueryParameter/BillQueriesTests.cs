@@ -86,7 +86,7 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
         {
             var accountEntity = new AccountEntityBuilder().Build();
             var userEntity = new UserEntityBuilder().Build();
-            return new BillEntityBuilder().WithAccount(accountEntity).WithUser(userEntity).Build();
+            return new BillEntityBuilder().WithAccount(accountEntity).CreatedByUser(userEntity).Build();
         }
 
         private BillEntity CreateBillEntityWithDate(DateTime date)
@@ -94,7 +94,7 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
             var accountEntity = new AccountEntityBuilder().Build();
             var userEntity = new UserEntityBuilder().Build();
             return new BillEntityBuilder().WithDate(date)
-                        .WithAccount(accountEntity).WithUser(userEntity).Build();
+                        .WithAccount(accountEntity).CreatedByUser(userEntity).Build();
         }
 
         private IList<BillEntity> CreateBillEntitiesWithRandomDates()

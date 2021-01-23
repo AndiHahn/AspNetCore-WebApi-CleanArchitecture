@@ -7,19 +7,19 @@ namespace CleanArchitecture.Tests.Shared.Builder.Account
 {
     public class AccountEntityBuilder
     {
-        private readonly AccountEntity account;
+        private readonly BankAccountEntity bankAccount;
 
         public AccountEntityBuilder()
         {
-            account = new AccountEntity()
+            bankAccount = new BankAccountEntity()
             {
                 Name = "Name"
             };
         }
 
-        public AccountEntity Build()
+        public BankAccountEntity Build()
         {
-            return account;
+            return bankAccount;
         }
     }
 }

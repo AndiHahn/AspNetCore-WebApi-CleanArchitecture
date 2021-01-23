@@ -49,9 +49,9 @@ namespace CleanArchitecture.Web.Api
         [HttpPost]
         [ProducesResponseType(typeof(BillModel), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> AddBill([FromBody] BillCreateModel createModel)
+        public async Task<IActionResult> CreateBill([FromBody] BillCreateModel createModel)
         {
-            var createdBill = await billService.AddBillAsync(createModel);
+            var createdBill = await billService.CreateBillAsync(createModel);
             return Created($"{HttpContext.Request.Path}/{createdBill.Id}", createdBill);
         }
 
@@ -76,13 +76,11 @@ namespace CleanArchitecture.Web.Api
 
         [HttpGet("{id}/image")]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetImage(Guid id)
         {
             var image = await billService.GetImageAsync(id);
-            if (image == null) { return NoContent(); }
             return File(image.Content, image.ContentType);
         }
 
