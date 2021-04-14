@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using CleanArchitecture.Web.Extensions;
-using CleanArchitecture.Web.Middleware;
+using CleanArchitecture.Web.Api.Extensions;
+using CleanArchitecture.Web.Api.Middleware;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
-namespace CleanArchitecture.Web
+namespace CleanArchitecture.Web.Api
 {
     public class Startup
     {

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace CleanArchitecture.Web.Api
+namespace CleanArchitecture.Web.Api.Api
 {
     [Authorize]
     [Route("api/[controller]")]

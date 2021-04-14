@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using CleanArchitecture.Application.Services;
 using Microsoft.AspNetCore.Http;
 
-namespace CleanArchitecture.Web.Middleware
+namespace CleanArchitecture.Web.Api.Middleware
 {
     public class CurrentUserMiddleware
     {

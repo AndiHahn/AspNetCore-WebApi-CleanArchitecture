@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CleanArchitecture.Core.Interfaces\CleanArchitecture.Core.Interfaces.csproj" />
-    <ProjectReference Include="..\CleanArchitecture.Domain\CleanArchitecture.Domain.csproj" />
   </ItemGroup>
 
 </Project>

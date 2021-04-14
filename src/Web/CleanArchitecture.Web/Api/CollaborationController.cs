@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CleanArchitecture.Web.Api
+namespace CleanArchitecture.Web.Api.Api
 {
     [Authorize]
     [Route("api/[controller]")]

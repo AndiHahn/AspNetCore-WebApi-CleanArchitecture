@@ -10,6 +10,7 @@ using CleanArchitecture.Core.Models.Common;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Infrastructure.Data;
 using CleanArchitecture.Web;
+using CleanArchitecture.Web.Api;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;

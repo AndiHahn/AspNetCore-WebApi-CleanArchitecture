@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CleanArchitecture.Web.Extensions
+namespace CleanArchitecture.Web.Api.Extensions
 {
     public static class ApplicationServiceExtensions
     {

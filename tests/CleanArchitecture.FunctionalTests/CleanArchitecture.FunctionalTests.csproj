@@ -20,8 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\CleanArchitecture.Core.Interfaces\CleanArchitecture.Core.Interfaces.csproj" />
-    <ProjectReference Include="..\..\src\CleanArchitecture.Web\CleanArchitecture.Web.csproj" />
+    <ProjectReference Include="..\..\src\Web\CleanArchitecture.Web\CleanArchitecture.Web.Api.csproj" />
     <ProjectReference Include="..\CleanArchitecture.Tests.Shared\CleanArchitecture.Tests.Shared.csproj" />
   </ItemGroup>
 
