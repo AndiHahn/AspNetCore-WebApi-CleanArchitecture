@@ -7,13 +7,13 @@ See detailed Information regarding clean architecture concept in the Wiki:
 
 ## Technology Stack  
 - ASP.NET Core (3.1)  
-- Entity Framework Core (3.1.1)  
+- Entity Framework Core (3.1.8)  
 - Swagger (Swashbuckle.AspNetCore 5.5.1)  
 - Azure Blob Storage  
 
 ## Project Setup
-- Start "CleanArchitecture.Web" Project (localDB cleanarchitecturedb with seed data will be created automatically)  
-- Api can be used by swagger documentation on "https://localhost:5001/swagger/index.html"  
+- Start "CleanArchitecture.Web" Project (localDB CleanArchitectureDb and CleanArchitectureIdentityDb with seed data will be created automatically)  
+- Api can be used via swagger documentation on "https://localhost:5001/swagger/index.html"  
 
 ### Authentication  
 Jwt Authentication is used.  
