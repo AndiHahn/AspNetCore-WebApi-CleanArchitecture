@@ -9,12 +9,12 @@ namespace CleanArchitecture.Infrastructure.Database
 {
     public static class DatabaseSeed
     {
-        private static readonly IdentityUser TestUser1 = new IdentityUser("username")
+        private static readonly IdentityUser TestUser1 = new IdentityUser("user@email.at")
         {
             Email = "user@email.at"
         };
 
-        private static readonly IdentityUser TestUser2 = new IdentityUser("username2")
+        private static readonly IdentityUser TestUser2 = new IdentityUser("user2@email.at")
         {
             Email = "user2@email.at"
         };
@@ -34,9 +34,15 @@ namespace CleanArchitecture.Infrastructure.Database
             IBudgetContext context,
             UserManager<IdentityUser> userManager)
         {
-            if (!await userManager.Users.AnyAsync())
+            var user1 = await userManager.FindByNameAsync("user@email.at");
+            if (user1 == null)
             {
                 await userManager.CreateAsync(TestUser1, "password");
+            }
+
+            var user2 = await userManager.FindByNameAsync("user2@email.at");
+            if (user2 == null)
+            {
                 await userManager.CreateAsync(TestUser2, "password2");
             }
 

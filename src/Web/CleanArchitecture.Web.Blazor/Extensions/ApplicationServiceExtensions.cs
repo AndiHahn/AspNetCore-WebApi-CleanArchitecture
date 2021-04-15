@@ -40,7 +40,12 @@ namespace CleanArchitecture.Web.Blazor.Extensions
             IConfiguration configuration)
         {
             services
-                .AddIdentity<IdentityUser, IdentityRole>()
+                .AddIdentity<IdentityUser, IdentityRole>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                })
                 .AddDefaultUI()
                 .AddEntityFrameworkStores<IdentityContext>()
                 .AddDefaultTokenProviders();

@@ -15,12 +15,11 @@ namespace CleanArchitecture.Infrastructure.SqlQueries
     public class BillQueries : IBillQueries
     {
         private IBudgetContext context;
-
-        private readonly Guid currentUserId;
+        private readonly ICurrentUserService currentUserService;
 
         public BillQueries(ICurrentUserService currentUserService)
         {
-            currentUserId = currentUserService.GetCurrentUserId();
+            this.currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
         }
 
         public void SetBudgetContext(IBudgetContext context)
@@ -31,10 +30,13 @@ namespace CleanArchitecture.Infrastructure.SqlQueries
         public virtual async Task<PagedResult<BillEntity>> QueryAsync(
             BillQueryParameter queryParameter)
         {
+            Guid currentUserId = currentUserService.GetCurrentUserId();
+
             var query = context.Bill
                 .OrderByDescending(b => b.Date)
                 .ApplyFilter(queryParameter.Filter)
-                .ApplyOrderBy(queryParameter.Sorting);
+                .ApplyOrderBy(queryParameter.Sorting)
+                .Where(b => b.CreatedByUserId == currentUserId);
 
             int totalCount = query.Count();
 
@@ -46,6 +48,8 @@ namespace CleanArchitecture.Infrastructure.SqlQueries
         public virtual async Task<PagedResult<BillEntity>> SearchAsync(
             BillSearchParameter searchParameter)
         {
+            Guid currentUserId = currentUserService.GetCurrentUserId();
+
             var query = context.UserBill
                 .Include(ub => ub.Bill)
                 .Where(ub => ub.UserId == currentUserId ||

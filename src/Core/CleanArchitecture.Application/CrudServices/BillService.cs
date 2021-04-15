@@ -44,7 +44,7 @@ namespace CleanArchitecture.Application.CrudServices
                 .QueryAsync(queryParameter);
 
             return new PagedResult<BillModel>(
-                pagedResult.Result.Where(b => b.CreatedByUserId == currentUserId).Select(mapper.Map<BillModel>),
+                pagedResult.Result.Select(mapper.Map<BillModel>),
                 pagedResult.TotalCount);
         }
 
@@ -54,7 +54,7 @@ namespace CleanArchitecture.Application.CrudServices
                 .SearchAsync(searchParameter);
 
             return new PagedResult<BillModel>(
-                pagedResult.Result.Where(b => b.CreatedByUserId == currentUserId).Select(mapper.Map<BillModel>),
+                pagedResult.Result.Select(mapper.Map<BillModel>),
                 pagedResult.TotalCount);
         }
 

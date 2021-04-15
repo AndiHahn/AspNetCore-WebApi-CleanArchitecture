@@ -17,5 +17,5 @@ See detailed Information regarding clean architecture concept in the Wiki:
 
 ### Authentication  
 Jwt Authentication is used.  
-Token is provided on endpoint /api/User/authenticate with Username: username, Password: password.  
+Token is provided on endpoint /api/User/authenticate with Username: 'user@email.at', Password: 'password'.  
 Token can be set globally in swagger "Bearer << token >>"

@@ -1,11 +1,12 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore;
+using CleanArchitecture.Core.Interfaces.Data;
+using CleanArchitecture.Infrastructure.Database;
+using CleanArchitecture.Infrastructure.Database.Identity;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -13,9 +14,39 @@ namespace CleanArchitecture.Web.Blazor
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var host = CreateHostBuilder(args).Build();
+
+            using (var scope = host.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var loggerFactory = services.GetRequiredService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger<Program>();
+
+                try
+                {
+                    logger.LogInformation("Start database migration...");
+
+                    var budgetContext = services.GetRequiredService<IBudgetContext>();
+                    await budgetContext.MigrateAsync();
+                    var identityContext = services.GetRequiredService<IdentityContext>();
+                    await identityContext.Database.MigrateAsync();
+
+                    logger.LogInformation("Finished database migration.");
+
+                    logger.LogInformation("Start seed database...");
+                    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+                    await DatabaseSeed.SeedAsync(budgetContext, userManager);
+                    logger.LogInformation("Finished seeding database.");
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex, "An error occurred seeding the DB.");
+                }
+            }
+
+            host.Run();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
