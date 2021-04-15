@@ -72,7 +72,7 @@ namespace CleanArchitecture.FunctionalTests.Fixture
                 //Add test user for authentication
 
                 var userManager = scopedServices.GetRequiredService<UserManager<IdentityUser>>();
-                IdentityUser testUser = new IdentityUser("username")
+                IdentityUser testUser = new IdentityUser("user@email.at")
                 {
                     Email = "user@email.at"
                 };
@@ -102,7 +102,7 @@ namespace CleanArchitecture.FunctionalTests.Fixture
 
             var signInModel = new SignInModel
             {
-                Username = "username",
+                Username = "user@email.at",
                 Password = "password"
             };
 
