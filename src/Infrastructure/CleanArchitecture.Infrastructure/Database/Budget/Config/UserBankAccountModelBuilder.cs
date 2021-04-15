@@ -1,7 +1,7 @@
 ﻿using CleanArchitecture.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitecture.Infrastructure.Data.Config
+namespace CleanArchitecture.Infrastructure.Database.Budget.Config
 {
     public static class UserBankAccountModelBuilder
     {

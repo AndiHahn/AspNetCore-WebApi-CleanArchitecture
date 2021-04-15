@@ -53,11 +53,11 @@ namespace CleanArchitecture.Web.Api
                     options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 });
 
-            services.ConfigureProblemDetails(Configuration);
-
-            services.ConfigureJwtAuthentication(Configuration);
+            services.AddProblemDetails(Configuration);
 
             services.AddApplicationServices(Configuration);
+
+            services.AddAuthenticationServices(Configuration);
 
             // Add Swagger including configuration to support authenticated calls
             // using a Bearer token.

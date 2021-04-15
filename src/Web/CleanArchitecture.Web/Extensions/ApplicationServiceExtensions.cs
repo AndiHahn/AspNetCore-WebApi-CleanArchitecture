@@ -1,15 +1,14 @@
 ﻿using System.Text;
 using CleanArchitecture.Application;
 using CleanArchitecture.Application.Configurations;
-using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Domain.Exceptions;
 using CleanArchitecture.Infrastructure;
-using CleanArchitecture.Infrastructure.Data;
+using CleanArchitecture.Infrastructure.Database.Identity;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
 using CleanArchitecture.Infrastructure.Services.Email;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,12 +18,11 @@ namespace CleanArchitecture.Web.Api.Extensions
 {
     public static class ApplicationServiceExtensions
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddApplicationServices(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
-            string connectionString = configuration.GetConnectionString("ApplicationDbConnection");
-            services.AddDbContext<IBudgetContext, BudgetContext>(options => options.UseSqlServer(connectionString));
-
-            services.RegisterInfrastructure();
+            services.RegisterInfrastructure(configuration);
             services.RegisterCore();
 
             services.ConfigureAppSettings(configuration);
@@ -32,37 +30,46 @@ namespace CleanArchitecture.Web.Api.Extensions
             return services;
         }
 
-        public static void ConfigureAppSettings(this IServiceCollection services, IConfiguration configuration)
+        private static void ConfigureAppSettings(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<AuthenticationConfiguration>(configuration.GetSection("Authentication"));
             services.Configure<AzureStorageConfiguration>(configuration.GetSection("AzureStorage"));
             services.Configure<SendGridConfiguration>(configuration.GetSection("SendGrid"));
         }
 
-        public static IServiceCollection ConfigureJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
+        public static void AddAuthenticationServices(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
-            var authConfig = configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
-
-            var key = Encoding.ASCII.GetBytes(authConfig.Secret);
-            services.AddAuthentication(x =>
-            {
-                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(x =>
-            {
-                x.RequireHttpsMetadata = false;
-                x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters
+            services
+                .AddIdentity<IdentityUser, IdentityRole>(options =>
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
-                };
-            });
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                })
+                .AddEntityFrameworkStores<IdentityContext>();
 
-            return services;
+            var authConfig = configuration.GetSection("Authentication").Get<AuthenticationConfiguration>();
+            byte[] key = Encoding.ASCII.GetBytes(authConfig.Secret);
+            services.AddAuthentication(x =>
+                {
+                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.Audience = "cleanarchitecture-api";
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        ValidateIssuer = false,
+                        ValidateAudience = true
+                    };
+                });
         }
 
         /// <summary>
@@ -71,7 +78,9 @@ namespace CleanArchitecture.Web.Api.Extensions
         /// <param name="services"></param>
         /// <param name="configuration"></param>
         /// <returns></returns>
-        public static IServiceCollection ConfigureProblemDetails(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddProblemDetails(
+            this IServiceCollection services,
+            IConfiguration configuration)
         {
             services.AddProblemDetails(opts =>
             {

@@ -11,12 +11,7 @@ namespace CleanArchitecture.Tests.Shared.Builder.User
         {
             user = new UserEntity()
             {
-                Id = userId != default ? userId : Guid.NewGuid(),
-                FirstName = "FirstName",
-                LastName = "LastName",
-                UserName = "UserName",
-                Password = "Password",
-                Salt = "Salt"
+                Id = userId != default ? userId : Guid.NewGuid()
             };
         }
 

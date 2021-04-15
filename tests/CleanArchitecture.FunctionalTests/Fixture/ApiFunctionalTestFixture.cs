@@ -1,21 +1,20 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Claims;
 using System.Text;
-using CleanArchitecture.Application;
-using CleanArchitecture.Core.Models.Common;
+using System.Threading.Tasks;
+using CleanArchitecture.Core.Models.Domain.User;
 using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Infrastructure.Data;
-using CleanArchitecture.Web;
+using CleanArchitecture.Infrastructure.Database.Budget;
+using CleanArchitecture.Infrastructure.Database.Identity;
 using CleanArchitecture.Web.Api;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 
 namespace CleanArchitecture.FunctionalTests.Fixture
 {
@@ -36,6 +35,14 @@ namespace CleanArchitecture.FunctionalTests.Fixture
                     services.Remove(budgetContextDescriptor);
                 }
 
+                var budgetIdentityContextDescriptor = services.SingleOrDefault(
+                    d => d.ServiceType == typeof(DbContextOptions<IdentityContext>));
+
+                if (budgetIdentityContextDescriptor != null)
+                {
+                    services.Remove(budgetIdentityContextDescriptor);
+                }
+
                 //Create a new service provider.
                 var provider = services
                     .AddEntityFrameworkInMemoryDatabase()
@@ -49,32 +56,65 @@ namespace CleanArchitecture.FunctionalTests.Fixture
                     options.UseInternalServiceProvider(provider);
                 });
 
+                services.AddDbContext<IdentityContext>(options =>
+                {
+                    options.UseInMemoryDatabase("InMemoryDbForTesting");
+                    options.UseInternalServiceProvider(provider);
+                });
+
                 //Build the service provider.
                 serviceProvider = services.BuildServiceProvider();
 
                 //Create a scope to obtain a reference to the database context
-                using (var scope = serviceProvider.CreateScope())
+                using var scope = serviceProvider.CreateScope();
+                var scopedServices = scope.ServiceProvider;
+
+                //Add test user for authentication
+
+                var userManager = scopedServices.GetRequiredService<UserManager<IdentityUser>>();
+                IdentityUser testUser = new IdentityUser("username")
                 {
-                    var scopedServices = scope.ServiceProvider;
-                    var context = scopedServices.GetRequiredService<BudgetContext>();
+                    Email = "user@email.at"
+                };
 
-                    //Add test user for authentication
-                    var testUser = CreateTestUserEntity();
-                    UserId = testUser.Id;
-                    context.User.Add(testUser);
-                    context.SaveChanges();
+                Task.Run(async () => await userManager.CreateAsync(testUser, "password")).Wait();
 
-                    //Ensure the database is created.
-                    context.Database.EnsureCreated();
-                }
+                var context = scopedServices.GetRequiredService<BudgetContext>();
+                UserId = new Guid(testUser.Id);
+
+                context.User.Add(new UserEntity
+                {
+                    Id = new Guid(testUser.Id)
+                });
+
+                context.SaveChanges();
+
+                //Ensure the database is created.
+                context.Database.EnsureCreated();
             });
         }
 
-        public HttpClient CreateAuthorizedClient()
+        public async Task<HttpClient> CreateAuthorizedClientAsync()
         {
             var client = base.CreateClient();
-            string token = CreateToken();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, "/api/user/authenticate");
+
+            var signInModel = new SignInModel
+            {
+                Username = "username",
+                Password = "password"
+            };
+
+            string json = JsonConvert.SerializeObject(signInModel);
+            request.Content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.SendAsync(request);
+
+            var authResponse = JsonConvert.DeserializeObject<AuthenticatedUserModel>(
+                await response.Content.ReadAsStringAsync());
+
+            client.DefaultRequestHeaders.Authorization =
+                new AuthenticationHeaderValue("Bearer", authResponse.Token);
             return client;
         }
 
@@ -98,40 +138,6 @@ namespace CleanArchitecture.FunctionalTests.Fixture
             context.UserBankAccount.RemoveRange(context.UserBankAccount);
             context.BankAccount.RemoveRange(context.BankAccount);
             context.User.RemoveRange(context.User);
-        }
-
-        private UserEntity CreateTestUserEntity()
-        {
-            var password = new HashedPassword();
-            password.WithPlainPasswordAndSaltSize("password", Constants.Authentication.SALT_SIZE);
-
-            return new UserEntity
-            {
-                Id = Guid.NewGuid(),
-                FirstName = "Test",
-                LastName = "User",
-                UserName = "Testuser",
-                Password = password.Hash,
-                Salt = password.Salt
-            };
-        }
-
-        private string CreateToken()
-        {
-            string jwtSecret = "12345678901234567890123456789012";
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(jwtSecret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, UserId.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddMinutes(30),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
         }
     }
 }

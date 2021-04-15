@@ -9,18 +9,18 @@ namespace CleanArchitecture.IntegrationTests.Setup.Database
 {
     public static class BudgetContext
     {
-        public static CleanArchitecture.Infrastructure.Data.BudgetContext CreateInMemoryDataContext(Action<CleanArchitecture.Infrastructure.Data.BudgetContext> setupCallback = null)
+        public static CleanArchitecture.Infrastructure.Database.Budget.BudgetContext CreateInMemoryDataContext(Action<CleanArchitecture.Infrastructure.Database.Budget.BudgetContext> setupCallback = null)
         {
             // In-memory database only exists while the connection is open
             var connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
 
-            var options = new DbContextOptionsBuilder<CleanArchitecture.Infrastructure.Data.BudgetContext>()
+            var options = new DbContextOptionsBuilder<CleanArchitecture.Infrastructure.Database.Budget.BudgetContext>()
                 .UseSqlite(connection)
                 .Options;
 
             // Create the schema in the database
-            var context = new CleanArchitecture.Infrastructure.Data.BudgetContext(
+            var context = new CleanArchitecture.Infrastructure.Database.Budget.BudgetContext(
                 options,
                 new BillQueries(Substitute.For<ICurrentUserService>()));
 

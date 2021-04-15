@@ -1,8 +1,11 @@
 using System;
 using System.Threading.Tasks;
 using CleanArchitecture.Core.Interfaces.Data;
-using CleanArchitecture.Infrastructure.Data;
+using CleanArchitecture.Infrastructure.Database;
+using CleanArchitecture.Infrastructure.Database.Identity;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -11,7 +14,7 @@ namespace CleanArchitecture.Web.Api
 {
     public class Program
     {
-        public async static Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
 
@@ -24,12 +27,17 @@ namespace CleanArchitecture.Web.Api
                 try
                 {
                     logger.LogInformation("Start database migration...");
-                    var context = services.GetRequiredService<IBudgetContext>();
-                    await context.MigrateAsync();
+
+                    var budgetContext = services.GetRequiredService<IBudgetContext>();
+                    await budgetContext.MigrateAsync();
+                    var identityContext = services.GetRequiredService<IdentityContext>();
+                    await identityContext.Database.MigrateAsync();
+
                     logger.LogInformation("Finished database migration.");
 
                     logger.LogInformation("Start seed database...");
-                    await BudgetContextSeed.SeedAsync(context);
+                    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+                    await DatabaseSeed.SeedAsync(budgetContext, userManager);
                     logger.LogInformation("Finished seeding database.");
                 }
                 catch (Exception ex)

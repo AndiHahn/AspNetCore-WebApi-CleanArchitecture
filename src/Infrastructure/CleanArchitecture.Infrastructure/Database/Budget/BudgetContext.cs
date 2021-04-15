@@ -6,10 +6,10 @@ using CleanArchitecture.Core.Interfaces.SqlQueries;
 using CleanArchitecture.Domain.Base;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Exceptions;
-using CleanArchitecture.Infrastructure.Data.Config;
+using CleanArchitecture.Infrastructure.Database.Budget.Config;
 using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitecture.Infrastructure.Data
+namespace CleanArchitecture.Infrastructure.Database.Budget
 {
     public class BudgetContext : DbContext, IBudgetContext
     {

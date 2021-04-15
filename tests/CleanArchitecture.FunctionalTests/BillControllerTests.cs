@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using CleanArchitecture.Core.Models.Common;
 using CleanArchitecture.Core.Models.Domain.Bill;
@@ -18,28 +17,33 @@ namespace CleanArchitecture.FunctionalTests
     public class BillControllerTests : IClassFixture<ApiFunctionalTestFixture>
     {
         private readonly ApiFunctionalTestFixture apiFunctionalTestFixture;
-        private readonly HttpClient authorizedClient;
 
         public BillControllerTests(ApiFunctionalTestFixture apiFunctionalTestFixture)
         {
             this.apiFunctionalTestFixture = apiFunctionalTestFixture;
-            authorizedClient = apiFunctionalTestFixture.CreateAuthorizedClient();
         }
 
         [Fact]
         public async Task GetBills_ShouldReturnBills_Correctly()
         {
+            // Arrange
+            var client = await apiFunctionalTestFixture.CreateAuthorizedClientAsync();
+
             var userEntity = new UserEntityBuilder(apiFunctionalTestFixture.UserId).Build();
             var accountEntity = new AccountEntityBuilder().Build();
-            var billEntity = new BillEntityBuilder().WithAccount(accountEntity).CreatedByUser(userEntity).Build();
+            var billEntity = new BillEntityBuilder()
+                .WithAccount(accountEntity)
+                .CreatedByUser(userEntity).Build();
             apiFunctionalTestFixture.SetupDatabase(db =>
             {
                 db.Bill.Add(billEntity);
             });
 
-            var response = await authorizedClient.GetAsync("/api/bill");
+            // Act
+            var response = await client.GetAsync("/api/bill");
             var result = await response.ResolveAsync<PagedResult<BillModel>>();
 
+            // Assert
             response.EnsureSuccessStatusCode();
             Assert.NotNull(result);
             Assert.Single(result.Result);
@@ -50,11 +54,16 @@ namespace CleanArchitecture.FunctionalTests
         [Fact]
         public async Task GetBills_ShouldReturnEmptyResult_IfNoDataAvailableInDatabase()
         {
+            // Arrange
+            var client = await apiFunctionalTestFixture.CreateAuthorizedClientAsync();
+
             apiFunctionalTestFixture.SetupDatabase();
 
-            var response = await authorizedClient.GetAsync("/api/bill");
+            // Act
+            var response = await client.GetAsync("/api/bill");
             var result = await response.ResolveAsync<PagedResult<BillModel>>();
 
+            // Assert
             response.EnsureSuccessStatusCode();
             Assert.NotNull(result);
             Assert.Empty(result.Result);
@@ -64,25 +73,36 @@ namespace CleanArchitecture.FunctionalTests
         [Fact]
         public async Task GetBills_ShouldReturnUnauthorized_IfRequestDoesNotContainBearerToken()
         {
+            // Arrange
             var client = apiFunctionalTestFixture.CreateClient();
+
+            // Act
             var response = await client.GetAsync("/api/bill");
+
+            // Assert
             Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
         }
 
         [Fact]
         public async Task GetBill_ShouldReturnBill_Correctly()
         {
+            // Arrange
+            var client = await apiFunctionalTestFixture.CreateAuthorizedClientAsync();
+
             var userEntity = new UserEntityBuilder(apiFunctionalTestFixture.UserId).Build();
             var accountEntity = new AccountEntityBuilder().Build();
-            var billEntity = new BillEntityBuilder().WithAccount(accountEntity).CreatedByUser(userEntity).Build();
+            var billEntity = new BillEntityBuilder()
+                .WithAccount(accountEntity).CreatedByUser(userEntity).Build();
             apiFunctionalTestFixture.SetupDatabase(db =>
             {
                 db.Bill.Add(billEntity);
             });
 
-            var response = await authorizedClient.GetAsync($"/api/bill/{billEntity.Id}");
+            // Act
+            var response = await client.GetAsync($"/api/bill/{billEntity.Id}");
             var result = await response.ResolveAsync<BillModel>();
 
+            // Assert
             response.EnsureSuccessStatusCode();
             Assert.NotNull(result);
             AssertBillEntityEqualModel(billEntity, result);
@@ -91,10 +111,15 @@ namespace CleanArchitecture.FunctionalTests
         [Fact]
         public async Task GetBill_ShouldReturnNotFound_IfIdIsNotAvailable()
         {
+            // Arrange
+            var client = await apiFunctionalTestFixture.CreateAuthorizedClientAsync();
             apiFunctionalTestFixture.SetupDatabase();
-            var response = await authorizedClient.GetAsync($"/api/bill/{Guid.NewGuid()}");
+
+            // Act
+            var response = await client.GetAsync($"/api/bill/{Guid.NewGuid()}");
             var result = await response.ResolveAsync<ProblemDetails>();
 
+            // Assert
             Assert.Equal(System.Net.HttpStatusCode.NotFound, response.StatusCode);
             Assert.Equal(404, result.Status);
         }

@@ -6,7 +6,6 @@ namespace CleanArchitecture.Core.Interfaces.CrudServices
 {
     public interface IUserService
     {
-        Task<AuthenticatedUserModel> AuthenticateAsync(SignInModel model);
         Task<IEnumerable<UserModel>> ListAsync(UserQueryParameter queryParameter);
     }
 }
