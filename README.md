@@ -6,8 +6,8 @@ See detailed Information regarding clean architecture concept in the Wiki:
 [Wiki Clean Architecture](https://github.com/AndiHahn/AspNetCore-WebApi-CleanArchitecture/wiki)  
 
 ## Technology Stack  
-- ASP.NET Core (3.1)  
-- Entity Framework Core (3.1.8)  
+- ASP.NET Core (5.0)  
+- Entity Framework Core (5.0.2)  
 - Swagger (Swashbuckle.AspNetCore 5.5.1)  
 - Azure Blob Storage  
 
