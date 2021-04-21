@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.GenericQuery;
-using CleanArchitecture.Application.Services;
 using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Core.Interfaces.SqlQueries;
 using CleanArchitecture.Core.Models.Common;
@@ -15,12 +14,6 @@ namespace CleanArchitecture.Infrastructure.SqlQueries
     public class BillQueries : IBillQueries
     {
         private IBudgetContext context;
-        private readonly ICurrentUserService currentUserService;
-
-        public BillQueries(ICurrentUserService currentUserService)
-        {
-            this.currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
-        }
 
         public void SetBudgetContext(IBudgetContext context)
         {
@@ -28,10 +21,9 @@ namespace CleanArchitecture.Infrastructure.SqlQueries
         }
 
         public virtual async Task<PagedResult<BillEntity>> QueryAsync(
-            BillQueryParameter queryParameter)
+            BillQueryParameter queryParameter,
+            Guid currentUserId)
         {
-            Guid currentUserId = currentUserService.GetCurrentUserId();
-
             var query = context.Bill
                 .OrderByDescending(b => b.Date)
                 .ApplyFilter(queryParameter.Filter)
@@ -46,10 +38,9 @@ namespace CleanArchitecture.Infrastructure.SqlQueries
         }
 
         public virtual async Task<PagedResult<BillEntity>> SearchAsync(
-            BillSearchParameter searchParameter)
+            BillSearchParameter searchParameter,
+            Guid currentUserId)
         {
-            Guid currentUserId = currentUserService.GetCurrentUserId();
-
             var query = context.UserBill
                 .Include(ub => ub.Bill)
                 .Where(ub => ub.UserId == currentUserId ||

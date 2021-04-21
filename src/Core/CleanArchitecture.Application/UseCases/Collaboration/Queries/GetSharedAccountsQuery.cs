@@ -4,7 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using CleanArchitecture.Application.Services;
 using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Core.Models.Domain.BankAccount;
 using MediatR;
@@ -14,27 +13,30 @@ namespace CleanArchitecture.Application.UseCases.Collaboration.Queries
 {
     public class GetSharedAccountsQuery : IRequest<IEnumerable<BankAccountModel>>
     {
+        public Guid CurrentUserId { get; }
+
+        public GetSharedAccountsQuery(Guid currentUserId)
+        {
+            CurrentUserId = currentUserId;
+        }
     }
 
     public class GetSharedAccountsQueryHandler : IRequestHandler<GetSharedAccountsQuery, IEnumerable<BankAccountModel>>
     {
         private readonly IMapper mapper;
         private readonly IBudgetContext context;
-        private readonly ICurrentUserService currentUserService;
 
         public GetSharedAccountsQueryHandler(
             IMapper mapper,
-            IBudgetContext context,
-            ICurrentUserService currentUserService)
+            IBudgetContext context)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.context = context ?? throw new ArgumentNullException(nameof(context));
-            this.currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
         }
 
         public async Task<IEnumerable<BankAccountModel>> Handle(GetSharedAccountsQuery request, CancellationToken cancellationToken)
         {
-            Guid currentUserId = currentUserService.GetCurrentUserId();
+            Guid currentUserId = request.CurrentUserId;
 
             return await context.UserBankAccount
                 .Include(uba => uba.BankAccount)

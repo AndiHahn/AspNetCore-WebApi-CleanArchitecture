@@ -1,7 +1,5 @@
 ﻿using System.Reflection;
-using AutoMapper;
 using CleanArchitecture.Application.CrudServices;
-using CleanArchitecture.Application.Services;
 using CleanArchitecture.Core.Interfaces.CrudServices;
 using CleanArchitecture.Core.Models.Domain.BankAccount;
 using CleanArchitecture.Core.Models.Domain.Bill;
@@ -22,8 +20,6 @@ namespace CleanArchitecture.Application
 
         private static void RegisterServices(this IServiceCollection services)
         {
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
-
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IBillService, BillService>();
             services.AddScoped<IBankAccountService, BankAccountService>();

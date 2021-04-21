@@ -7,8 +7,8 @@ namespace CleanArchitecture.Core.Interfaces.CrudServices
 {
     public interface IBankAccountService
     {
-        Task<IEnumerable<BankAccountModel>> GetAllAsync();
-        Task<BankAccountModel> GetByIdAsync(Guid id);
-        Task<BankAccountModel> CreateAccountAsync(BankAccountCreateModel createModel);
+        Task<IEnumerable<BankAccountModel>> GetAllAsync(Guid currentUserId);
+        Task<BankAccountModel> GetByIdAsync(Guid id, Guid currentUserId);
+        Task<BankAccountModel> CreateAccountAsync(BankAccountCreateModel createModel, Guid currentUserId);
     }
 }

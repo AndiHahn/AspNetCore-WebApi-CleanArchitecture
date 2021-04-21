@@ -15,9 +15,9 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.8")
+                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "5.0.2");
 
             modelBuilder.Entity("CleanArchitecture.Domain.Entities.BankAccountEntity", b =>
                 {
@@ -109,6 +109,12 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("User");
@@ -121,6 +127,8 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
                         .HasForeignKey("BankAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("BankAccount");
                 });
 
             modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserBankAccountEntity", b =>
@@ -136,6 +144,10 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("BankAccount");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserBillEntity", b =>
@@ -151,6 +163,29 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Bill");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("CleanArchitecture.Domain.Entities.BankAccountEntity", b =>
+                {
+                    b.Navigation("Bills");
+
+                    b.Navigation("UserBankAccounts");
+                });
+
+            modelBuilder.Entity("CleanArchitecture.Domain.Entities.BillEntity", b =>
+                {
+                    b.Navigation("UserBills");
+                });
+
+            modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserEntity", b =>
+                {
+                    b.Navigation("UserAccounts");
+
+                    b.Navigation("UserBills");
                 });
 #pragma warning restore 612, 618
         }

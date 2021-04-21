@@ -25,6 +25,8 @@ namespace CleanArchitecture.Web.Api.Extensions
             services.RegisterInfrastructure(configuration);
             services.RegisterCore();
 
+            services.AddHttpContextAccessor();
+
             services.ConfigureAppSettings(configuration);
 
             return services;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Extensions;
 using CleanArchitecture.Core.Interfaces.CrudServices;
 using CleanArchitecture.Core.Models.Domain.BankAccount;
 using Microsoft.AspNetCore.Authorization;
@@ -17,9 +18,14 @@ namespace CleanArchitecture.Web.Api.Api
     {
         private readonly IBankAccountService bankAccountService;
         private readonly ILogger<BankAccountController> logger;
+        private readonly Guid currentUserId;
 
-        public BankAccountController(IBankAccountService bankAccountService, ILogger<BankAccountController> logger)
+        public BankAccountController(
+            IBankAccountService bankAccountService,
+            IHttpContextAccessor httpContextAccessor,
+            ILogger<BankAccountController> logger)
         {
+            currentUserId = httpContextAccessor.HttpContext.User.GetUserId();
             this.bankAccountService = bankAccountService ?? throw new ArgumentNullException(nameof(bankAccountService));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
@@ -30,7 +36,7 @@ namespace CleanArchitecture.Web.Api.Api
         public async Task<IActionResult> GetAll()
         {
             logger.LogInformation("Get all available accounts...");
-            return Ok(await bankAccountService.GetAllAsync());
+            return Ok(await bankAccountService.GetAllAsync(currentUserId));
         }
 
         [HttpGet("{id}")]
@@ -39,7 +45,7 @@ namespace CleanArchitecture.Web.Api.Api
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(Guid id)
         {
-            return Ok(await bankAccountService.GetByIdAsync(id));
+            return Ok(await bankAccountService.GetByIdAsync(id, currentUserId));
         }
 
         [HttpPost]
@@ -47,7 +53,7 @@ namespace CleanArchitecture.Web.Api.Api
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CreateAccount([FromBody] BankAccountCreateModel createModel)
         {
-            var createdBill = await bankAccountService.CreateAccountAsync(createModel);
+            var createdBill = await bankAccountService.CreateAccountAsync(createModel, currentUserId);
             return Created($"{HttpContext.Request.Path}/{createdBill.Id}", createdBill);
         }
     }

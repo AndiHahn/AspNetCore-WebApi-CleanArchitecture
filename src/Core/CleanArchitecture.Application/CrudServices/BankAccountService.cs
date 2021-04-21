@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using CleanArchitecture.Application.Services;
 using CleanArchitecture.Application.Validations;
 using CleanArchitecture.Core.Interfaces.CrudServices;
 using CleanArchitecture.Core.Interfaces.Data;
@@ -19,19 +18,15 @@ namespace CleanArchitecture.Application.CrudServices
         private readonly IMapper mapper;
         private readonly IBudgetContext context;
 
-        private readonly Guid currentUserId;
-
         public BankAccountService(
             IMapper mapper,
-            IBudgetContext context,
-            ICurrentUserService currentUserService)
+            IBudgetContext context)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.context = context ?? throw new ArgumentNullException(nameof(context));
-            currentUserId = currentUserService.GetCurrentUserId();
         }
 
-        public async Task<IEnumerable<BankAccountModel>> GetAllAsync()
+        public async Task<IEnumerable<BankAccountModel>> GetAllAsync(Guid currentUserId)
         {
             return (await context.BankAccount
                     .Where(ba => ba.OwnerId == currentUserId)
@@ -39,7 +34,7 @@ namespace CleanArchitecture.Application.CrudServices
                     .Select(mapper.Map<BankAccountModel>);
         }
 
-        public async Task<BankAccountModel> GetByIdAsync(Guid id)
+        public async Task<BankAccountModel> GetByIdAsync(Guid id, Guid currentUserId)
         {
             var entity = (await context.BankAccount.FindAsync(id)).AssertEntityFound(id);
             if (entity.OwnerId != currentUserId)
@@ -50,7 +45,9 @@ namespace CleanArchitecture.Application.CrudServices
             return mapper.Map<BankAccountModel>(entity);
         }
 
-        public async Task<BankAccountModel> CreateAccountAsync(BankAccountCreateModel createModel)
+        public async Task<BankAccountModel> CreateAccountAsync(
+            BankAccountCreateModel createModel,
+            Guid currentUserId)
         {
             var accountEntity = mapper.Map<BankAccountEntity>(createModel);
             accountEntity.OwnerId = currentUserId;

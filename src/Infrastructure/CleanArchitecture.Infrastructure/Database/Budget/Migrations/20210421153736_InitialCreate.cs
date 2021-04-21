@@ -11,9 +11,9 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
                 name: "BankAccount",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    OwnerId = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OwnerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -24,7 +24,9 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
                 name: "User",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -35,15 +37,15 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
                 name: "Bill",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(nullable: false),
-                    BankAccountId = table.Column<Guid>(nullable: false),
-                    CreatedByUserId = table.Column<Guid>(nullable: false),
-                    ShopName = table.Column<string>(nullable: true),
-                    Price = table.Column<double>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Notes = table.Column<string>(nullable: true),
-                    Category = table.Column<int>(nullable: false),
-                    Version = table.Column<byte[]>(nullable: true)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BankAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedByUserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ShopName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<double>(type: "float", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Notes = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Category = table.Column<int>(type: "int", nullable: false),
+                    Version = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -60,8 +62,8 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
                 name: "UserBankAccount",
                 columns: table => new
                 {
-                    BankAccountId = table.Column<Guid>(nullable: false),
-                    UserId = table.Column<Guid>(nullable: false)
+                    BankAccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -84,8 +86,8 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
                 name: "UserBill",
                 columns: table => new
                 {
-                    UserId = table.Column<Guid>(nullable: false),
-                    BillId = table.Column<Guid>(nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BillId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {

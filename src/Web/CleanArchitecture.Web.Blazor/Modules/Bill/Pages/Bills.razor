@@ -1,13 +1,9 @@
 ﻿@page "/bills"
 @attribute [Authorize]
 
-@using CleanArchitecture.Core.Models
-@using CleanArchitecture.Core.Interfaces.CrudServices
 @using CleanArchitecture.Core.Models.Domain.Bill
-@using CleanArchitecture.Application.Services
-@using System.Security.Claims
-@inject IBillService billService
-@inject ICurrentUserService currentUserService
+@using CleanArchitecture.Web.Blazor.Modules.Bill.Facades
+@inject IBillFacade billFacade
 
 <h1>Bills</h1>
 
@@ -47,28 +43,8 @@ else
 @code {
     private BillModel[] bills;
 
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
-
     protected override async Task OnInitializedAsync()
     {
-        AuthenticationState authenticationState = await authenticationStateTask;
-
-        var claimsPrincipal = authenticationState.User;
-
-        var userIdClaim = claimsPrincipal.Claims?.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier);
-        if (userIdClaim != null)
-        {
-            currentUserService.SetCurrentUserId(Guid.Parse(userIdClaim.Value));
-        }
-
-        var queryParameter = new BillQueryParameter()
-        {
-            PageSize = 10,
-            PageIndex = 0
-        };
-
-        var result = await billService.QueryAsync(queryParameter);
-        bills = result.Result.ToArray();
+        bills = (await billFacade.GetBillsAsync(100, 0)).ToArray();
     }
 }

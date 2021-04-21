@@ -9,15 +9,14 @@ namespace CleanArchitecture.Core.Interfaces.CrudServices
 {
     public interface IBillService
     {
-        Task<PagedResult<BillModel>> QueryAsync(BillQueryParameter queryParameter);
-        Task<PagedResult<BillModel>> ListAsync(BillSearchParameter searchParameter);
-        Task<BillModel> GetByIdAsync(Guid id);
-        Task<BillModel> CreateBillAsync(BillCreateModel createModel);
-        Task<BillModel> UpdateBillAsync(Guid id, BillUpdateModel updateModel);
-        Task DeleteBillAsync(Guid id);
-        Task<BlobEntity> GetImageAsync(Guid id);
-        Task AddImageToBillAsync(Guid id, IFormFile file);
-        Task DeleteImageAsync(Guid id);
-        Task<TimeRangeModel> GetAvailableTimeRangeAsync();
+        Task<PagedResult<BillModel>> QueryAsync(BillQueryParameter queryParameter, Guid currentUserId);
+        Task<PagedResult<BillModel>> ListAsync(BillSearchParameter searchParameter, Guid currentUserId);
+        Task<BillModel> GetByIdAsync(Guid id, Guid currentUserId);
+        Task<BillModel> CreateBillAsync(BillCreateModel createModel, Guid currentUserId);
+        Task<BillModel> UpdateBillAsync(Guid id, BillUpdateModel updateModel, Guid currentUserId);
+        Task DeleteBillAsync(Guid id, Guid currentUserId);
+        Task<BlobEntity> GetImageAsync(Guid id, Guid currentUserId);
+        Task AddImageToBillAsync(Guid id, IFormFile file, Guid currentUserId);
+        Task DeleteImageAsync(Guid id, Guid currentUserId);
     }
 }

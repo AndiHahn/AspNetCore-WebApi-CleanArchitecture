@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Bogus;
+using CleanArchitecture.Core.Interfaces.Data;
+using CleanArchitecture.Core.Interfaces.SqlQueries;
 using CleanArchitecture.Core.Models.Domain.Bill;
 using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Infrastructure.SqlQueries;
 using CleanArchitecture.IntegrationTests.Setup.Database;
 using CleanArchitecture.Tests.Shared.Builder.Account;
 using CleanArchitecture.Tests.Shared.Builder.Bill;
@@ -15,9 +18,16 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
 {
     public class BillQueriesTests
     {
+        private readonly UserEntity user = new UserEntityBuilder().Build();
+
+        public BillQueriesTests()
+        {
+        }
+
         [Fact]
         public async Task Query_ShouldReturn_CorrectNumberOfBills()
         {
+            // Arrange
             var billEntity1 = CreateBasicBillEntity();
             var billEntity2 = CreateBasicBillEntity();
             var context = BudgetContext.CreateInMemoryDataContext(db =>
@@ -32,8 +42,12 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
                 PageSize = 10
             };
 
-            var result = await context.BillQueries.QueryAsync(queryParameter);
+            var sut = SetupSystemUnderTest(context);
 
+            // Act
+            var result = await sut.QueryAsync(queryParameter, user.Id);
+
+            // Assert
             Assert.Equal(2, result.TotalCount);
             Assert.Equal(2, result.Result.Count());
         }
@@ -41,6 +55,7 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
         [Fact]
         public async Task Query_ShouldReturnEmptyResult_IfNoDataAvailable()
         {
+            // Arrange
             var context = BudgetContext.CreateInMemoryDataContext();
 
             var queryParameter = new BillQueryParameter
@@ -49,7 +64,12 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
                 PageSize = 10
             };
 
-            var result = await context.BillQueries.QueryAsync(queryParameter);
+            var sut = SetupSystemUnderTest(context);
+
+            // Act
+            var result = await sut.QueryAsync(queryParameter, user.Id);
+
+            // Assert
             Assert.Equal(0, result.TotalCount);
             Assert.Empty(result.Result);
         }
@@ -57,6 +77,7 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
         [Fact]
         public async Task Query_ShouldReturnBills_OrderedByDateDescending()
         {
+            // Arrange
             var billEntities = CreateBillEntitiesWithRandomDates();
             var context = BudgetContext.CreateInMemoryDataContext(db =>
             {
@@ -72,8 +93,12 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
                 PageSize = 10
             };
 
-            var result = await context.BillQueries.QueryAsync(queryParameter);
+            var sut = SetupSystemUnderTest(context);
 
+            // Act
+            var result = await sut.QueryAsync(queryParameter, user.Id);
+
+            // Assert
             DateTime previousDate = result.Result.First().Date;
             foreach (var bill in result.Result)
             {
@@ -85,16 +110,14 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
         private BillEntity CreateBasicBillEntity()
         {
             var accountEntity = new AccountEntityBuilder().Build();
-            var userEntity = new UserEntityBuilder().Build();
-            return new BillEntityBuilder().WithAccount(accountEntity).CreatedByUser(userEntity).Build();
+            return new BillEntityBuilder().WithAccount(accountEntity).CreatedByUser(user).Build();
         }
 
         private BillEntity CreateBillEntityWithDate(DateTime date)
         {
             var accountEntity = new AccountEntityBuilder().Build();
-            var userEntity = new UserEntityBuilder().Build();
             return new BillEntityBuilder().WithDate(date)
-                        .WithAccount(accountEntity).CreatedByUser(userEntity).Build();
+                        .WithAccount(accountEntity).CreatedByUser(user).Build();
         }
 
         private IList<BillEntity> CreateBillEntitiesWithRandomDates()
@@ -109,6 +132,13 @@ namespace CleanArchitecture.IntegrationTests.QueryParameter
                 CreateBillEntityWithDate(faker.Date.Future()),
                 CreateBillEntityWithDate(faker.Date.Past())
             };
+        }
+
+        private IBillQueries SetupSystemUnderTest(IBudgetContext context)
+        {
+            var sut = new BillQueries();
+            sut.SetBudgetContext(context);
+            return sut;
         }
     }
 }

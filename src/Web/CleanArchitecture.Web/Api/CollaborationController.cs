@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Extensions;
 using CleanArchitecture.Application.UseCases.Collaboration.Commands;
 using CleanArchitecture.Application.UseCases.Collaboration.Queries;
 using CleanArchitecture.Core.Models.Domain.BankAccount;
@@ -17,9 +18,13 @@ namespace CleanArchitecture.Web.Api.Api
     public class CollaborationController : ControllerBase
     {
         private readonly IMediator mediator;
+        private readonly Guid currentUserId;
 
-        public CollaborationController(IMediator mediator)
+        public CollaborationController(
+            IMediator mediator,
+            IHttpContextAccessor httpContextAccessor)
         {
+            currentUserId = httpContextAccessor.HttpContext.User.GetUserId();
             this.mediator = mediator;
         }
 
@@ -30,7 +35,7 @@ namespace CleanArchitecture.Web.Api.Api
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ShareAccountWithUser(Guid accountId, Guid userId)
         {
-            await mediator.Send(new ShareAccountWithUserCommand(accountId, userId));
+            await mediator.Send(new ShareAccountWithUserCommand(accountId, userId, currentUserId));
             return NoContent();
         }
 
@@ -39,7 +44,7 @@ namespace CleanArchitecture.Web.Api.Api
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetSharedAccounts()
         {
-            var result = await mediator.Send(new GetSharedAccountsQuery());
+            var result = await mediator.Send(new GetSharedAccountsQuery(currentUserId));
             return Ok(result);
         }
     }

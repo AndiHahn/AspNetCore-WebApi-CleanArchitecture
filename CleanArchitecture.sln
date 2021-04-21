@@ -33,7 +33,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Core.Inte
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Application", "src\Core\CleanArchitecture.Application\CleanArchitecture.Application.csproj", "{04CB2C5B-A370-4F06-ACB8-6B959347FFA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Web.Blazor", "src\Web\CleanArchitecture.Web.Blazor\CleanArchitecture.Web.Blazor.csproj", "{AFDF5E7C-9F02-4041-B7FB-2D0828ED8193}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Web.Blazor", "src\Web\CleanArchitecture.Web.Blazor\CleanArchitecture.Web.Blazor.csproj", "{AFDF5E7C-9F02-4041-B7FB-2D0828ED8193}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

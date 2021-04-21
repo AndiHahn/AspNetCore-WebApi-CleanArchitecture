@@ -9,12 +9,12 @@ namespace CleanArchitecture.Infrastructure.Database
 {
     public static class DatabaseSeed
     {
-        private static readonly IdentityUser TestUser1 = new IdentityUser("user@email.at")
+        private static readonly IdentityUser TestUser1 = new("user@email.at")
         {
-            Email = "user@email.at"
+            Email = "user@email.at",
         };
 
-        private static readonly IdentityUser TestUser2 = new IdentityUser("user2@email.at")
+        private static readonly IdentityUser TestUser2 = new("user2@email.at")
         {
             Email = "user2@email.at"
         };
@@ -43,13 +43,25 @@ namespace CleanArchitecture.Infrastructure.Database
             var user2 = await userManager.FindByNameAsync("user2@email.at");
             if (user2 == null)
             {
-                await userManager.CreateAsync(TestUser2, "password2");
+                await userManager.CreateAsync(TestUser2, "password");
             }
 
             if (!await context.User.AnyAsync())
             {
-                context.User.Add(new UserEntity(new Guid(TestUser1.Id)));
-                context.User.Add(new UserEntity(new Guid(TestUser2.Id)));
+                var sqlUser1 = new UserEntity(new Guid(TestUser1.Id))
+                {
+                    FirstName = "firstName",
+                    LastName = "lastName"
+                };
+
+                var sqlUser2 = new UserEntity(new Guid(TestUser2.Id))
+                {
+                    FirstName = "firstName2",
+                    LastName = "lastName2"
+                };
+
+                context.User.Add(sqlUser1);
+                context.User.Add(sqlUser2);
 
                 await context.SaveChangesAsync();
             }

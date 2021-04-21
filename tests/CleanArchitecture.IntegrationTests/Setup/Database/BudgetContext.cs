@@ -1,9 +1,7 @@
 ﻿using System;
-using CleanArchitecture.Application.Services;
 using CleanArchitecture.Infrastructure.SqlQueries;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using NSubstitute;
 
 namespace CleanArchitecture.IntegrationTests.Setup.Database
 {
@@ -22,7 +20,7 @@ namespace CleanArchitecture.IntegrationTests.Setup.Database
             // Create the schema in the database
             var context = new CleanArchitecture.Infrastructure.Database.Budget.BudgetContext(
                 options,
-                new BillQueries(Substitute.For<ICurrentUserService>()));
+                new BillQueries());
 
             context.Database.EnsureCreated();
 

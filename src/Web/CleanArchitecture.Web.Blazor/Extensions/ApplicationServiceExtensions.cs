@@ -4,6 +4,8 @@ using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Database.Identity;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
 using CleanArchitecture.Infrastructure.Services.Email;
+using CleanArchitecture.Web.Blazor.Modules.Bill.Facades;
+using CleanArchitecture.Web.Blazor.Modules.Core.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -22,6 +24,10 @@ namespace CleanArchitecture.Web.Blazor.Extensions
         {
             services.RegisterInfrastructure(configuration);
             services.RegisterCore();
+
+            services.AddHttpContextAccessor();
+            services.AddScoped<IBillFacade, BillFacade>();
+            services.AddTransient<ICurrentUserService, CurrentUserService>();
 
             services.ConfigureAppSettings(configuration);
 

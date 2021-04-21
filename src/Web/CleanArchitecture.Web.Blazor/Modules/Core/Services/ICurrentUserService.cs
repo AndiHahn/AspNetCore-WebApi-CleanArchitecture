@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace CleanArchitecture.Application.Services
+namespace CleanArchitecture.Web.Blazor.Modules.Core.Services
 {
     public interface ICurrentUserService
     {
-        void SetCurrentUserId(Guid userId);
         Guid GetCurrentUserId();
     }
 }

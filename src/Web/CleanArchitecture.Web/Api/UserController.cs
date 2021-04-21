@@ -45,7 +45,7 @@ namespace CleanArchitecture.Web.Api.Api
 
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        [ProducesResponseType(typeof(AuthenticatedUserModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(AuthenticationResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Authenticate([FromBody] SignInModel model)
@@ -63,9 +63,10 @@ namespace CleanArchitecture.Web.Api.Api
                 throw new BadRequestException("Invalid login credentials.");
             }
 
-            string token = await GenerateTokenAsync(user);
+            DateTime expires = DateTime.UtcNow.AddMinutes(60);
+            string token = await GenerateTokenAsync(user, expires);
 
-            var authUserModel = new AuthenticatedUserModel()
+            var authUserModel = new AuthenticationResponse
             {
                 Id = new Guid(user.Id),
                 Username = user.UserName,
@@ -85,7 +86,7 @@ namespace CleanArchitecture.Web.Api.Api
             return Ok(users);
         }
 
-        private async Task<string> GenerateTokenAsync(IdentityUser user)
+        private async Task<string> GenerateTokenAsync(IdentityUser user, DateTime expires)
         {
             var principal = await signInManager.CreateUserPrincipalAsync(user);
             var userRoles = await userManager.GetRolesAsync(user);
@@ -106,7 +107,7 @@ namespace CleanArchitecture.Web.Api.Api
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = claimsIdentity,
-                Expires = DateTime.UtcNow.AddDays(1),
+                Expires = expires,
                 Issuer = "https://localhost/cleanarchitecture",
                 Audience = "cleanarchitecture-api",
                 IssuedAt = DateTime.UtcNow,
@@ -114,6 +115,7 @@ namespace CleanArchitecture.Web.Api.Api
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };
+
             var securityToken = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(securityToken);
         }

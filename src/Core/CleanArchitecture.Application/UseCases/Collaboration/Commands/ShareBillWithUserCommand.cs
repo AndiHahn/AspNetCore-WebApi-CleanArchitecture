@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Application.Services;
 using CleanArchitecture.Application.Validations;
 using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Domain.Entities;
@@ -16,31 +15,31 @@ namespace CleanArchitecture.Application.UseCases.Collaboration.Commands
     {
         public Guid BillId { get; }
         public Guid ShareWithUserId { get; }
+        public Guid CurrentUserId { get; }
 
-        public ShareBillWithUserCommand(Guid billId, Guid shareWithUserId)
+        public ShareBillWithUserCommand(Guid billId, Guid shareWithUserId, Guid currentUserId)
         {
             BillId = billId;
             ShareWithUserId = shareWithUserId;
+            CurrentUserId = currentUserId;
         }
     }
 
     public class ShareBillWithUserCommandHandler : IRequestHandler<ShareBillWithUserCommand>
     {
         private readonly IBudgetContext context;
-        private readonly ICurrentUserService currentUserService;
 
         public ShareBillWithUserCommandHandler(
-            IBudgetContext context,
-            ICurrentUserService currentUserService)
+            IBudgetContext context)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
-            this.currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
         }
 
         public async Task<Unit> Handle(ShareBillWithUserCommand request, CancellationToken cancellationToken)
         {
-            var bill = await EnsureCurrentUserHasAccessToBillAsync(request.BillId);
-            var user = (await context.User.FindAsync(request.ShareWithUserId)).AssertEntityFound(request.ShareWithUserId);
+            var bill = await EnsureCurrentUserHasAccessToBillAsync(request.BillId, request.CurrentUserId);
+            var user = (await context.User.FindAsync(request.ShareWithUserId))
+                .AssertEntityFound(request.ShareWithUserId);
 
             if (bill.UserBills.Any(ua => ua.UserId == request.ShareWithUserId))
             {
@@ -58,14 +57,15 @@ namespace CleanArchitecture.Application.UseCases.Collaboration.Commands
             return Unit.Value;
         }
 
-        private async Task<BillEntity> EnsureCurrentUserHasAccessToBillAsync(Guid billId)
+        private async Task<BillEntity> EnsureCurrentUserHasAccessToBillAsync(
+            Guid billId,
+            Guid currentUserId)
         {
             var bill = (await context.Bill
                     .Include(b => b.UserBills)
                     .FirstOrDefaultAsync(b => b.Id == billId))
                 .AssertEntityFound(billId);
 
-            Guid currentUserId = currentUserService.GetCurrentUserId();
             if (bill.UserBills.All(ub => ub.UserId != currentUserId))
             {
                 throw new ForbiddenException($"Current user does not have access to bill {billId}");

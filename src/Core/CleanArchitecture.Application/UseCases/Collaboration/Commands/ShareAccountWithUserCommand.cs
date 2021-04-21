@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Application.Services;
 using CleanArchitecture.Application.Validations;
 using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Domain.Entities;
@@ -16,31 +15,31 @@ namespace CleanArchitecture.Application.UseCases.Collaboration.Commands
     {
         public Guid AccountId { get; }
         public Guid ShareWithUserId { get; }
+        public Guid CurrentUserId { get; }
 
-        public ShareAccountWithUserCommand(Guid accountId, Guid shareWithUserId)
+        public ShareAccountWithUserCommand(Guid accountId, Guid shareWithUserId, Guid currentUserId)
         {
             AccountId = accountId;
             ShareWithUserId = shareWithUserId;
+            CurrentUserId = currentUserId;
         }
     }
 
     public class ShareAccountWithUserCommandHandler : IRequestHandler<ShareAccountWithUserCommand>
     {
         private readonly IBudgetContext context;
-        private readonly ICurrentUserService currentUserService;
 
         public ShareAccountWithUserCommandHandler(
-            IBudgetContext context,
-            ICurrentUserService currentUserService)
+            IBudgetContext context)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
-            this.currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
         }
 
         public async Task<Unit> Handle(ShareAccountWithUserCommand request, CancellationToken cancellationToken)
         {
-            var account = await EnsureCurrentUserHasAccessToAccountAsync(request.AccountId);
-            var user = (await context.User.FindAsync(request.ShareWithUserId)).AssertEntityFound(request.ShareWithUserId);
+            var account = await EnsureCurrentUserHasAccessToAccountAsync(request.AccountId, request.CurrentUserId);
+            var user = (await context.User.FindAsync(request.ShareWithUserId))
+                .AssertEntityFound(request.ShareWithUserId);
 
             if (account.UserBankAccounts.Any(ua => ua.UserId == request.ShareWithUserId))
             {
@@ -58,14 +57,15 @@ namespace CleanArchitecture.Application.UseCases.Collaboration.Commands
             return Unit.Value;
         }
 
-        private async Task<BankAccountEntity> EnsureCurrentUserHasAccessToAccountAsync(Guid accountId)
+        private async Task<BankAccountEntity> EnsureCurrentUserHasAccessToAccountAsync(
+            Guid accountId,
+            Guid currentUserId)
         {
             var account = (await context.BankAccount
                     .Include(a => a.UserBankAccounts)
                     .FirstOrDefaultAsync(a => a.Id == accountId))
                 .AssertEntityFound(accountId);
 
-            Guid currentUserId = currentUserService.GetCurrentUserId();
             if (account.UserBankAccounts.All(ua => ua.UserId != currentUserId))
             {
                 throw new ForbiddenException($"Current user does not have access to account {accountId}");

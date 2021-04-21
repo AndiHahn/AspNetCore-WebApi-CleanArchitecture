@@ -110,7 +110,7 @@ namespace CleanArchitecture.FunctionalTests.Fixture
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await client.SendAsync(request);
 
-            var authResponse = JsonConvert.DeserializeObject<AuthenticatedUserModel>(
+            var authResponse = JsonConvert.DeserializeObject<AuthenticationResponse>(
                 await response.Content.ReadAsStringAsync());
 
             client.DefaultRequestHeaders.Authorization =

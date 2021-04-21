@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using CleanArchitecture.Application.Services;
 using CleanArchitecture.Application.Validations;
 using CleanArchitecture.Core.Interfaces.CrudServices;
 using CleanArchitecture.Core.Interfaces.Data;
@@ -13,7 +12,6 @@ using CleanArchitecture.Domain.BlobEntities;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Exceptions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.CrudServices
 {
@@ -23,48 +21,43 @@ namespace CleanArchitecture.Application.CrudServices
         private readonly IBudgetContext context;
         private readonly IBlobStorageRepository blobStorageRepository;
 
-        private readonly Guid currentUserId;
-
         public BillService(
                     IMapper mapper,
                     IBudgetContext context,
-                    ICurrentUserService currentUserService,
                     IBlobStorageRepository blobStorageRepository)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             this.context = context ?? throw new ArgumentNullException(nameof(context));
             this.blobStorageRepository = blobStorageRepository ?? throw new ArgumentNullException(nameof(blobStorageRepository));
-
-            currentUserId = currentUserService.GetCurrentUserId();
         }
 
-        public async Task<PagedResult<BillModel>> QueryAsync(BillQueryParameter queryParameter)
+        public async Task<PagedResult<BillModel>> QueryAsync(BillQueryParameter queryParameter, Guid currentUserId)
         {
             var pagedResult = await context.BillQueries
-                .QueryAsync(queryParameter);
+                .QueryAsync(queryParameter, currentUserId);
 
             return new PagedResult<BillModel>(
                 pagedResult.Result.Select(mapper.Map<BillModel>),
                 pagedResult.TotalCount);
         }
 
-        public async Task<PagedResult<BillModel>> ListAsync(BillSearchParameter searchParameter)
+        public async Task<PagedResult<BillModel>> ListAsync(BillSearchParameter searchParameter, Guid currentUserId)
         {
             var pagedResult = await context.BillQueries
-                .SearchAsync(searchParameter);
+                .SearchAsync(searchParameter, currentUserId);
 
             return new PagedResult<BillModel>(
                 pagedResult.Result.Select(mapper.Map<BillModel>),
                 pagedResult.TotalCount);
         }
 
-        public async Task<BillModel> GetByIdAsync(Guid id)
+        public async Task<BillModel> GetByIdAsync(Guid id, Guid currentUserId)
         {
-            var entity = await LoadBillAndEnsureAccessRightAsync(id);
+            var entity = await LoadBillAndEnsureAccessRightAsync(id, currentUserId);
             return mapper.Map<BillModel>(entity);
         }
 
-        public async Task<BillModel> CreateBillAsync(BillCreateModel createModel)
+        public async Task<BillModel> CreateBillAsync(BillCreateModel createModel, Guid currentUserId)
         {
             var billEntity = mapper.Map<BillEntity>(createModel);
             billEntity.CreatedByUserId = currentUserId;
@@ -73,9 +66,9 @@ namespace CleanArchitecture.Application.CrudServices
             return mapper.Map<BillModel>(createdEntity);
         }
 
-        public async Task DeleteBillAsync(Guid id)
+        public async Task DeleteBillAsync(Guid id, Guid currentUserId)
         {
-            var billEntity = await LoadBillAndEnsureAccessRightAsync(id);
+            var billEntity = await LoadBillAndEnsureAccessRightAsync(id, currentUserId);
             if (billEntity.CreatedByUserId != currentUserId)
             {
                 throw new ForbiddenException("Cannot delete bill from another user.");
@@ -87,17 +80,17 @@ namespace CleanArchitecture.Application.CrudServices
             await context.SaveChangesAsync();
         }
 
-        public async Task<BlobEntity> GetImageAsync(Guid id)
+        public async Task<BlobEntity> GetImageAsync(Guid id, Guid currentUserId)
         {
-            await LoadBillAndEnsureAccessRightAsync(id);
+            await LoadBillAndEnsureAccessRightAsync(id, currentUserId);
             string imageUrl = GetImagePath(id);
             return await blobStorageRepository.DownloadBlobAsync(
                     Constants.ImageStorage.CONTAINER_NAME, imageUrl);
         }
 
-        public async Task AddImageToBillAsync(Guid id, IFormFile file)
+        public async Task AddImageToBillAsync(Guid id, IFormFile file, Guid currentUserId)
         {
-            await LoadBillAndEnsureAccessRightAsync(id);
+            await LoadBillAndEnsureAccessRightAsync(id, currentUserId);
             string fileUrl = GetImagePath(id);
 
             var entity = new BlobEntity();
@@ -108,31 +101,19 @@ namespace CleanArchitecture.Application.CrudServices
                         Constants.ImageStorage.CONTAINER_NAME, fileUrl, entity);
         }
 
-        public async Task<BillModel> UpdateBillAsync(Guid id, BillUpdateModel updateModel)
+        public async Task<BillModel> UpdateBillAsync(Guid id, BillUpdateModel updateModel, Guid currentUserId)
         {
-            var billEntity = await LoadBillAndEnsureAccessRightAsync(id);
+            var billEntity = await LoadBillAndEnsureAccessRightAsync(id, currentUserId);
             updateModel.MergeIntoEntity(billEntity);
             await context.SaveChangesAsync();
-            return await GetByIdAsync(id);
+            return await GetByIdAsync(id, currentUserId);
         }
 
-        public async Task DeleteImageAsync(Guid id)
+        public async Task DeleteImageAsync(Guid id, Guid currentUserId)
         {
-            await LoadBillAndEnsureAccessRightAsync(id);
+            await LoadBillAndEnsureAccessRightAsync(id, currentUserId);
             await blobStorageRepository.RemoveBlobAsync(
                         Constants.ImageStorage.CONTAINER_NAME, GetImagePath(id));
-        }
-
-        public async Task<TimeRangeModel> GetAvailableTimeRangeAsync()
-        {
-            var firstBill = await context.Bill.OrderBy(b => b.Date).FirstOrDefaultAsync();
-            var lastBill = await context.Bill.OrderByDescending(b => b.Date).FirstOrDefaultAsync();
-            if (firstBill == null || lastBill == null)
-            {
-                return new TimeRangeModel();
-            }
-
-            return new TimeRangeModel(firstBill.Date, lastBill.Date);
         }
 
         private string GetImagePath(Guid billId)
@@ -142,7 +123,7 @@ namespace CleanArchitecture.Application.CrudServices
                    billId;
         }
 
-        private async Task<BillEntity> LoadBillAndEnsureAccessRightAsync(Guid billId)
+        private async Task<BillEntity> LoadBillAndEnsureAccessRightAsync(Guid billId, Guid currentUserId)
         {
             var bill = (await context.Bill.FindAsync(billId)).AssertEntityFound(billId);
 
