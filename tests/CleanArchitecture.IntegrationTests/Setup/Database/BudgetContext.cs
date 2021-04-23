@@ -1,5 +1,4 @@
 ﻿using System;
-using CleanArchitecture.Infrastructure.SqlQueries;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,8 +18,7 @@ namespace CleanArchitecture.IntegrationTests.Setup.Database
 
             // Create the schema in the database
             var context = new CleanArchitecture.Infrastructure.Database.Budget.BudgetContext(
-                options,
-                new BillQueries());
+                options);
 
             context.Database.EnsureCreated();
 

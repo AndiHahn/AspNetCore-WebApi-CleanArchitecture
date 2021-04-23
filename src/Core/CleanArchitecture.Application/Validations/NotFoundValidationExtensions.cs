@@ -37,9 +37,9 @@ namespace CleanArchitecture.Application.Validations
 
         private static string TryRemoveEntityPostfix(string entityName)
         {
-            if (entityName.EndsWith(Constants.Common.ENTITY_POSTFIX))
+            if (entityName.EndsWith(Constants.Common.EntityPostfix))
             {
-                return entityName.Remove(entityName.Length - Constants.Common.ENTITY_POSTFIX.Length);
+                return entityName.Remove(entityName.Length - Constants.Common.EntityPostfix.Length);
             }
 
             return entityName;

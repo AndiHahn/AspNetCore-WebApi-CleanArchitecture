@@ -2,9 +2,9 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces.Data.Repositories;
 using CleanArchitecture.Domain.BlobEntities;
 using CleanArchitecture.Domain.Exceptions;
+using CleanArchitecture.Domain.Interfaces;
 using CleanArchitecture.Infrastructure.Repositories;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
 using Microsoft.Extensions.Options;

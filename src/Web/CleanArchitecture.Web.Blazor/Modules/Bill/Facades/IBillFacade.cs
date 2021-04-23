@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Models.Domain.Bill;
+using CleanArchitecture.Application.CrudServices.Models.Bill;
 
 namespace CleanArchitecture.Web.Blazor.Modules.Bill.Facades
 {

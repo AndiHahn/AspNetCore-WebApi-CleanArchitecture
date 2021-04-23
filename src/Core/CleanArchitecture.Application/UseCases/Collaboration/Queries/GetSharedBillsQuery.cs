@@ -4,10 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using CleanArchitecture.Core.Interfaces.Data;
-using CleanArchitecture.Core.Models.Domain.Bill;
+using CleanArchitecture.Application.CrudServices.Models.Bill;
+using CleanArchitecture.Domain.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.UseCases.Collaboration.Queries
 {
@@ -24,25 +23,23 @@ namespace CleanArchitecture.Application.UseCases.Collaboration.Queries
     public class GetSharedBillsQueryHandler : IRequestHandler<GetSharedBillsQuery, IEnumerable<BillModel>>
     {
         private readonly IMapper mapper;
-        private readonly IBudgetContext context;
+        private readonly IBillRepository billRepository;
 
         public GetSharedBillsQueryHandler(
             IMapper mapper,
-            IBudgetContext context)
+            IBillRepository billRepository)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
         }
 
         public async Task<IEnumerable<BillModel>> Handle(GetSharedBillsQuery request, CancellationToken cancellationToken)
         {
             Guid currentUserId = request.CurrentUserId;
 
-            return await context.UserBill
-                .Include(ub => ub.Bill)
-                .Where(ub => ub.UserId == currentUserId && ub.Bill.CreatedByUserId != currentUserId)
-                .Select(ub => mapper.Map<BillModel>(ub.Bill))
-                .ToListAsync(cancellationToken);
+            var sharedBills = await billRepository.GetSharedBillsAsync(currentUserId);
+
+            return sharedBills.Select(mapper.Map<BillModel>);
         }
     }
 }

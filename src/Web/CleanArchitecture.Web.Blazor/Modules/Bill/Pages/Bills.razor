@@ -1,8 +1,7 @@
 ﻿@page "/bills"
 @attribute [Authorize]
-
-@using CleanArchitecture.Core.Models.Domain.Bill
 @using CleanArchitecture.Web.Blazor.Modules.Bill.Facades
+@using CleanArchitecture.Application.CrudServices.Models.Bill
 @inject IBillFacade billFacade
 
 <h1>Bills</h1>

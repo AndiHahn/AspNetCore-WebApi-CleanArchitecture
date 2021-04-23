@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.CrudServices;
+using CleanArchitecture.Application.CrudServices.Models.Bill;
 using CleanArchitecture.Application.Extensions;
-using CleanArchitecture.Core.Interfaces.CrudServices;
-using CleanArchitecture.Core.Models.Common;
-using CleanArchitecture.Core.Models.Domain.Bill;
+using CleanArchitecture.Common.Models.Resource.Bill;
+using CleanArchitecture.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

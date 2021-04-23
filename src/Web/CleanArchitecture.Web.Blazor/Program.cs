@@ -1,7 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Infrastructure.Database;
+using CleanArchitecture.Infrastructure.Database.Budget;
 using CleanArchitecture.Infrastructure.Database.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -28,7 +28,7 @@ namespace CleanArchitecture.Web.Blazor
                 {
                     logger.LogInformation("Start database migration...");
 
-                    var budgetContext = services.GetRequiredService<IBudgetContext>();
+                    var budgetContext = services.GetRequiredService<BudgetContext>();
                     await budgetContext.MigrateAsync();
                     var identityContext = services.GetRequiredService<IdentityContext>();
                     await identityContext.Database.MigrateAsync();

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces.Cache;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace CleanArchitecture.Application.Cache

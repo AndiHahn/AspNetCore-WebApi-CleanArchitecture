@@ -1,4 +1,4 @@
-﻿using CleanArchitecture.Core.Models.QueryParameter;
+﻿using CleanArchitecture.Common.Models.Query;
 
 namespace CleanArchitecture.IntegrationTests.QueryParameter.TestData
 {

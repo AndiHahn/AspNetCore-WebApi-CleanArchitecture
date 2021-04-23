@@ -3,11 +3,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Validations;
-using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Exceptions;
+using CleanArchitecture.Domain.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.UseCases.Collaboration.Commands
 {
@@ -27,18 +26,21 @@ namespace CleanArchitecture.Application.UseCases.Collaboration.Commands
 
     public class ShareBillWithUserCommandHandler : IRequestHandler<ShareBillWithUserCommand>
     {
-        private readonly IBudgetContext context;
+        private readonly IUserRepository userRepository;
+        private readonly IBillRepository billRepository;
 
         public ShareBillWithUserCommandHandler(
-            IBudgetContext context)
+            IUserRepository userRepository,
+            IBillRepository billRepository)
         {
-            this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
         }
 
         public async Task<Unit> Handle(ShareBillWithUserCommand request, CancellationToken cancellationToken)
         {
             var bill = await EnsureCurrentUserHasAccessToBillAsync(request.BillId, request.CurrentUserId);
-            var user = (await context.User.FindAsync(request.ShareWithUserId))
+            var user = (await userRepository.GetByIdAsync(request.ShareWithUserId))
                 .AssertEntityFound(request.ShareWithUserId);
 
             if (bill.UserBills.Any(ua => ua.UserId == request.ShareWithUserId))
@@ -52,7 +54,7 @@ namespace CleanArchitecture.Application.UseCases.Collaboration.Commands
                 UserId = user.Id
             });
 
-            await context.SaveChangesAsync(cancellationToken);
+            await billRepository.UpdateAsync(bill);
 
             return Unit.Value;
         }
@@ -61,9 +63,7 @@ namespace CleanArchitecture.Application.UseCases.Collaboration.Commands
             Guid billId,
             Guid currentUserId)
         {
-            var bill = (await context.Bill
-                    .Include(b => b.UserBills)
-                    .FirstOrDefaultAsync(b => b.Id == billId))
+            var bill = (await billRepository.GetByIdWithUsersAsync(billId))
                 .AssertEntityFound(billId);
 
             if (bill.UserBills.All(ub => ub.UserId != currentUserId))

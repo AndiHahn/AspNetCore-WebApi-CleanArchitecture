@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Infrastructure.Database.Budget;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,7 +20,7 @@ namespace CleanArchitecture.Infrastructure.Database
         };
 
         public static async Task SeedAsync(
-            IBudgetContext context,
+            BudgetContext context,
             UserManager<IdentityUser> userManager)
         {
             await InsertUserAsync(context, userManager);
@@ -31,7 +31,7 @@ namespace CleanArchitecture.Infrastructure.Database
         }
 
         private static async Task InsertUserAsync(
-            IBudgetContext context,
+            BudgetContext context,
             UserManager<IdentityUser> userManager)
         {
             var user1 = await userManager.FindByNameAsync("user@email.at");
@@ -67,7 +67,7 @@ namespace CleanArchitecture.Infrastructure.Database
             }
         }
 
-        private static async Task InsertAccountAsync(IBudgetContext context)
+        private static async Task InsertAccountAsync(BudgetContext context)
         {
             if (!await context.BankAccount.AnyAsync())
             {
@@ -81,7 +81,7 @@ namespace CleanArchitecture.Infrastructure.Database
             }
         }
 
-        private static async Task InsertUserAccountAsync(IBudgetContext context)
+        private static async Task InsertUserAccountAsync(BudgetContext context)
         {
             if (!await context.UserBankAccount.AnyAsync())
             {
@@ -96,7 +96,7 @@ namespace CleanArchitecture.Infrastructure.Database
             }
         }
 
-        private static async Task InsertBillsAsync(IBudgetContext context)
+        private static async Task InsertBillsAsync(BudgetContext context)
         {
             if (!await context.Bill.AnyAsync())
             {

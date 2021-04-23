@@ -5,9 +5,10 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Configurations;
-using CleanArchitecture.Core.Interfaces.CrudServices;
-using CleanArchitecture.Core.Models.Domain.User;
+using CleanArchitecture.Application.CrudServices;
+using CleanArchitecture.Application.CrudServices.Models.User;
 using CleanArchitecture.Domain.Exceptions;
+using CleanArchitecture.Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -78,7 +79,7 @@ namespace CleanArchitecture.Web.Api.Api
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<UserModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagedResult<UserModel>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> List([FromQuery] UserQueryParameter queryParameter)
         {

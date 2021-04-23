@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CleanArchitecture.Application.GenericQuery;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Exceptions;
+using CleanArchitecture.Infrastructure.Repositories.GenericQuery;
 using CleanArchitecture.IntegrationTests.QueryParameter.TestData;
 using CleanArchitecture.IntegrationTests.Setup.Database;
 using CleanArchitecture.Tests.Shared.Builder.Account;

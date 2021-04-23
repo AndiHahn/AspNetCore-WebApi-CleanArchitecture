@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.CrudServices.Models.BankAccount;
 using CleanArchitecture.Application.Extensions;
 using CleanArchitecture.Application.UseCases.Collaboration.Commands;
 using CleanArchitecture.Application.UseCases.Collaboration.Queries;
-using CleanArchitecture.Core.Models.Domain.BankAccount;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

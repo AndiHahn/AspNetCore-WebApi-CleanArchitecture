@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Models.Common;
-using CleanArchitecture.Core.Models.Domain.Bill;
+using CleanArchitecture.Application.CrudServices.Models.Bill;
 using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Domain.Models;
 using CleanArchitecture.FunctionalTests.Extensions;
 using CleanArchitecture.FunctionalTests.Fixture;
 using CleanArchitecture.Tests.Shared.Builder.Account;

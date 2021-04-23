@@ -1,8 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces.Data;
-using CleanArchitecture.Core.Interfaces.SqlQueries;
 using CleanArchitecture.Domain.Base;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Exceptions;
@@ -11,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Infrastructure.Database.Budget
 {
-    public class BudgetContext : DbContext, IBudgetContext
+    public class BudgetContext : DbContext
     {
         //DB Set's
         public DbSet<BillEntity> Bill { get; set; }
@@ -20,15 +18,9 @@ namespace CleanArchitecture.Infrastructure.Database.Budget
         public DbSet<UserBankAccountEntity> UserBankAccount { get; set; }
         public DbSet<UserBillEntity> UserBill { get; set; }
 
-        //Queries
-        public IBillQueries BillQueries { get; }
-
-        public BudgetContext(DbContextOptions<BudgetContext> options,
-                             IBillQueries billQueries)
+        public BudgetContext(DbContextOptions<BudgetContext> options)
             : base(options)
         {
-            BillQueries = billQueries;
-            billQueries.SetBudgetContext(this);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Models.Domain.User;
+using CleanArchitecture.Application.CrudServices.Models.User;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Infrastructure.Database.Budget;
 using CleanArchitecture.Infrastructure.Database.Identity;

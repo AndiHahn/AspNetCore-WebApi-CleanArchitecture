@@ -3,11 +3,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Validations;
-using CleanArchitecture.Core.Interfaces.Data;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Exceptions;
+using CleanArchitecture.Domain.Interfaces;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.UseCases.Collaboration.Commands
 {
@@ -27,18 +26,21 @@ namespace CleanArchitecture.Application.UseCases.Collaboration.Commands
 
     public class ShareAccountWithUserCommandHandler : IRequestHandler<ShareAccountWithUserCommand>
     {
-        private readonly IBudgetContext context;
+        private readonly IUserRepository userRepository;
+        private readonly IBankAccountRepository bankAccountRepository;
 
         public ShareAccountWithUserCommandHandler(
-            IBudgetContext context)
+            IUserRepository userRepository,
+            IBankAccountRepository bankAccountRepository)
         {
-            this.context = context ?? throw new ArgumentNullException(nameof(context));
+            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            this.bankAccountRepository = bankAccountRepository ?? throw new ArgumentNullException(nameof(bankAccountRepository));
         }
 
         public async Task<Unit> Handle(ShareAccountWithUserCommand request, CancellationToken cancellationToken)
         {
             var account = await EnsureCurrentUserHasAccessToAccountAsync(request.AccountId, request.CurrentUserId);
-            var user = (await context.User.FindAsync(request.ShareWithUserId))
+            var user = (await userRepository.GetByIdAsync(request.ShareWithUserId))
                 .AssertEntityFound(request.ShareWithUserId);
 
             if (account.UserBankAccounts.Any(ua => ua.UserId == request.ShareWithUserId))
@@ -52,7 +54,7 @@ namespace CleanArchitecture.Application.UseCases.Collaboration.Commands
                 UserId = user.Id
             });
 
-            await context.SaveChangesAsync(cancellationToken);
+            await bankAccountRepository.UpdateAsync(account);
 
             return Unit.Value;
         }
@@ -61,9 +63,7 @@ namespace CleanArchitecture.Application.UseCases.Collaboration.Commands
             Guid accountId,
             Guid currentUserId)
         {
-            var account = (await context.BankAccount
-                    .Include(a => a.UserBankAccounts)
-                    .FirstOrDefaultAsync(a => a.Id == accountId))
+            var account = (await bankAccountRepository.GetByIdWithUsersAsync(accountId))
                 .AssertEntityFound(accountId);
 
             if (account.UserBankAccounts.All(ua => ua.UserId != currentUserId))

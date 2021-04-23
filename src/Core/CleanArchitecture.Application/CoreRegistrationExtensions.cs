@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
 using CleanArchitecture.Application.CrudServices;
-using CleanArchitecture.Core.Interfaces.CrudServices;
-using CleanArchitecture.Core.Models.Domain.BankAccount;
-using CleanArchitecture.Core.Models.Domain.Bill;
-using CleanArchitecture.Core.Models.Domain.User;
+using CleanArchitecture.Application.CrudServices.Models.BankAccount;
+using CleanArchitecture.Application.CrudServices.Models.Bill;
+using CleanArchitecture.Application.CrudServices.Models.User;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
