@@ -95,6 +95,15 @@ namespace CleanArchitecture.Web.Api.Extensions
                         Type = "https://httpstatuses.com/400"
                     });
 
+                opts.Map<UnauthorizedException>(ex =>
+                    new Microsoft.AspNetCore.Mvc.ProblemDetails
+                    {
+                        Title = "Unauthorized",
+                        Detail = ex.Message,
+                        Status = 401,
+                        Type = "https://httpstatuses.com/401"
+                    });
+
                 opts.Map<ForbiddenException>(ex =>
                     new Microsoft.AspNetCore.Mvc.ProblemDetails
                     {

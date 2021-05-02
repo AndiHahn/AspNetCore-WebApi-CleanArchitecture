@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Configurations;
-using CleanArchitecture.Application.CrudServices;
 using CleanArchitecture.Application.CrudServices.Interfaces;
 using CleanArchitecture.Application.CrudServices.Models.User;
 using CleanArchitecture.Domain.Exceptions;
@@ -62,7 +61,7 @@ namespace CleanArchitecture.Web.Api.Api
 
             if (!await userManager.CheckPasswordAsync(user, model.Password))
             {
-                throw new BadRequestException("Invalid login credentials.");
+                throw new UnauthorizedException("Invalid login credentials.");
             }
 
             DateTime expires = DateTime.UtcNow.AddMinutes(60);
