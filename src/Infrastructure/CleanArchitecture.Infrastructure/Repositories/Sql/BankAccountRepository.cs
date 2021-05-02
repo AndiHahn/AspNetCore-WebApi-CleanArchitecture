@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Domain.Interfaces;
+using CleanArchitecture.Domain.Interfaces.Repositories;
 using CleanArchitecture.Infrastructure.Database.Budget;
 using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitecture.Infrastructure.Repositories
+namespace CleanArchitecture.Infrastructure.Repositories.Sql
 {
     public class BankAccountRepository : EfRepository<BankAccountEntity>, IBankAccountRepository
     {

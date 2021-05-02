@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CleanArchitecture.Application.CrudServices.Models.BankAccount;
 using CleanArchitecture.Domain.Interfaces;
+using CleanArchitecture.Domain.Interfaces.Repositories;
 using MediatR;
 
 namespace CleanArchitecture.Application.UseCases.Collaboration.Queries

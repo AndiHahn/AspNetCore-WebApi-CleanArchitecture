@@ -1,7 +1,11 @@
 ﻿using CleanArchitecture.Domain.Interfaces;
+using CleanArchitecture.Domain.Interfaces.Repositories;
+using CleanArchitecture.Domain.Interfaces.Services;
 using CleanArchitecture.Infrastructure.Database.Budget;
 using CleanArchitecture.Infrastructure.Database.Identity;
 using CleanArchitecture.Infrastructure.Repositories;
+using CleanArchitecture.Infrastructure.Repositories.Sql;
+using CleanArchitecture.Infrastructure.Repositories.TableStorage;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
 using CleanArchitecture.Infrastructure.Services.Email;
 using Microsoft.EntityFrameworkCore;

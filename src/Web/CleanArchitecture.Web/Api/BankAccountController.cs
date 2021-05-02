@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.CrudServices;
+using CleanArchitecture.Application.CrudServices.Interfaces;
 using CleanArchitecture.Application.CrudServices.Models.BankAccount;
 using CleanArchitecture.Application.Extensions;
 using Microsoft.AspNetCore.Authorization;

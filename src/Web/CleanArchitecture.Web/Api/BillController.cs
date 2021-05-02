@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.CrudServices;
+using CleanArchitecture.Application.CrudServices.Interfaces;
 using CleanArchitecture.Application.CrudServices.Models.Bill;
 using CleanArchitecture.Application.Extensions;
 using CleanArchitecture.Common.Models.Resource.Bill;

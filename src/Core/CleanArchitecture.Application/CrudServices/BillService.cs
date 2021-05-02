@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Application.CrudServices.Interfaces;
 using CleanArchitecture.Application.CrudServices.Models.Bill;
 using CleanArchitecture.Application.Validations;
 using CleanArchitecture.Common.Models.Resource.Bill;
@@ -9,6 +10,7 @@ using CleanArchitecture.Domain.BlobEntities;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Exceptions;
 using CleanArchitecture.Domain.Interfaces;
+using CleanArchitecture.Domain.Interfaces.Repositories;
 using CleanArchitecture.Domain.Models;
 using Microsoft.AspNetCore.Http;
 

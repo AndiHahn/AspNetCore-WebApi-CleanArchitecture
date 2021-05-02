@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using CleanArchitecture.Application.CrudServices;
+using CleanArchitecture.Application.CrudServices.Interfaces;
 using CleanArchitecture.Application.CrudServices.Models.BankAccount;
 using CleanArchitecture.Application.CrudServices.Models.Bill;
 using CleanArchitecture.Application.CrudServices.Models.User;

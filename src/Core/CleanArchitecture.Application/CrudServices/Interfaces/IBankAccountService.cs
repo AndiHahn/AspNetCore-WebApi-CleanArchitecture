@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.CrudServices.Models.BankAccount;
 
-namespace CleanArchitecture.Application.CrudServices
+namespace CleanArchitecture.Application.CrudServices.Interfaces
 {
     public interface IBankAccountService
     {

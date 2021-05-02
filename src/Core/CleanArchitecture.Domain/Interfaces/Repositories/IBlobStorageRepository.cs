@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using CleanArchitecture.Domain.BlobEntities;
 
-namespace CleanArchitecture.Domain.Interfaces
+namespace CleanArchitecture.Domain.Interfaces.Repositories
 {
     public interface IBlobStorageRepository
     {

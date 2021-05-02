@@ -6,6 +6,7 @@ using CleanArchitecture.Application.Validations;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Exceptions;
 using CleanArchitecture.Domain.Interfaces;
+using CleanArchitecture.Domain.Interfaces.Repositories;
 using MediatR;
 
 namespace CleanArchitecture.Application.UseCases.Collaboration.Commands

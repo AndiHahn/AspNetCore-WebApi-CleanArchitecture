@@ -1,8 +1,8 @@
 ﻿using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Domain.Interfaces;
+using CleanArchitecture.Domain.Interfaces.Repositories;
 using CleanArchitecture.Infrastructure.Database.Budget;
 
-namespace CleanArchitecture.Infrastructure.Repositories
+namespace CleanArchitecture.Infrastructure.Repositories.Sql
 {
     public class UserRepository : EfRepository<UserEntity>, IUserRepository
     {

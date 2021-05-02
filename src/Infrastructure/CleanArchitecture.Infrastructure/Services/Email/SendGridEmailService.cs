@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using CleanArchitecture.Common.Models.Email;
 using CleanArchitecture.Domain.Interfaces;
+using CleanArchitecture.Domain.Interfaces.Services;
 using Microsoft.Extensions.Options;
 using SendGrid;
 using SendGrid.Helpers.Mail;

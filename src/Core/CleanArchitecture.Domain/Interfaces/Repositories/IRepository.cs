@@ -5,7 +5,7 @@ using CleanArchitecture.Common.Models.Query;
 using CleanArchitecture.Domain.Base;
 using CleanArchitecture.Domain.Models;
 
-namespace CleanArchitecture.Domain.Interfaces
+namespace CleanArchitecture.Domain.Interfaces.Repositories
 {
     public interface IRepository<TEntity>
         where TEntity : BaseEntity

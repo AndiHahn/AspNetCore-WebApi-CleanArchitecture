@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using CleanArchitecture.Common.Models.Query;
 using CleanArchitecture.Domain.Base;
-using CleanArchitecture.Domain.Interfaces;
+using CleanArchitecture.Domain.Interfaces.Repositories;
 using CleanArchitecture.Domain.Models;
 using CleanArchitecture.Infrastructure.Database.Budget;
 using CleanArchitecture.Infrastructure.Repositories.GenericQuery;
 using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitecture.Infrastructure.Repositories
+namespace CleanArchitecture.Infrastructure.Repositories.Sql
 {
     public abstract class EfRepository<TEntity> : IRepository<TEntity>
         where TEntity : BaseEntity

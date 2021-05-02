@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Configurations;
 using CleanArchitecture.Application.CrudServices;
+using CleanArchitecture.Application.CrudServices.Interfaces;
 using CleanArchitecture.Application.CrudServices.Models.User;
 using CleanArchitecture.Domain.Exceptions;
 using CleanArchitecture.Domain.Models;

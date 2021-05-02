@@ -6,7 +6,7 @@ using CleanArchitecture.Domain.BlobEntities;
 using CleanArchitecture.Domain.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace CleanArchitecture.Application.CrudServices
+namespace CleanArchitecture.Application.CrudServices.Interfaces
 {
     public interface IBillService
     {

@@ -4,10 +4,10 @@ using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using CleanArchitecture.Domain.BlobEntities;
 using CleanArchitecture.Domain.Exceptions;
-using CleanArchitecture.Domain.Interfaces;
+using CleanArchitecture.Domain.Interfaces.Repositories;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
 
-namespace CleanArchitecture.Infrastructure.Repositories
+namespace CleanArchitecture.Infrastructure.Repositories.TableStorage
 {
     public class BlobStorageRepository : IBlobStorageRepository
     {

@@ -6,7 +6,7 @@ using CleanArchitecture.Common.Models.Resource.Bill;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Models;
 
-namespace CleanArchitecture.Domain.Interfaces
+namespace CleanArchitecture.Domain.Interfaces.Repositories
 {
     public interface IBillRepository : IRepository<BillEntity>
     {

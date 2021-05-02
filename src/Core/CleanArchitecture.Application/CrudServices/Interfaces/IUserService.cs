@@ -2,7 +2,7 @@
 using CleanArchitecture.Application.CrudServices.Models.User;
 using CleanArchitecture.Domain.Models;
 
-namespace CleanArchitecture.Application.CrudServices
+namespace CleanArchitecture.Application.CrudServices.Interfaces
 {
     public interface IUserService
     {
