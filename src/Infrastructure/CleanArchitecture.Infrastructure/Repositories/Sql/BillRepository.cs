@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CleanArchitecture.Common.Models.Query;
 using CleanArchitecture.Common.Models.Resource.Bill;
 using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Domain.Interfaces;
 using CleanArchitecture.Domain.Interfaces.Repositories;
 using CleanArchitecture.Domain.Models;
-using CleanArchitecture.Infrastructure.Database.Budget;
 using CleanArchitecture.Infrastructure.Repositories.GenericQuery;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,9 +14,9 @@ namespace CleanArchitecture.Infrastructure.Repositories.Sql
 {
     public class BillRepository : EfRepository<BillEntity>, IBillRepository
     {
-        private readonly BudgetContext context;
+        private readonly IBudgetContext context;
 
-        public BillRepository(BudgetContext context)
+        public BillRepository(IBudgetContext context)
         : base(context)
         {
             this.context = context ?? throw new System.ArgumentNullException(nameof(context));
@@ -67,15 +66,6 @@ namespace CleanArchitecture.Infrastructure.Repositories.Sql
             return await context.Bill
                 .Include(b => b.UserBills)
                 .FirstOrDefaultAsync(b => b.Id == id);
-        }
-
-        public async Task<IEnumerable<BillEntity>> GetSharedBillsAsync(Guid userId)
-        {
-            return await context.UserBill
-                .Include(ub => ub.Bill)
-                .Where(ub => ub.UserId == userId && ub.Bill.CreatedByUserId != userId)
-                .Select(ub => ub.Bill)
-                .ToListAsync();
         }
     }
 }

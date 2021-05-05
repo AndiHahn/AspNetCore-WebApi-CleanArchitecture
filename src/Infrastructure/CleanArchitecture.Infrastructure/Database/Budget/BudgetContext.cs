@@ -4,12 +4,13 @@ using System.Threading.Tasks;
 using CleanArchitecture.Domain.Base;
 using CleanArchitecture.Domain.Entities;
 using CleanArchitecture.Domain.Exceptions;
+using CleanArchitecture.Domain.Interfaces;
 using CleanArchitecture.Infrastructure.Database.Budget.Config;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Infrastructure.Database.Budget
 {
-    public class BudgetContext : DbContext
+    public class BudgetContext : DbContext, IBudgetContext
     {
         //DB Set's
         public DbSet<BillEntity> Bill { get; set; }

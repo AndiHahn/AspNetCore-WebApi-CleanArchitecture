@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.CrudServices.Models.User;
 using CleanArchitecture.Domain.Entities;
+using CleanArchitecture.Domain.Interfaces;
 using CleanArchitecture.Infrastructure.Database.Budget;
 using CleanArchitecture.Infrastructure.Database.Identity;
 using CleanArchitecture.Web.Api;
@@ -50,7 +51,7 @@ namespace CleanArchitecture.FunctionalTests.Fixture
 
                 //Add a database context (ApplicationDbContext) using an in-memory 
                 //database for testing.
-                services.AddDbContext<BudgetContext>(options =>
+                services.AddDbContext<IBudgetContext, BudgetContext>(options =>
                 {
                     options.UseInMemoryDatabase("InMemoryDbForTesting");
                     options.UseInternalServiceProvider(provider);
@@ -79,7 +80,7 @@ namespace CleanArchitecture.FunctionalTests.Fixture
 
                 Task.Run(async () => await userManager.CreateAsync(testUser, "password")).Wait();
 
-                var context = scopedServices.GetRequiredService<BudgetContext>();
+                var context = scopedServices.GetRequiredService<IBudgetContext>();
                 UserId = new Guid(testUser.Id);
 
                 context.User.Add(new UserEntity
@@ -88,9 +89,6 @@ namespace CleanArchitecture.FunctionalTests.Fixture
                 });
 
                 context.SaveChanges();
-
-                //Ensure the database is created.
-                context.Database.EnsureCreated();
             });
         }
 
@@ -118,12 +116,12 @@ namespace CleanArchitecture.FunctionalTests.Fixture
             return client;
         }
 
-        public void SetupDatabase(Action<BudgetContext> setupCallback = null)
+        public void SetupDatabase(Action<IBudgetContext> setupCallback = null)
         {
             //Create a scope to obtain a reference to the database context
             using var scope = serviceProvider.CreateScope();
             var scopedServices = scope.ServiceProvider;
-            var context = scopedServices.GetRequiredService<BudgetContext>();
+            var context = scopedServices.GetRequiredService<IBudgetContext>();
 
             ClearEntitiesInContext(context);
 
@@ -132,7 +130,7 @@ namespace CleanArchitecture.FunctionalTests.Fixture
             context.SaveChanges();
         }
 
-        private void ClearEntitiesInContext(BudgetContext context)
+        private void ClearEntitiesInContext(IBudgetContext context)
         {
             context.Bill.RemoveRange(context.Bill);
             context.UserBankAccount.RemoveRange(context.UserBankAccount);

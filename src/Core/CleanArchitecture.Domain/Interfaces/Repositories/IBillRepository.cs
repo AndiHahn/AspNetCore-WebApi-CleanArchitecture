@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanArchitecture.Common.Models.Query;
 using CleanArchitecture.Common.Models.Resource.Bill;
@@ -18,6 +17,5 @@ namespace CleanArchitecture.Domain.Interfaces.Repositories
         Task<PagedResult<BillEntity>> SearchByUserAsync(BillSearchParameter searchParameter, Guid userId);
 
         Task<BillEntity> GetByIdWithUsersAsync(Guid id);
-        Task<IEnumerable<BillEntity>> GetSharedBillsAsync(Guid currentUserId);
     }
 }

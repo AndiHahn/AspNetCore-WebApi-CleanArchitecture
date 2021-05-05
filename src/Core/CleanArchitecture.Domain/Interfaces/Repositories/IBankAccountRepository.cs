@@ -9,6 +9,5 @@ namespace CleanArchitecture.Domain.Interfaces.Repositories
     {
         Task<IEnumerable<BankAccountEntity>> ListByUserAsync(Guid userId);
         Task<BankAccountEntity> GetByIdWithUsersAsync(Guid id);
-        Task<IEnumerable<BankAccountEntity>> GetSharedAccountsAsync(Guid userId);
     }
 }

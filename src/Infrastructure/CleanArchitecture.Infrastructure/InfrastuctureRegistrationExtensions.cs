@@ -3,7 +3,6 @@ using CleanArchitecture.Domain.Interfaces.Repositories;
 using CleanArchitecture.Domain.Interfaces.Services;
 using CleanArchitecture.Infrastructure.Database.Budget;
 using CleanArchitecture.Infrastructure.Database.Identity;
-using CleanArchitecture.Infrastructure.Repositories;
 using CleanArchitecture.Infrastructure.Repositories.Sql;
 using CleanArchitecture.Infrastructure.Repositories.TableStorage;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
@@ -40,7 +39,7 @@ namespace CleanArchitecture.Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddDbContext<BudgetContext>(
+            services.AddDbContext<IBudgetContext, BudgetContext>(
                 options => options
                     .UseSqlServer(configuration.GetConnectionString("ApplicationDbConnection")));
 

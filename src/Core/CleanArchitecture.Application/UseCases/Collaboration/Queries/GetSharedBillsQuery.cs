@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CleanArchitecture.Application.CrudServices.Models.Bill;
 using CleanArchitecture.Domain.Interfaces;
-using CleanArchitecture.Domain.Interfaces.Repositories;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Application.UseCases.Collaboration.Queries
 {
@@ -24,21 +24,26 @@ namespace CleanArchitecture.Application.UseCases.Collaboration.Queries
     public class GetSharedBillsQueryHandler : IRequestHandler<GetSharedBillsQuery, IEnumerable<BillModel>>
     {
         private readonly IMapper mapper;
-        private readonly IBillRepository billRepository;
+        private readonly IBudgetContext context;
 
         public GetSharedBillsQueryHandler(
             IMapper mapper,
-            IBillRepository billRepository)
+            IBudgetContext context)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
+            this.context = context ?? throw new ArgumentNullException(nameof(context));
         }
 
         public async Task<IEnumerable<BillModel>> Handle(GetSharedBillsQuery request, CancellationToken cancellationToken)
         {
             Guid currentUserId = request.CurrentUserId;
 
-            var sharedBills = await billRepository.GetSharedBillsAsync(currentUserId);
+            var sharedBills = await context.UserBill
+                .Include(ub => ub.Bill)
+                .Where(ub => ub.UserId == currentUserId &&
+                             ub.Bill.CreatedByUserId != currentUserId)
+                .Select(ub => ub.Bill)
+                .ToListAsync(cancellationToken);
 
             return sharedBills.Select(mapper.Map<BillModel>);
         }

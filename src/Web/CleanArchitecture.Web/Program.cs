@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using CleanArchitecture.Domain.Interfaces;
 using CleanArchitecture.Infrastructure.Database;
 using CleanArchitecture.Infrastructure.Database.Budget;
 using CleanArchitecture.Infrastructure.Database.Identity;
@@ -28,7 +29,7 @@ namespace CleanArchitecture.Web.Api
                 {
                     logger.LogInformation("Start database migration...");
 
-                    var budgetContext = services.GetRequiredService<BudgetContext>();
+                    var budgetContext = services.GetRequiredService<IBudgetContext>();
                     await budgetContext.MigrateAsync();
                     var identityContext = services.GetRequiredService<IdentityContext>();
                     await identityContext.Database.MigrateAsync();
