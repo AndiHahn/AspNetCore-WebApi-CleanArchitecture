@@ -30,7 +30,7 @@ namespace CleanArchitecture.Infrastructure.Database.Budget
             UserBankAccountModelBuilder.ApplyModelBuilder(modelBuilder);
             UserBillModelBuilder.ApplyModelBuilder(modelBuilder);
 
-            modelBuilder.SetQueryFilterOnEntities<ISoftDeletableEntity>(s => !s.Deleted);
+            modelBuilder.ApplyGlobalFilters<ISoftDeletableEntity>(s => !s.Deleted);
         }
 
         public async Task MigrateAsync()

@@ -1,50 +1,28 @@
 ﻿using System;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Reflection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace CleanArchitecture.Infrastructure.Database
 {
     public static class ModelBuilderExtensions
     {
-        public static void SetQueryFilterOnEntities<TEntityInterface>(
+        public static void ApplyGlobalFilters<TInterface>(
             this ModelBuilder builder,
-            Expression<Func<TEntityInterface, bool>> filterExpression)
+            Expression<Func<TInterface, bool>> expression)
         {
-            foreach (var type in builder.Model.GetEntityTypes()
-                .Where(t => t.BaseType == null)
-                .Select(t => t.ClrType)
-                .Where(t => typeof(TEntityInterface).IsAssignableFrom(t)))
+            foreach (var entityType in builder.Model.GetEntityTypes())
             {
-                builder.SetEntityQueryFilter<TEntityInterface>(
-                    type,
-                    filterExpression);
+                if (entityType.ClrType.GetInterface(typeof(TInterface).Name) != null)
+                {
+                    var newParam = Expression.Parameter(entityType.ClrType);
+                    var newbody = ReplacingExpressionVisitor.Replace(expression.Parameters.Single(), newParam,
+                        expression.Body);
+                    builder.Entity(entityType.ClrType)
+                        .HasQueryFilter(Expression.Lambda(newbody, newParam));
+                }
             }
-        }
-
-        static void SetEntityQueryFilter<TEntityInterface>(
-            this ModelBuilder builder,
-            Type entityType,
-            Expression<Func<TEntityInterface, bool>> filterExpression)
-        {
-            SetQueryFilterMethod
-                .MakeGenericMethod(entityType, typeof(TEntityInterface))
-                .Invoke(null, new object[] { builder, filterExpression });
-        }
-
-        static readonly MethodInfo SetQueryFilterMethod = typeof(ModelBuilderExtensions)
-            .GetMethods(BindingFlags.NonPublic | BindingFlags.Static)
-            .Single(t => t.IsGenericMethod && t.Name == nameof(SetQueryFilter));
-
-        static void SetQueryFilter<TEntity, TEntityInterface>(
-            this ModelBuilder builder,
-            Expression<Func<TEntityInterface, bool>> filterExpression)
-            where TEntityInterface : class
-            where TEntity : class, TEntityInterface
-        {
-            var concreteExpression = filterExpression.Convert<TEntityInterface, TEntity>();
-            builder.Entity<TEntity>().HasQueryFilter(concreteExpression);
         }
     }
 }
