@@ -30,8 +30,7 @@ namespace CleanArchitecture.Infrastructure.Database.Budget
             UserBankAccountModelBuilder.ApplyModelBuilder(modelBuilder);
             UserBillModelBuilder.ApplyModelBuilder(modelBuilder);
 
-            //Soft deletable Entities
-            //modelBuilder.Entity<EntityType>().HasQueryFilter(p => !p.Deleted);
+            modelBuilder.SetQueryFilterOnEntities<ISoftDeletableEntity>(s => !s.Deleted);
         }
 
         public async Task MigrateAsync()
@@ -43,8 +42,8 @@ namespace CleanArchitecture.Infrastructure.Database.Budget
         {
             try
             {
-                SetExpectedVersionForVersionableEntities();
-                SetDeletedFlagForDeletedSoftDeletableEntities();
+                SetExpectedVersionOnVersionableEntities();
+                SetDeletedFlagOnDeletedSoftDeletableEntities();
                 return await base.SaveChangesAsync(cancellationToken);
             }
             catch (DbUpdateConcurrencyException ex)
@@ -61,7 +60,7 @@ namespace CleanArchitecture.Infrastructure.Database.Budget
             }
         }
 
-        private void SetExpectedVersionForVersionableEntities()
+        private void SetExpectedVersionOnVersionableEntities()
         {
             ChangeTracker.DetectChanges();
             var modifiedEntities = ChangeTracker.Entries().Where(x => x.State == EntityState.Modified);
@@ -76,7 +75,7 @@ namespace CleanArchitecture.Infrastructure.Database.Budget
             }
         }
 
-        private void SetDeletedFlagForDeletedSoftDeletableEntities()
+        private void SetDeletedFlagOnDeletedSoftDeletableEntities()
         {
             ChangeTracker.DetectChanges();
             var deletedEntities = ChangeTracker.Entries().Where(x => x.State == EntityState.Deleted);
@@ -85,7 +84,7 @@ namespace CleanArchitecture.Infrastructure.Database.Budget
             {
                 if (entityEntry.Entity is ISoftDeletableEntity softDeletableEntity)
                 {
-                    entityEntry.State = EntityState.Unchanged;
+                    entityEntry.State = EntityState.Modified;
                     softDeletableEntity.Deleted = true;
                 }
             }
