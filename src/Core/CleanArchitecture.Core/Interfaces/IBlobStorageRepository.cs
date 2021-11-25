@@ -13,5 +13,7 @@ namespace CleanArchitecture.Core.Interfaces
         Task RemoveBlobAsync(string containerName, string blobUrl, CancellationToken cancellationToken = default);
 
         Task<bool> RemoveBlobIfExistsAsync(string containerName, string blobUrl, CancellationToken cancellationToken = default);
+
+        Task<bool> BlobExistsAsync(string containerName, string blobUrl, CancellationToken cancellationToken = default);
     }
 }

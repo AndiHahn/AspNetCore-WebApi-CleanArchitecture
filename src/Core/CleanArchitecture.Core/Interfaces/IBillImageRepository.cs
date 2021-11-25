@@ -13,5 +13,7 @@ namespace CleanArchitecture.Core.Interfaces
         Task DeleteImageAsync(Guid billId, CancellationToken cancellationToken = default);
 
         Task<Blob> DownloadImageAsync(Guid billId, CancellationToken cancellationToken = default);
+
+        Task<bool> ImageExistsAsync(Guid billId, CancellationToken cancellationToken = default);
     }
 }

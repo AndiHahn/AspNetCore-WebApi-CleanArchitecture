@@ -70,5 +70,11 @@ namespace CleanArchitecture.Infrastructure.Repositories
 
             return false;
         }
+
+        public Task<bool> BlobExistsAsync(string containerName, string blobUrl, CancellationToken cancellationToken = default)
+        {
+            BlobClient blobClient = azureStorageClientFactory.GetBlobClient(containerName, blobUrl);
+            return blobClient.ExistsAsync(cancellationToken).ContinueWith(r => r.Result.Value);
+        }
     }
 }

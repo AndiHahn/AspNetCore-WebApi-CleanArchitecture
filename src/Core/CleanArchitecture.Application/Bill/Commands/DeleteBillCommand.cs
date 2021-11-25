@@ -23,11 +23,14 @@ namespace CleanArchitecture.Application.Bill
     internal class DeleteBillCommandHandler : IRequestHandler<DeleteBillCommand>
     {
         private readonly IBillRepository billRepository;
+        private readonly IBillImageRepository billImageRepository;
 
         public DeleteBillCommandHandler(
-            IBillRepository billRepository)
+            IBillRepository billRepository,
+            IBillImageRepository billImageRepository)
         {
             this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
+            this.billImageRepository = billImageRepository ?? throw new ArgumentNullException(nameof(billImageRepository));
         }
 
         public async Task<Unit> Handle(DeleteBillCommand request, CancellationToken cancellationToken)
@@ -41,6 +44,11 @@ namespace CleanArchitecture.Application.Bill
             if (bill.CreatedByUserId != request.CurrentUserId)
             {
                 throw new ForbiddenException($"Current user has no access to bill {request.BillId}");
+            }
+
+            if (await this.billImageRepository.ImageExistsAsync(request.BillId, cancellationToken))
+            {
+                await this.billImageRepository.DeleteImageAsync(request.BillId, cancellationToken);
             }
 
             await this.billRepository.DeleteAsync(bill, cancellationToken);

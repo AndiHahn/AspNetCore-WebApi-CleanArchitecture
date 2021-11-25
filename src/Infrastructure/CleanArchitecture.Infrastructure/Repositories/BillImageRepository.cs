@@ -11,6 +11,7 @@ namespace CleanArchitecture.Infrastructure.Repositories
     {
         private readonly IBlobStorageRepository blobStorageRepository;
 
+        private readonly string blobContainerName = "bills";
         private readonly Func<Guid, string> imagePathFunc = (billId) => $"images/{billId}";
 
         public BillImageRepository(
@@ -25,17 +26,22 @@ namespace CleanArchitecture.Infrastructure.Repositories
             await image.CopyToAsync(blob.Content, cancellationToken);
             blob.Reset();
 
-            await this.blobStorageRepository.UploadBlobAsync("bills", this.imagePathFunc(billId), blob);
+            await this.blobStorageRepository.UploadBlobAsync(blobContainerName, this.imagePathFunc(billId), blob);
         }
 
         public Task DeleteImageAsync(Guid billId, CancellationToken cancellationToken = default)
         {
-            return this.blobStorageRepository.RemoveBlobAsync("bills", this.imagePathFunc(billId));
+            return this.blobStorageRepository.RemoveBlobAsync(blobContainerName, this.imagePathFunc(billId));
         }
 
         public Task<Blob> DownloadImageAsync(Guid billId, CancellationToken cancellationToken = default)
         {
-            return this.blobStorageRepository.DownloadBlobAsync("bills", this.imagePathFunc(billId));
+            return this.blobStorageRepository.DownloadBlobAsync(blobContainerName, this.imagePathFunc(billId));
+        }
+
+        public Task<bool> ImageExistsAsync(Guid billId, CancellationToken cancellationToken = default)
+        {
+            return this.blobStorageRepository.BlobExistsAsync(blobContainerName, this.imagePathFunc(billId), cancellationToken);
         }
     }
 }
