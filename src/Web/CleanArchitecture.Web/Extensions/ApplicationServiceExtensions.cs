@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using CleanArchitecture.Application;
-using CleanArchitecture.Application.Configurations;
-using CleanArchitecture.Domain.Exceptions;
+using CleanArchitecture.Application.User;
+using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Database.Identity;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
@@ -23,7 +23,7 @@ namespace CleanArchitecture.Web.Api.Extensions
             IConfiguration configuration)
         {
             services.RegisterInfrastructure(configuration);
-            services.RegisterCore();
+            services.RegisterApplicationCore();
 
             services.AddHttpContextAccessor();
 
@@ -63,7 +63,7 @@ namespace CleanArchitecture.Web.Api.Extensions
                 {
                     x.RequireHttpsMetadata = false;
                     x.SaveToken = true;
-                    x.Audience = "cleanarchitecture-api";
+                    x.Audience = "clean-architecture";
                     x.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,

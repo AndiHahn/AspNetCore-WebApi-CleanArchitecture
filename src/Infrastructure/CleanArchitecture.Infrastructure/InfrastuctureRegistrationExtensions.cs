@@ -1,10 +1,7 @@
-﻿using CleanArchitecture.Domain.Interfaces;
-using CleanArchitecture.Domain.Interfaces.Repositories;
-using CleanArchitecture.Domain.Interfaces.Services;
+﻿using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Infrastructure.Database.Budget;
 using CleanArchitecture.Infrastructure.Database.Identity;
-using CleanArchitecture.Infrastructure.Repositories.Sql;
-using CleanArchitecture.Infrastructure.Repositories.TableStorage;
+using CleanArchitecture.Infrastructure.Repositories;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
 using CleanArchitecture.Infrastructure.Services.Email;
 using Microsoft.EntityFrameworkCore;
@@ -19,8 +16,8 @@ namespace CleanArchitecture.Infrastructure
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddScoped<IAzureStorageClientFactory, AzureStorageClientFactory>();
-            services.AddScoped<IBlobStorageRepository, BlobStorageRepository>();
+            services.AddSingleton<IAzureStorageClientFactory, AzureStorageClientFactory>();
+            services.AddSingleton<IBlobStorageRepository, BlobStorageRepository>();
             services.AddScoped<IEmailService, SendGridEmailService>();
 
             services.RegisterDatabase(configuration);
@@ -31,15 +28,17 @@ namespace CleanArchitecture.Infrastructure
         private static void RegisterRepositories(this IServiceCollection services)
         {
             services.AddScoped<IBillRepository, BillRepository>();
+            services.AddSingleton<IBillImageRepository, BillImageRepository>();
             services.AddScoped<IBankAccountRepository, BankAccountRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IIdentityUserRepository, IdentityUserRepository>();
         }
 
         private static void RegisterDatabase(
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.AddDbContext<IBudgetContext, BudgetContext>(
+            services.AddDbContext<BudgetContext>(
                 options => options
                     .UseSqlServer(configuration.GetConnectionString("ApplicationDbConnection")));
 

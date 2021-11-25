@@ -1,5 +1,5 @@
 ﻿using CleanArchitecture.Application;
-using CleanArchitecture.Application.Configurations;
+using CleanArchitecture.Application.User;
 using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Database.Identity;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
@@ -23,7 +23,7 @@ namespace CleanArchitecture.Web.Blazor.Extensions
             IConfiguration configuration)
         {
             services.RegisterInfrastructure(configuration);
-            services.RegisterCore();
+            services.RegisterApplicationCore();
 
             services.AddHttpContextAccessor();
             services.AddScoped<IBillFacade, BillFacade>();

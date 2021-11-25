@@ -1,37 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CleanArchitecture.Application.CrudServices;
-using CleanArchitecture.Application.CrudServices.Interfaces;
-using CleanArchitecture.Application.CrudServices.Models.Bill;
+using CleanArchitecture.Application.Bill;
 using CleanArchitecture.Web.Blazor.Modules.Core.Services;
+using MediatR;
 
 namespace CleanArchitecture.Web.Blazor.Modules.Bill.Facades
 {
     public class BillFacade : IBillFacade
     {
-        private readonly IBillService billService;
+        private readonly ISender sender;
         private readonly ICurrentUserService currentUserService;
 
         public BillFacade(
-            IBillService billService,
+            ISender sender,
             ICurrentUserService currentUserService)
         {
-            this.billService = billService ?? throw new ArgumentNullException(nameof(billService));
+            this.sender = sender ?? throw new ArgumentNullException(nameof(sender));
             this.currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
         }
 
-        public async Task<IEnumerable<BillModel>> GetBillsAsync(int pageSize, int pageIndex)
+        public async Task<IEnumerable<BillDto>> GetBillsAsync(int pageSize, int pageIndex)
         {
-            var queryParameter = new BillQueryParameter
-            {
-                PageSize = pageSize,
-                PageIndex = pageIndex
-            };
-
             Guid currentUserId = currentUserService.GetCurrentUserId();
 
-            var result = await billService.QueryAsync(queryParameter, currentUserId);
+            var result = await this.sender.Send(new SearchBillsQuery(currentUserId, pageSize, pageIndex));
+
             return result.Result;
         }
     }

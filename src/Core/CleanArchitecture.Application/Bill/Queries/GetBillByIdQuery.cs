@@ -1,0 +1,55 @@
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
+using CleanArchitecture.Core.Exceptions;
+using CleanArchitecture.Core.Interfaces;
+using MediatR;
+
+namespace CleanArchitecture.Application.Bill
+{
+    public class GetBillByIdQuery : IRequest<BillDto>
+    {
+        public GetBillByIdQuery(Guid currentUserId, Guid billId)
+        {
+            this.CurrentUserId = currentUserId;
+            this.BillId = billId;
+        }
+
+        public Guid CurrentUserId { get; }
+
+        public Guid BillId { get; }
+    }
+
+    internal class GetBillByIdQueryHandler : IRequestHandler<GetBillByIdQuery, BillDto>
+    {
+        private readonly IMapper mapper;
+        private readonly IBillRepository billRepository;
+
+        public GetBillByIdQueryHandler(
+            IMapper mapper,
+            IBillRepository billRepository)
+        {
+            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
+        }
+
+        public async Task<BillDto> Handle(GetBillByIdQuery request, CancellationToken cancellationToken)
+        {
+            var bill = await billRepository.GetByIdWithUsersAsync(request.BillId, cancellationToken);
+            if (bill == null)
+            {
+                throw new NotFoundException($"Bill with id {request.BillId} not found.");
+            }
+
+            if (bill.CreatedByUserId != request.CurrentUserId &&
+                bill.SharedWithUsers.All(ub => ub.UserId != request.CurrentUserId))
+            {
+                throw new ForbiddenException($"Current user has no access to bill {request.BillId}");
+            }
+
+            return this.mapper.Map<BillDto>(bill);
+        }
+    }
+}

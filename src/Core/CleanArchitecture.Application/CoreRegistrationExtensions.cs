@@ -1,9 +1,7 @@
 ﻿using System.Reflection;
-using CleanArchitecture.Application.CrudServices;
-using CleanArchitecture.Application.CrudServices.Interfaces;
-using CleanArchitecture.Application.CrudServices.Models.BankAccount;
-using CleanArchitecture.Application.CrudServices.Models.Bill;
-using CleanArchitecture.Application.CrudServices.Models.User;
+using CleanArchitecture.Application.BankAccount;
+using CleanArchitecture.Application.Bill;
+using CleanArchitecture.Application.User;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,29 +9,19 @@ namespace CleanArchitecture.Application
 {
     public static class CoreRegistrationExtensions
     {
-        public static void RegisterCore(this IServiceCollection services)
+        public static void RegisterApplicationCore(this IServiceCollection services)
         {
-            services.RegisterServices();
-            services.ConfigureModelMapper();
+            services.ConfigureDtoMapper();
             services.AddMediatR(Assembly.GetExecutingAssembly());
         }
 
-        private static void RegisterServices(this IServiceCollection services)
-        {
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IBillService, BillService>();
-            services.AddScoped<IBankAccountService, BankAccountService>();
-        }
-
-        private static void ConfigureModelMapper(this IServiceCollection services)
+        private static void ConfigureDtoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(config =>
             {
-                BankAccountModel.ApplyMappingConfiguration(config);
-                BillModel.ApplyMappingConfiguration(config);
-                BillCreateModel.ApplyMappingConfiguration(config);
-                UserModel.ApplyMappingConfiguration(config);
-                BankAccountCreateModel.ApplyMappingConfiguration(config);
+                BankAccountDto.ApplyMappingConfiguration(config);
+                UserDto.ApplyMappingConfiguration(config);
+                BillDto.ApplyMappingConfiguration(config);
             });
         }
     }

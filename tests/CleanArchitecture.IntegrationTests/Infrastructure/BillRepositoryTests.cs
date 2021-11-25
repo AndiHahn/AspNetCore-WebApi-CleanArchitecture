@@ -3,50 +3,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Bogus;
-using CleanArchitecture.Application.CrudServices.Models.Bill;
-using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Domain.Interfaces;
-using CleanArchitecture.Domain.Interfaces.Repositories;
+using CleanArchitecture.Core;
+using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Infrastructure.Repositories;
-using CleanArchitecture.Infrastructure.Repositories.Sql;
-using CleanArchitecture.IntegrationTests.Setup.Database;
-using CleanArchitecture.Tests.Shared.Builder.Account;
-using CleanArchitecture.Tests.Shared.Builder.Bill;
-using CleanArchitecture.Tests.Shared.Builder.User;
+using CleanArchitecture.IntegrationTests.Setup;
+using CleanArchitecture.Tests.Shared.Builder;
 using Xunit;
 
 namespace CleanArchitecture.IntegrationTests.Infrastructure
 {
     public class BillRepositoryTests
     {
-        private readonly UserEntity user = new UserEntityBuilder().Build();
+        private readonly User user = new UserBuilder().Build();
 
         public BillRepositoryTests()
         {
         }
 
         [Fact]
-        public async Task ListByUser_ShouldReturn_CorrectNumberOfBills()
+        public async Task SearchBills_ShouldReturn_CorrectNumberOfBills()
         {
             // Arrange
-            var billEntity1 = CreateBasicBillEntity();
-            var billEntity2 = CreateBasicBillEntity();
+            var billEntity1 = CreateBasicBill();
+            var billEntity2 = CreateBasicBill();
             var context = BudgetContext.CreateInMemoryDataContext(db =>
             {
                 db.Bill.Add(billEntity1);
                 db.Bill.Add(billEntity2);
             });
 
-            var queryParameter = new BillQueryParameter
-            {
-                PageIndex = 0,
-                PageSize = 10
-            };
-
             var sut = SetupSystemUnderTest(context);
 
             // Act
-            var result = await sut.ListByUserAsync(queryParameter, user.Id);
+            var result = await sut.SearchBillsAsync(user.Id);
 
             // Assert
             Assert.Equal(2, result.TotalCount);
@@ -54,21 +43,15 @@ namespace CleanArchitecture.IntegrationTests.Infrastructure
         }
 
         [Fact]
-        public async Task ListByUser_ShouldReturnEmptyResult_IfNoDataAvailable()
+        public async Task SearchBills_ShouldReturnEmptyResult_IfNoDataAvailable()
         {
             // Arrange
             var context = BudgetContext.CreateInMemoryDataContext();
 
-            var queryParameter = new BillQueryParameter
-            {
-                PageIndex = 0,
-                PageSize = 10
-            };
-
             var sut = SetupSystemUnderTest(context);
 
             // Act
-            var result = await sut.ListByUserAsync(queryParameter, user.Id);
+            var result = await sut.SearchBillsAsync(user.Id);
 
             // Assert
             Assert.Equal(0, result.TotalCount);
@@ -76,7 +59,7 @@ namespace CleanArchitecture.IntegrationTests.Infrastructure
         }
 
         [Fact]
-        public async Task ListByUser_ShouldReturnBills_OrderedByDateDescending()
+        public async Task SearchBills_ShouldReturnBills_OrderedByDateDescending()
         {
             // Arrange
             var billEntities = CreateBillEntitiesWithRandomDates();
@@ -88,16 +71,10 @@ namespace CleanArchitecture.IntegrationTests.Infrastructure
                 }
             });
 
-            var queryParameter = new BillQueryParameter
-            {
-                PageIndex = 0,
-                PageSize = 10
-            };
-
             var sut = SetupSystemUnderTest(context);
 
             // Act
-            var result = await sut.ListByUserAsync(queryParameter, user.Id);
+            var result = await sut.SearchBillsAsync(user.Id);
 
             // Assert
             DateTime previousDate = result.Result.First().Date;
@@ -108,24 +85,24 @@ namespace CleanArchitecture.IntegrationTests.Infrastructure
             }
         }
 
-        private BillEntity CreateBasicBillEntity()
+        private Bill CreateBasicBill()
         {
-            var accountEntity = new AccountEntityBuilder().Build();
-            return new BillEntityBuilder().WithAccount(accountEntity).CreatedByUser(user).Build();
+            var accountEntity = new AccountBuilder().Owner(this.user).Build();
+            return new BillBuilder().WithAccount(accountEntity).CreatedByUser(this.user).Build();
         }
 
-        private BillEntity CreateBillEntityWithDate(DateTime date)
+        private Bill CreateBillEntityWithDate(DateTime date)
         {
-            var accountEntity = new AccountEntityBuilder().Build();
-            return new BillEntityBuilder().WithDate(date)
-                        .WithAccount(accountEntity).CreatedByUser(user).Build();
+            var accountEntity = new AccountBuilder().Owner(this.user).Build();
+            return new BillBuilder().WithDate(date)
+                        .WithAccount(accountEntity).CreatedByUser(this.user).Build();
         }
 
-        private IList<BillEntity> CreateBillEntitiesWithRandomDates()
+        private IList<Bill> CreateBillEntitiesWithRandomDates()
         {
             var faker = new Faker();
 
-            return new List<BillEntity>
+            return new List<Bill>
             {
                 CreateBillEntityWithDate(faker.Date.Past()),
                 CreateBillEntityWithDate(faker.Date.Recent()),

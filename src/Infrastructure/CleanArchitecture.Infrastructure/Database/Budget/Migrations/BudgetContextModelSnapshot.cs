@@ -15,17 +15,18 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .UseIdentityColumns()
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.2");
+                .HasAnnotation("ProductVersion", "5.0.12")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.BankAccountEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.BankAccount", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OwnerId")
@@ -33,10 +34,12 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("OwnerId");
+
                     b.ToTable("BankAccount");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.BillEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Bill", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,25 +58,47 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Notes")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
                     b.Property<string>("ShopName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<byte[]>("Version")
-                        .HasColumnType("varbinary(max)");
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BankAccountId");
 
+                    b.HasIndex("CreatedByUserId");
+
                     b.ToTable("Bill");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserBankAccountEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User");
+                });
+
+            modelBuilder.Entity("CleanArchitecture.Core.UserBankAccount", b =>
                 {
                     b.Property<Guid>("BankAccountId")
                         .HasColumnType("uniqueidentifier");
@@ -88,59 +113,61 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
                     b.ToTable("UserBankAccount");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserBillEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.UserBill", b =>
                 {
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("BillId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("UserId", "BillId");
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasIndex("BillId");
+                    b.HasKey("BillId", "UserId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserBill");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.BankAccount", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.HasOne("CleanArchitecture.Core.User", "Owner")
+                        .WithMany("OwnedAccounts")
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
+                    b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.BillEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Bill", b =>
                 {
-                    b.HasOne("CleanArchitecture.Domain.Entities.BankAccountEntity", "BankAccount")
+                    b.HasOne("CleanArchitecture.Core.BankAccount", "BankAccount")
                         .WithMany("Bills")
                         .HasForeignKey("BankAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("CleanArchitecture.Core.User", "CreatedByUser")
+                        .WithMany("CreatedBills")
+                        .HasForeignKey("CreatedByUserId")
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("BankAccount");
+
+                    b.Navigation("CreatedByUser");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserBankAccountEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.UserBankAccount", b =>
                 {
-                    b.HasOne("CleanArchitecture.Domain.Entities.BankAccountEntity", "BankAccount")
-                        .WithMany("UserBankAccounts")
+                    b.HasOne("CleanArchitecture.Core.BankAccount", "BankAccount")
+                        .WithMany("SharedWithUsers")
                         .HasForeignKey("BankAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CleanArchitecture.Domain.Entities.UserEntity", "User")
-                        .WithMany("UserAccounts")
+                    b.HasOne("CleanArchitecture.Core.User", "User")
+                        .WithMany("SharedAccounts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -150,16 +177,16 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserBillEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.UserBill", b =>
                 {
-                    b.HasOne("CleanArchitecture.Domain.Entities.BillEntity", "Bill")
-                        .WithMany("UserBills")
+                    b.HasOne("CleanArchitecture.Core.Bill", "Bill")
+                        .WithMany("SharedWithUsers")
                         .HasForeignKey("BillId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("CleanArchitecture.Domain.Entities.UserEntity", "User")
-                        .WithMany("UserBills")
+                    b.HasOne("CleanArchitecture.Core.User", "User")
+                        .WithMany("SharedBills")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -169,23 +196,27 @@ namespace CleanArchitecture.Infrastructure.Database.Budget.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.BankAccountEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.BankAccount", b =>
                 {
                     b.Navigation("Bills");
 
-                    b.Navigation("UserBankAccounts");
+                    b.Navigation("SharedWithUsers");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.BillEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.Bill", b =>
                 {
-                    b.Navigation("UserBills");
+                    b.Navigation("SharedWithUsers");
                 });
 
-            modelBuilder.Entity("CleanArchitecture.Domain.Entities.UserEntity", b =>
+            modelBuilder.Entity("CleanArchitecture.Core.User", b =>
                 {
-                    b.Navigation("UserAccounts");
+                    b.Navigation("CreatedBills");
 
-                    b.Navigation("UserBills");
+                    b.Navigation("OwnedAccounts");
+
+                    b.Navigation("SharedAccounts");
+
+                    b.Navigation("SharedBills");
                 });
 #pragma warning restore 612, 618
         }

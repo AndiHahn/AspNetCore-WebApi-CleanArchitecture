@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using CleanArchitecture.Application.CrudServices.Models.Bill;
-using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Domain.Models;
+using CleanArchitecture.Application.Bill;
+using CleanArchitecture.Core.Models;
 using CleanArchitecture.FunctionalTests.Extensions;
 using CleanArchitecture.FunctionalTests.Fixture;
-using CleanArchitecture.Tests.Shared.Builder.Account;
-using CleanArchitecture.Tests.Shared.Builder.Bill;
-using CleanArchitecture.Tests.Shared.Builder.User;
+using CleanArchitecture.Tests.Shared.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
@@ -29,26 +26,26 @@ namespace CleanArchitecture.FunctionalTests
             // Arrange
             var client = await apiFunctionalTestFixture.CreateAuthorizedClientAsync();
 
-            var userEntity = new UserEntityBuilder(apiFunctionalTestFixture.UserId).Build();
-            var accountEntity = new AccountEntityBuilder().Build();
-            var billEntity = new BillEntityBuilder()
-                .WithAccount(accountEntity)
-                .CreatedByUser(userEntity).Build();
+            var user = new UserBuilder().Id(apiFunctionalTestFixture.UserId).Build();
+            var account = new AccountBuilder().Owner(user).Build();
+            var bill = new BillBuilder()
+                .WithAccount(account)
+                .CreatedByUser(user).Build();
             apiFunctionalTestFixture.SetupDatabase(db =>
             {
-                db.Bill.Add(billEntity);
+                db.Bill.Add(bill);
             });
 
             // Act
             var response = await client.GetAsync("/api/bill");
-            var result = await response.ResolveAsync<PagedResult<BillModel>>();
+            var result = await response.ResolveAsync<PagedResult<BillDto>>();
 
             // Assert
             response.EnsureSuccessStatusCode();
             Assert.NotNull(result);
             Assert.Single(result.Result);
             Assert.Equal(1, result.TotalCount);
-            AssertBillEntityEqualModel(billEntity, result.Result.First());
+            AssertBillDtoEqualModel(bill, result.Result.First());
         }
 
         [Fact]
@@ -61,7 +58,7 @@ namespace CleanArchitecture.FunctionalTests
 
             // Act
             var response = await client.GetAsync("/api/bill");
-            var result = await response.ResolveAsync<PagedResult<BillModel>>();
+            var result = await response.ResolveAsync<PagedResult<BillDto>>();
 
             // Assert
             response.EnsureSuccessStatusCode();
@@ -89,23 +86,23 @@ namespace CleanArchitecture.FunctionalTests
             // Arrange
             var client = await apiFunctionalTestFixture.CreateAuthorizedClientAsync();
 
-            var userEntity = new UserEntityBuilder(apiFunctionalTestFixture.UserId).Build();
-            var accountEntity = new AccountEntityBuilder().Build();
-            var billEntity = new BillEntityBuilder()
-                .WithAccount(accountEntity).CreatedByUser(userEntity).Build();
+            var user = new UserBuilder().Id(apiFunctionalTestFixture.UserId).Build();
+            var account = new AccountBuilder().Owner(user).Build();
+            var bill = new BillBuilder()
+                .WithAccount(account).CreatedByUser(user).Build();
             apiFunctionalTestFixture.SetupDatabase(db =>
             {
-                db.Bill.Add(billEntity);
+                db.Bill.Add(bill);
             });
 
             // Act
-            var response = await client.GetAsync($"/api/bill/{billEntity.Id}");
-            var result = await response.ResolveAsync<BillModel>();
+            var response = await client.GetAsync($"/api/bill/{bill.Id}");
+            var result = await response.ResolveAsync<BillDto>();
 
             // Assert
             response.EnsureSuccessStatusCode();
             Assert.NotNull(result);
-            AssertBillEntityEqualModel(billEntity, result);
+            AssertBillDtoEqualModel(bill, result);
         }
 
         [Fact]
@@ -124,14 +121,14 @@ namespace CleanArchitecture.FunctionalTests
             Assert.Equal(404, result.Status);
         }
 
-        private void AssertBillEntityEqualModel(BillEntity entity, BillModel model)
+        private void AssertBillDtoEqualModel(Core.Bill model, BillDto dto)
         {
-            Assert.Equal(entity.Id, model.Id);
-            Assert.Equal(entity.ShopName, model.ShopName);
-            Assert.Equal(entity.Price, model.Price);
-            Assert.Equal(entity.Date, model.Date);
-            Assert.Equal(entity.Notes, model.Notes);
-            Assert.Equal(entity.Category, model.Category);
+            Assert.Equal(model.Id, dto.Id);
+            Assert.Equal(model.ShopName, dto.ShopName);
+            Assert.Equal(model.Price, dto.Price);
+            Assert.Equal(model.Date, dto.Date);
+            Assert.Equal(model.Notes, dto.Notes);
+            Assert.Equal(model.Category, dto.Category);
         }
     }
 }

@@ -1,23 +1,27 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Domain.Base;
-using CleanArchitecture.Domain.Entities;
-using CleanArchitecture.Domain.Exceptions;
-using CleanArchitecture.Domain.Interfaces;
-using CleanArchitecture.Infrastructure.Database.Budget.Config;
+using CleanArchitecture.Core;
+using CleanArchitecture.Core.Exceptions;
+using CleanArchitecture.Core.Shared;
+using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+using SmartEnum.EFCore;
 
 namespace CleanArchitecture.Infrastructure.Database.Budget
 {
-    public class BudgetContext : DbContext, IBudgetContext
+    public class BudgetContext : DbContext
     {
-        //DB Set's
-        public DbSet<BillEntity> Bill { get; set; }
-        public DbSet<UserEntity> User { get; set; }
-        public DbSet<BankAccountEntity> BankAccount { get; set; }
-        public DbSet<UserBankAccountEntity> UserBankAccount { get; set; }
-        public DbSet<UserBillEntity> UserBill { get; set; }
+        public DbSet<Bill> Bill { get; set; }
+
+        public DbSet<User> User { get; set; }
+
+        public DbSet<BankAccount> BankAccount { get; set; }
+
+        public DbSet<UserBankAccount> UserBankAccount { get; set; }
+
+        public DbSet<UserBill> UserBill { get; set; }
 
         public BudgetContext(DbContextOptions<BudgetContext> options)
             : base(options)
@@ -27,21 +31,19 @@ namespace CleanArchitecture.Infrastructure.Database.Budget
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            UserBankAccountModelBuilder.ApplyModelBuilder(modelBuilder);
-            UserBillModelBuilder.ApplyModelBuilder(modelBuilder);
+
+            modelBuilder.ConfigureEntities();
+
+            modelBuilder.ConfigureSmartEnum();
 
             modelBuilder.ApplyGlobalFilters<ISoftDeletableEntity>(s => !s.Deleted);
-        }
-
-        public async Task MigrateAsync()
-        {
-            await Database.MigrateAsync();
         }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             try
             {
+                ChangeTracker.DetectChanges();
                 SetExpectedVersionOnVersionableEntities();
                 SetDeletedFlagOnDeletedSoftDeletableEntities();
                 return await base.SaveChangesAsync(cancellationToken);
@@ -51,43 +53,35 @@ namespace CleanArchitecture.Infrastructure.Database.Budget
                 foreach (var entry in ex.Entries)
                 {
                     string entityName = entry.Entity.GetType().Name;
-                    if (entry.Entity is BaseEntity be)
+                    if (entry.Entity is Entity<Guid> entity)
                     {
-                        throw new ConflictException($"Could not save {entityName} with Id {be.Id}. Entity may have been modified or deleted since entities were loaded.");
+                        throw new ConflictException($"Could not save {entityName} with Id {entity.Id}. Entity may have been modified or deleted since entities were loaded.", ex);
                     }
                 }
-                throw new ConflictException("Concurrency conflict.");
+                throw new ConflictException("Concurrency conflict.", ex);
             }
         }
 
         private void SetExpectedVersionOnVersionableEntities()
         {
-            ChangeTracker.DetectChanges();
-            var modifiedEntities = ChangeTracker.Entries().Where(x => x.State == EntityState.Modified);
-
-            foreach (var entityEntry in modifiedEntities)
-            {
-                if (entityEntry.Entity is IVersionableEntity versionableEntity)
+            ChangeTracker.Entries<IVersionableEntity>()
+                .Where(e => e.State == EntityState.Modified).ToList()
+                .ForEach(e =>
                 {
-                    var versionProperty = Entry(entityEntry.Entity).Property(nameof(IVersionableEntity.Version));
-                    versionProperty.OriginalValue = versionableEntity.Version;
-                }
-            }
+                    var versionProperty = Entry(e.Entity).Property(nameof(IVersionableEntity.Version));
+                    versionProperty.OriginalValue = e.Entity.Version;
+                });
         }
 
         private void SetDeletedFlagOnDeletedSoftDeletableEntities()
         {
-            ChangeTracker.DetectChanges();
-            var deletedEntities = ChangeTracker.Entries().Where(x => x.State == EntityState.Deleted);
-
-            foreach (var entityEntry in deletedEntities)
-            {
-                if (entityEntry.Entity is ISoftDeletableEntity softDeletableEntity)
+            ChangeTracker.Entries<ISoftDeletableEntity>()
+                .Where(e => e.State == EntityState.Modified).ToList()
+                .ForEach(e =>
                 {
-                    entityEntry.State = EntityState.Modified;
-                    softDeletableEntity.Deleted = true;
-                }
-            }
+                    e.State = EntityState.Modified;
+                    e.Entity.Deleted = true;
+                });
         }
     }
 }

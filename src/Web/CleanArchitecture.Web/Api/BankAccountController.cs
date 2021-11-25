@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CleanArchitecture.Application.CrudServices;
-using CleanArchitecture.Application.CrudServices.Interfaces;
-using CleanArchitecture.Application.CrudServices.Models.BankAccount;
-using CleanArchitecture.Application.Extensions;
+using CleanArchitecture.Application.BankAccount;
+using CleanArchitecture.Application.User;
+using CleanArchitecture.Web.Api.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace CleanArchitecture.Web.Api.Api
 {
@@ -17,45 +16,54 @@ namespace CleanArchitecture.Web.Api.Api
     [ApiController]
     public class BankAccountController : ControllerBase
     {
-        private readonly IBankAccountService bankAccountService;
-        private readonly ILogger<BankAccountController> logger;
+        private readonly ISender sender;
         private readonly Guid currentUserId;
 
         public BankAccountController(
-            IBankAccountService bankAccountService,
-            IHttpContextAccessor httpContextAccessor,
-            ILogger<BankAccountController> logger)
+            ISender sender,
+            IHttpContextAccessor httpContextAccessor)
         {
             currentUserId = httpContextAccessor.HttpContext.User.GetUserId();
-            this.bankAccountService = bankAccountService ?? throw new ArgumentNullException(nameof(bankAccountService));
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.sender = sender ?? throw new ArgumentNullException(nameof(sender));
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<BankAccountModel>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<BankAccountDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetAll()
-        {
-            logger.LogInformation("Get all available accounts...");
-            return Ok(await bankAccountService.GetAllAsync(currentUserId));
-        }
+            => Ok(await this.sender.Send(new GetBankAccountsQuery(this.currentUserId)));
 
         [HttpGet("{id}")]
-        [ProducesResponseType(typeof(BankAccountModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BankAccountDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(Guid id)
-        {
-            return Ok(await bankAccountService.GetByIdAsync(id, currentUserId));
-        }
+            => Ok(await this.sender.Send(new GetBankAccountByIdQuery(this.currentUserId, id)));
 
         [HttpPost]
-        [ProducesResponseType(typeof(BankAccountModel), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(BankAccountDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> CreateAccount([FromBody] BankAccountCreateModel createModel)
+        public async Task<IActionResult> CreateAccount([FromBody] BankAccountCreateDto dto)
         {
-            var createdBill = await bankAccountService.CreateAccountAsync(createModel, currentUserId);
-            return Created($"{HttpContext.Request.Path}/{createdBill.Id}", createdBill);
+            var account = await this.sender.Send(new CreateBankAccountCommand(this.currentUserId, dto.Name));
+            return Created($"{HttpContext.Request.Path}/{account.Id}", account);
         }
+
+        [HttpPut("account/{accountId}/share/{userId}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ShareAccountWithUser(Guid accountId, Guid userId)
+        {
+            await this.sender.Send(new ShareAccountWithUserCommand(accountId, userId, currentUserId));
+            return NoContent();
+        }
+
+        [HttpGet("account/shared")]
+        [ProducesResponseType(typeof(IEnumerable<BankAccountDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetSharedAccounts()
+            => Ok(await sender.Send(new GetSharedAccountsQuery(currentUserId)));
     }
 }

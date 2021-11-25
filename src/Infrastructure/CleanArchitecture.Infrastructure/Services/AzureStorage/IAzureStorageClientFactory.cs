@@ -7,10 +7,15 @@ namespace CleanArchitecture.Infrastructure.Services.AzureStorage
     public interface IAzureStorageClientFactory
     {
         Task<CloudTableClient> GetOrCreateTableClientAsync(string tableName);
+
         Task CreateTableIfNotExistsAsync(string tableName);
+
         CloudTableClient GetTableClient();
+
         Task<BlobClient> GetOrCreateBlobClientAsync(string containerName, string blobName);
+
         Task CreateBlobContainerIfNotExistsAsync(string containerName);
+
         BlobClient GetBlobClient(string containerName, string blobName);
     }
 }

@@ -1,7 +1,7 @@
 ﻿@page "/bills"
 @attribute [Authorize]
 @using CleanArchitecture.Web.Blazor.Modules.Bill.Facades
-@using CleanArchitecture.Application.CrudServices.Models.Bill
+@using CleanArchitecture.Application.Bill
 @inject IBillFacade billFacade
 
 <h1>Bills</h1>
@@ -40,7 +40,7 @@ else
 }
 
 @code {
-    private BillModel[] bills;
+    private BillDto[] bills;
 
     protected override async Task OnInitializedAsync()
     {
