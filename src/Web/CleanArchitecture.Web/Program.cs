@@ -1,11 +1,15 @@
 using System;
 using System.Threading.Tasks;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using CleanArchitecture.Infrastructure.Database;
 using CleanArchitecture.Infrastructure.Database.Budget;
 using CleanArchitecture.Infrastructure.Database.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -51,8 +55,29 @@ namespace CleanArchitecture.Web.Api
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureLogging(logging =>
+                {
+                    logging.AddConsole();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureAppConfiguration((webHost, configBuilder) =>
+                    {
+                        var config = configBuilder.Build();
+
+                        bool useKeyVault = config.GetSection("KeyVault").GetValue<bool>("Enabled");
+                        if (useKeyVault)
+                        {
+                            string keyVaultUri = config.GetSection("KeyVault").GetValue<string>("Uri");
+
+                            var secretClient = new SecretClient(
+                                new Uri(keyVaultUri),
+                                new DefaultAzureCredential());
+
+                            configBuilder.AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+                        }
+                    });
+
                     webBuilder.UseStartup<Startup>();
                 });
     }
