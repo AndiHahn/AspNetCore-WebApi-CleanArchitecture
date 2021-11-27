@@ -8,7 +8,7 @@ namespace CleanArchitecture.Web.Api.Filter
 {
     public static class ControllerExtensions
     {
-        public static IActionResult ToActionResult(this ControllerBase controller, IResult result)
+        public static IActionResult ToActionResult(this ControllerBase controller, Application.Models.IResult result)
         {
             ObjectResult ProblemDetails(string title, int status)
                 => controller.Problem(result.ErrorMessage, null, status, title, GetType(status));
