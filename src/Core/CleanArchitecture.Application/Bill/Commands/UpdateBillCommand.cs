@@ -20,7 +20,8 @@ namespace CleanArchitecture.Application.Bill
             double? price,
             DateTime? date,
             string? notes,
-            Category? category)
+            Category? category,
+            byte[] version)
         {
             this.CurrentUserId = currentUserId;
             this.BillId = billId;
@@ -29,6 +30,7 @@ namespace CleanArchitecture.Application.Bill
             this.Category = category;
             this.Date = date;
             this.Notes = notes;
+            this.Version = version;
         }
 
         public Guid CurrentUserId { get; }
@@ -44,6 +46,8 @@ namespace CleanArchitecture.Application.Bill
         public string? Notes { get; }
 
         public Category? Category { get; }
+
+        public byte[] Version { get; }
     }
 
     internal class UpdateBillCommandHandler : IRequestHandler<UpdateBillCommand, Result<BillDto>>
@@ -72,7 +76,7 @@ namespace CleanArchitecture.Application.Bill
                 return Result<BillDto>.Forbidden($"Current user has no access to bill {request.BillId}");
             }
 
-            bill.Update(request.Date, request.Category, request.Price, request.ShopName, request.Notes);
+            bill.Update(request.Date, request.Category, request.Price, request.ShopName, request.Notes, request.Version);
 
             await this.billRepository.UpdateAsync(bill);
 

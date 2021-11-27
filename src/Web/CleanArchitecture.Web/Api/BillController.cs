@@ -81,7 +81,8 @@ namespace CleanArchitecture.Web.Api.Api
                     dto.Price,
                     dto.Date,
                     dto.Notes,
-                    dto.Category?.ToClass()));
+                    dto.Category?.ToClass(),
+                    dto.Version));
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

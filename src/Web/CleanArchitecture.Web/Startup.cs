@@ -98,8 +98,6 @@ namespace CleanArchitecture.Web.Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseMiddleware<ExceptionMiddleware>();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -117,6 +115,8 @@ namespace CleanArchitecture.Web.Api
             app.UseRouting();
 
             app.UseCors(allowSpecificOriginsPolicy);
+
+            app.UseMiddleware<ExceptionMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();

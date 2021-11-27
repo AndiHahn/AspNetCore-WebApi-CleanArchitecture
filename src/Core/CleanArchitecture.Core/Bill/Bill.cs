@@ -70,13 +70,14 @@ namespace CleanArchitecture.Core
 
         public virtual IReadOnlyCollection<UserBill> SharedWithUsers => this.sharedWithUsers.AsReadOnly();
 
-        public void Update(DateTime? date, Category? category, double? price, string? shopName, string? notes)
+        public void Update(DateTime? date, Category? category, double? price, string? shopName, string? notes, byte[] version)
         {
             this.Price = price ?? this.Price;
             this.Date = date ?? this.Date;
             this.Category = category ?? this.Category;
             this.ShopName = shopName ?? this.ShopName;
             this.Notes = notes ?? this.Notes;
+            this.Version = version;
         }
 
         public void ShareWithUser(User user)
