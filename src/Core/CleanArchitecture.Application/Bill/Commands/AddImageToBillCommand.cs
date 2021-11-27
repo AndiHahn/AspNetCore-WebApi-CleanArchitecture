@@ -1,4 +1,4 @@
-﻿using CleanArchitecture.Core.Exceptions;
+﻿using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Models;
 using MediatR;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Application.Bill
 {
-    public class AddImageToBillCommand : IRequest
+    public class AddImageToBillCommand : IRequest<Result>
     {
         public AddImageToBillCommand(Guid currentUserId, Guid billId, IFormFile image)
         {
@@ -25,7 +25,7 @@ namespace CleanArchitecture.Application.Bill
         public IFormFile Image { get; }
     }
 
-    internal class AddImageToBillCommandHandler : IRequestHandler<AddImageToBillCommand>
+    internal class AddImageToBillCommandHandler : IRequestHandler<AddImageToBillCommand, Result>
     {
         private readonly IBillRepository billRepository;
         private readonly IBillImageRepository billImageRepository;
@@ -38,12 +38,12 @@ namespace CleanArchitecture.Application.Bill
             this.billImageRepository = billImageRepository ?? throw new ArgumentNullException(nameof(billImageRepository));
         }
 
-        public async Task<Unit> Handle(AddImageToBillCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(AddImageToBillCommand request, CancellationToken cancellationToken)
         {
             var bill = await this.billRepository.GetByIdAsync(request.BillId, cancellationToken);
             if (!bill.HasCreated(request.CurrentUserId))
             {
-                throw new ForbiddenException($"Current user has no access to bill {request.BillId}");
+                return Result.Forbidden($"Current user has no access to bill {request.BillId}");
             }
 
             await using var blob = new Blob(request.Image.ContentType);
@@ -51,7 +51,7 @@ namespace CleanArchitecture.Application.Bill
             blob.Reset();
             await this.billImageRepository.UploadImageAsync(request.BillId, blob);
 
-            return Unit.Value;
+            return Result.Success();
         }
     }
 }

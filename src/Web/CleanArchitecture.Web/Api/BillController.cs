@@ -33,14 +33,14 @@ namespace CleanArchitecture.Web.Api.Api
         [HttpGet]
         [ProducesResponseType(typeof(PagedResult<BillDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> List([FromQuery] SearchBillsParameters parameters)
-            => Ok(await sender.Send(
+        public Task<Result<PagedResult<BillDto>>> List([FromQuery] SearchBillsParameters parameters)
+            => sender.Send(
                 new SearchBillsQuery(
                     this.currentUserId,
                     parameters.PageSize,
                     parameters.PageIndex,
                     parameters.IncludeShared,
-                    parameters.Search)));
+                    parameters.Search));
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(BillDto), StatusCodes.Status200OK)]
@@ -72,8 +72,8 @@ namespace CleanArchitecture.Web.Api.Api
         [ProducesResponseType(typeof(BillDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateBill(Guid id, [FromBody] BillUpdateDto dto)
-            => Ok(await this.sender.Send(
+        public Task<Result<BillDto>> UpdateBill(Guid id, [FromBody] BillUpdateDto dto)
+            => this.sender.Send(
                 new UpdateBillCommand(
                     this.currentUserId,
                     id,
@@ -81,17 +81,14 @@ namespace CleanArchitecture.Web.Api.Api
                     dto.Price,
                     dto.Date,
                     dto.Notes,
-                    dto.Category?.ToClass())));
+                    dto.Category?.ToClass()));
 
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteBill(Guid id)
-        {
-            await this.sender.Send(new DeleteBillCommand(this.currentUserId, id));
-            return NoContent();
-        }
+        public Task<Result> DeleteBill(Guid id)
+            => this.sender.Send(new DeleteBillCommand(this.currentUserId, id));
 
         [HttpGet("{id}/image")]
         [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
@@ -99,28 +96,25 @@ namespace CleanArchitecture.Web.Api.Api
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetImage(Guid id)
         {
-            var image = await this.sender.Send(new GetBillImageQuery(this.currentUserId, id));
-            return File(image.Content, image.ContentType);
+            var result = await this.sender.Send(new GetBillImageQuery(this.currentUserId, id));
+
+            if (result.Status != ResultStatus.Success) return this.ToActionResult(result);
+
+            return File(result.Value.Content, result.Value.ContentType);
         }
 
         [HttpPost("{id}/image")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> AddImage(Guid id, [FromForm] IFormFile image)
-        {
-            await this.sender.Send(new AddImageToBillCommand(this.currentUserId, id, image));
-            return NoContent();
-        }
+        public Task<Result> AddImage(Guid id, [FromForm] IFormFile image)
+            => this.sender.Send(new AddImageToBillCommand(this.currentUserId, id, image));
 
         [HttpDelete("{id}/image")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteImage(Guid id)
-        {
-            await this.sender.Send(new DeleteImageFromBillCommand(this.currentUserId, id));
-            return NoContent();
-        }
+        public Task<Result> DeleteImage(Guid id)
+            => this.sender.Send(new DeleteImageFromBillCommand(this.currentUserId, id));
     }
 }

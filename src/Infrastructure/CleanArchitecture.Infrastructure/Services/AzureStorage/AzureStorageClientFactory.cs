@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace CleanArchitecture.Infrastructure.Services.AzureStorage
 {
-    public class AzureStorageClientFactory : IAzureStorageClientFactory
+    internal class AzureStorageClientFactory : IAzureStorageClientFactory
     {
         private readonly AzureStorageConfiguration storageConfiguration;
         private CloudTableClient tableClient;

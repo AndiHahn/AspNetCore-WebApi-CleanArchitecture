@@ -1,14 +1,14 @@
 ﻿using CleanArchitecture.Core.Models;
-using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Models;
 
 namespace CleanArchitecture.Application.Bill
 {
-    public class GetBillImageQuery : IRequest<Blob>
+    public class GetBillImageQuery : IRequest<Result<Blob>>
     {
         public GetBillImageQuery(Guid currentUserId, Guid billId)
         {
@@ -21,7 +21,7 @@ namespace CleanArchitecture.Application.Bill
         public Guid BillId { get; }
     }
 
-    internal class GetBillImageQueryHandler : IRequestHandler<GetBillImageQuery, Blob>
+    internal class GetBillImageQueryHandler : IRequestHandler<GetBillImageQuery, Result<Blob>>
     {
         private readonly IBillRepository billRepository;
         private readonly IBillImageRepository billImageRepository;
@@ -34,15 +34,21 @@ namespace CleanArchitecture.Application.Bill
             this.billImageRepository = billImageRepository ?? throw new ArgumentNullException(nameof(billImageRepository));
         }
 
-        public async Task<Blob> Handle(GetBillImageQuery request, CancellationToken cancellationToken)
+        public async Task<Result<Blob>> Handle(GetBillImageQuery request, CancellationToken cancellationToken)
         {
             var bill = await this.billRepository.GetByIdAsync(request.BillId, cancellationToken);
             if (!bill.HasCreated(request.CurrentUserId))
             {
-                throw new ForbiddenException($"Current user has no access to bill {request.BillId}");
+                return Result<Blob>.Forbidden($"Current user has no access to bill {request.BillId}");
             }
 
-            return await this.billImageRepository.DownloadImageAsync(request.BillId, cancellationToken);
+            var image = await this.billImageRepository.DownloadImageAsync(request.BillId, cancellationToken);
+            if (image is null)
+            {
+                return Result<Blob>.NotFound($"Image for bill {request.BillId} not found.");
+            }
+
+            return image;
         }
     }
 }

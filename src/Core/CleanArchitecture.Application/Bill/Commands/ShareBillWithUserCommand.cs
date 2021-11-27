@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Exceptions;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 
 namespace CleanArchitecture.Application.Bill
 {
-    public class ShareBillWithUserCommand : IRequest
+    public class ShareBillWithUserCommand : IRequest<Result>
     {
         public ShareBillWithUserCommand(Guid billId, Guid shareWithUserId, Guid currentUserId)
         {
@@ -23,7 +23,7 @@ namespace CleanArchitecture.Application.Bill
         public Guid ShareWithUserId { get; }
     }
 
-    internal class ShareBillWithUserCommandHandler : IRequestHandler<ShareBillWithUserCommand>
+    internal class ShareBillWithUserCommandHandler : IRequestHandler<ShareBillWithUserCommand, Result>
     {
         private readonly IUserRepository userRepository;
         private readonly IBillRepository billRepository;
@@ -36,30 +36,30 @@ namespace CleanArchitecture.Application.Bill
             this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
         }
 
-        public async Task<Unit> Handle(ShareBillWithUserCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(ShareBillWithUserCommand request, CancellationToken cancellationToken)
         {
             var bill = await billRepository.GetByIdWithUsersAsync(request.BillId, cancellationToken);
             if (bill == null)
             {
-                throw new NotFoundException($"Bill with id {request.BillId} not found.");
+                return Result.NotFound($"Bill with id {request.BillId} not found.");
             }
 
             if (!bill.HasCreated(request.CurrentUserId))
             {
-                throw new ForbiddenException($"Current user does not have access to bill {request.BillId}");
+                return Result.Forbidden($"Current user does not have access to bill {request.BillId}");
             }
 
             var user = await this.userRepository.GetByIdAsync(request.ShareWithUserId);
             if (user == null)
             {
-                throw new NotFoundException($"User with id {request.ShareWithUserId} not found.");
+                return Result.NotFound($"User with id {request.ShareWithUserId} not found.");
             }
 
             bill.ShareWithUser(user);
 
             await this.billRepository.UpdateAsync(bill, cancellationToken);
 
-            return Unit.Value;
+            return Result.Success();
         }
     }
 }

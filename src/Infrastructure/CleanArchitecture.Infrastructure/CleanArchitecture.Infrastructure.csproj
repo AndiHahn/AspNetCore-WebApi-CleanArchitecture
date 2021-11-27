@@ -21,6 +21,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\CleanArchitecture.Core\CleanArchitecture.Core.csproj" />
+
+	<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+	  <_Parameter1>CleanArchitecture.IntegrationTests</_Parameter1>
+	</AssemblyAttribute>
   </ItemGroup>
 
 </Project>

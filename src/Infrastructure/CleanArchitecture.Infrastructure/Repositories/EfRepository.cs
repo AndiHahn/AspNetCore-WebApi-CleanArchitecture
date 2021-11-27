@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Infrastructure.Repositories
 {
-    public abstract class EfRepository<TEntity> : IRepository<TEntity>
+    internal abstract class EfRepository<TEntity> : IRepository<TEntity>
         where TEntity : Entity<Guid>
     {
         private readonly BudgetContext context;

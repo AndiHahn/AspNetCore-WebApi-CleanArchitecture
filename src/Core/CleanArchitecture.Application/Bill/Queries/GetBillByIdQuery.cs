@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using CleanArchitecture.Application.Models;
-using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 
@@ -42,14 +41,12 @@ namespace CleanArchitecture.Application.Bill
             if (bill == null)
             {
                 return Result<BillDto>.NotFound($"Bill with id {request.BillId} not found.");
-                throw new NotFoundException($"Bill with id {request.BillId} not found.");
             }
 
             if (bill.CreatedByUserId != request.CurrentUserId &&
                 bill.SharedWithUsers.All(ub => ub.UserId != request.CurrentUserId))
             {
                 return Result<BillDto>.Forbidden();
-                throw new ForbiddenException($"Current user has no access to bill {request.BillId}");
             }
 
             return Result<BillDto>.Success(this.mapper.Map<BillDto>(bill));

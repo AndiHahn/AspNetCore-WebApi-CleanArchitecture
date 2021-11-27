@@ -4,13 +4,12 @@ using System.Threading.Tasks;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using CleanArchitecture.Core.Models;
-using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
 
 namespace CleanArchitecture.Infrastructure.Repositories
 {
-    public class BlobStorageRepository : IBlobStorageRepository
+    internal class BlobStorageRepository : IBlobStorageRepository
     {
         private readonly IAzureStorageClientFactory azureStorageClientFactory;
 
@@ -24,7 +23,7 @@ namespace CleanArchitecture.Infrastructure.Repositories
             var blobClient = azureStorageClientFactory.GetBlobClient(containerName, blobUrl);
             if (!await blobClient.ExistsAsync(cancellationToken))
             {
-                throw new NotFoundException($"Blob with url {blobUrl} not available.");
+                return null;
             }
 
             var downloadInfo = (await blobClient.DownloadAsync(cancellationToken)).Value;

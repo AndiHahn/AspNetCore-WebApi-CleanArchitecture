@@ -2,8 +2,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core;
-using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 
@@ -11,7 +11,7 @@ using MediatR;
 
 namespace CleanArchitecture.Application.Bill
 {
-    public class UpdateBillCommand : IRequest<BillDto>
+    public class UpdateBillCommand : IRequest<Result<BillDto>>
     {
         public UpdateBillCommand(
             Guid currentUserId,
@@ -46,7 +46,7 @@ namespace CleanArchitecture.Application.Bill
         public Category? Category { get; }
     }
 
-    internal class UpdateBillCommandHandler : IRequestHandler<UpdateBillCommand, BillDto>
+    internal class UpdateBillCommandHandler : IRequestHandler<UpdateBillCommand, Result<BillDto>>
     {
         private readonly IBillRepository billRepository;
         private readonly IMapper mapper;
@@ -59,17 +59,17 @@ namespace CleanArchitecture.Application.Bill
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<BillDto> Handle(UpdateBillCommand request, CancellationToken cancellationToken)
+        public async Task<Result<BillDto>> Handle(UpdateBillCommand request, CancellationToken cancellationToken)
         {
             var bill = await billRepository.GetByIdAsync(request.BillId);
             if (bill == null)
             {
-                throw new NotFoundException($"Bill with id {request.BillId} not found.");
+                return Result<BillDto>.NotFound($"Bill with id {request.BillId} not found.");
             }
 
             if (bill.CreatedByUserId != request.CurrentUserId)
             {
-                throw new ForbiddenException($"Current user has no access to bill {request.BillId}");
+                return Result<BillDto>.Forbidden($"Current user has no access to bill {request.BillId}");
             }
 
             bill.Update(request.Date, request.Category, request.Price, request.ShopName, request.Notes);

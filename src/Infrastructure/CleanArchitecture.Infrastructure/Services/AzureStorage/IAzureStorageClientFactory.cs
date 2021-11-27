@@ -4,7 +4,7 @@ using Microsoft.Azure.Cosmos.Table;
 
 namespace CleanArchitecture.Infrastructure.Services.AzureStorage
 {
-    public interface IAzureStorageClientFactory
+    internal interface IAzureStorageClientFactory
     {
         Task<CloudTableClient> GetOrCreateTableClientAsync(string tableName);
 

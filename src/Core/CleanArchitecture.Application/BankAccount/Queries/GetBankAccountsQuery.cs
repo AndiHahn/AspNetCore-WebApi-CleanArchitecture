@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 
 namespace CleanArchitecture.Application.BankAccount
 {
-    public class GetBankAccountsQuery : IRequest<IEnumerable<BankAccountDto>>
+    public class GetBankAccountsQuery : IRequest<Result<IEnumerable<BankAccountDto>>>
     {
         public GetBankAccountsQuery(Guid currentUserId)
         {
@@ -19,7 +20,7 @@ namespace CleanArchitecture.Application.BankAccount
         public Guid CurrentUserId { get; }
     }
 
-    internal class GetBankAccountsQueryHandler : IRequestHandler<GetBankAccountsQuery, IEnumerable<BankAccountDto>>
+    internal class GetBankAccountsQueryHandler : IRequestHandler<GetBankAccountsQuery, Result<IEnumerable<BankAccountDto>>>
     {
         private readonly IMapper mapper;
         private readonly IBankAccountRepository bankAccountRepository;
@@ -32,11 +33,11 @@ namespace CleanArchitecture.Application.BankAccount
             this.bankAccountRepository = bankAccountRepository ?? throw new ArgumentNullException(nameof(bankAccountRepository));
         }
 
-        public Task<IEnumerable<BankAccountDto>> Handle(GetBankAccountsQuery request, CancellationToken cancellationToken)
+        public Task<Result<IEnumerable<BankAccountDto>>> Handle(GetBankAccountsQuery request, CancellationToken cancellationToken)
         {
             return this.bankAccountRepository
                 .ListOwnAsync(request.CurrentUserId, cancellationToken)
-                .ContinueWith(r => r.Result.Select(this.mapper.Map<BankAccountDto>));
+                .ContinueWith(r => Result<IEnumerable<BankAccountDto>>.Success(r.Result.Select(this.mapper.Map<BankAccountDto>)));
         }
     }
 }

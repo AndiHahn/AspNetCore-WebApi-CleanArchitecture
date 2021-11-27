@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.BankAccount;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Application.User;
+using CleanArchitecture.Web.Api.Filter;
 using CleanArchitecture.Web.Api.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.Web.Api.Api
 {
+    [MapToProblemDetails]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
@@ -30,15 +33,15 @@ namespace CleanArchitecture.Web.Api.Api
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<BankAccountDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetAll()
-            => Ok(await this.sender.Send(new GetBankAccountsQuery(this.currentUserId)));
+        public Task<Result<IEnumerable<BankAccountDto>>> GetAll()
+            => this.sender.Send(new GetBankAccountsQuery(this.currentUserId));
 
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(BankAccountDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetById(Guid id)
-            => Ok(await this.sender.Send(new GetBankAccountByIdQuery(this.currentUserId, id)));
+        public Task<Result<BankAccountDto>> GetById(Guid id)
+            => this.sender.Send(new GetBankAccountByIdQuery(this.currentUserId, id));
 
         [HttpPost]
         [ProducesResponseType(typeof(BankAccountDto), StatusCodes.Status201Created)]
@@ -46,7 +49,10 @@ namespace CleanArchitecture.Web.Api.Api
         public async Task<IActionResult> CreateAccount([FromBody] BankAccountCreateDto dto)
         {
             var account = await this.sender.Send(new CreateBankAccountCommand(this.currentUserId, dto.Name));
-            return Created($"{HttpContext.Request.Path}/{account.Id}", account);
+
+            if (account.Status != ResultStatus.Success) return this.ToActionResult(account);
+
+            return Created($"{HttpContext.Request.Path}/{account.Value.Id}", account.Value);
         }
 
         [HttpPut("account/{accountId}/share/{userId}")]
@@ -54,16 +60,13 @@ namespace CleanArchitecture.Web.Api.Api
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> ShareAccountWithUser(Guid accountId, Guid userId)
-        {
-            await this.sender.Send(new ShareAccountWithUserCommand(accountId, userId, currentUserId));
-            return NoContent();
-        }
+        public Task<Result> ShareAccountWithUser(Guid accountId, Guid userId)
+            => this.sender.Send(new ShareAccountWithUserCommand(accountId, userId, currentUserId));
 
         [HttpGet("account/shared")]
         [ProducesResponseType(typeof(IEnumerable<BankAccountDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetSharedAccounts()
-            => Ok(await sender.Send(new GetSharedAccountsQuery(currentUserId)));
+        public Task<Result<IEnumerable<BankAccountDto>>> GetSharedAccounts()
+            => sender.Send(new GetSharedAccountsQuery(currentUserId));
     }
 }

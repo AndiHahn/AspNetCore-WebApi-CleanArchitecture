@@ -1,9 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Core;
-using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Core.Shared;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
@@ -41,25 +39,10 @@ namespace CleanArchitecture.Infrastructure.Database.Budget
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            try
-            {
-                ChangeTracker.DetectChanges();
-                SetExpectedVersionOnVersionableEntities();
-                SetDeletedFlagOnDeletedSoftDeletableEntities();
-                return await base.SaveChangesAsync(cancellationToken);
-            }
-            catch (DbUpdateConcurrencyException ex)
-            {
-                foreach (var entry in ex.Entries)
-                {
-                    string entityName = entry.Entity.GetType().Name;
-                    if (entry.Entity is Entity<Guid> entity)
-                    {
-                        throw new ConflictException($"Could not save {entityName} with Id {entity.Id}. Entity may have been modified or deleted since entities were loaded.", ex);
-                    }
-                }
-                throw new ConflictException("Concurrency conflict.", ex);
-            }
+            ChangeTracker.DetectChanges();
+            SetExpectedVersionOnVersionableEntities();
+            SetDeletedFlagOnDeletedSoftDeletableEntities();
+            return await base.SaveChangesAsync(cancellationToken);
         }
 
         private void SetExpectedVersionOnVersionableEntities()

@@ -2,7 +2,6 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Models;
 using CleanArchitecture.Infrastructure.Repositories;
@@ -41,14 +40,15 @@ namespace CleanArchitecture.IntegrationTests.Infrastructure
         }
 
         [Fact]
-        public async Task DownloadBlob_ShouldThrowException_IfBlobNotAvailable()
+        public async Task DownloadBlob_ShouldReturnNull_IfBlobNotAvailable()
         {
             // Arrange
             var repository = await SetupRepositoryAsync();
 
-            // Act && Assert
-            await Assert.ThrowsAsync<NotFoundException>(() =>
-                repository.DownloadBlobAsync(containerName, blobUrl));
+            // Act
+            var result = await repository.DownloadBlobAsync(containerName, blobUrl);
+            // Assert
+            Assert.Null(result);
         }
 
         private async Task<IBlobStorageRepository> SetupRepositoryAsync()

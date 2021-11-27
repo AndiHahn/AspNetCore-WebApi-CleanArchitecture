@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Models;
-using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 
@@ -40,12 +39,11 @@ namespace CleanArchitecture.Application.Bill
             if (bill == null)
             {
                 return Result.NotFound($"Bill with id {request.BillId} not found.");
-                throw new NotFoundException($"Bill with id {request.BillId} not found.");
             }
 
             if (bill.CreatedByUserId != request.CurrentUserId)
             {
-                throw new ForbiddenException($"Current user has no access to bill {request.BillId}");
+                return Result.Forbidden($"Current user has no access to bill {request.BillId}");
             }
 
             if (await this.billImageRepository.ImageExistsAsync(request.BillId, cancellationToken))

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace CleanArchitecture.Infrastructure.Database
 {
-    public static class ModelBuilderExtensions
+    internal static class ModelBuilderExtensions
     {
         public static void ApplyGlobalFilters<TInterface>(
             this ModelBuilder builder,

@@ -1,4 +1,4 @@
-﻿using CleanArchitecture.Core.Exceptions;
+﻿using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 using System;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Application.Bill
 {
-    public class DeleteImageFromBillCommand : IRequest
+    public class DeleteImageFromBillCommand : IRequest<Result>
     {
         public DeleteImageFromBillCommand(Guid currentUserId, Guid billId)
         {
@@ -20,7 +20,7 @@ namespace CleanArchitecture.Application.Bill
         public Guid BillId { get; }
     }
 
-    internal class DeleteImageFromBillCommandHandler : IRequestHandler<DeleteImageFromBillCommand>
+    internal class DeleteImageFromBillCommandHandler : IRequestHandler<DeleteImageFromBillCommand, Result>
     {
         private readonly IBillRepository billRepository;
         private readonly IBillImageRepository billImageRepository;
@@ -33,17 +33,17 @@ namespace CleanArchitecture.Application.Bill
             this.billImageRepository = billImageRepository ?? throw new ArgumentNullException(nameof(billImageRepository));
         }
 
-        public async Task<Unit> Handle(DeleteImageFromBillCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(DeleteImageFromBillCommand request, CancellationToken cancellationToken)
         {
             var bill = await this.billRepository.GetByIdAsync(request.BillId, cancellationToken);
             if (!bill.HasCreated(request.CurrentUserId))
             {
-                throw new ForbiddenException($"Current user has no access to bill {request.BillId}");
+                return Result.Forbidden($"Current user has no access to bill {request.BillId}");
             }
 
             await this.billImageRepository.DeleteImageAsync(request.BillId);
 
-            return Unit.Value;
+            return Result.Success();
         }
     }
 }

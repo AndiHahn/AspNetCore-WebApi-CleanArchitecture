@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 
 namespace CleanArchitecture.Application.Bill
 {
-    public class GetTotalExpensesByCategoryQuery : IRequest<IEnumerable<ExpensesDto>>
+    public class GetTotalExpensesByCategoryQuery : IRequest<Result<IEnumerable<ExpensesDto>>>
     {
         public GetTotalExpensesByCategoryQuery(Guid currentUserId)
         {
@@ -18,7 +19,7 @@ namespace CleanArchitecture.Application.Bill
         public Guid CurrentUserId { get; }
     }
 
-    internal class GetTotalExpensesQueryHandler : IRequestHandler<GetTotalExpensesByCategoryQuery, IEnumerable<ExpensesDto>>
+    internal class GetTotalExpensesQueryHandler : IRequestHandler<GetTotalExpensesByCategoryQuery, Result<IEnumerable<ExpensesDto>>>
     {
         private readonly IBillRepository billRepository;
 
@@ -28,17 +29,17 @@ namespace CleanArchitecture.Application.Bill
             this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
         }
 
-        public async Task<IEnumerable<ExpensesDto>> Handle(
+        public async Task<Result<IEnumerable<ExpensesDto>>> Handle(
             GetTotalExpensesByCategoryQuery request,
             CancellationToken cancellationToken)
         {
             var expensesByCategory = await this.billRepository.GetExpensesByCategoryAsync(request.CurrentUserId, cancellationToken);
 
-            return expensesByCategory.Select(e => new ExpensesDto
+            return Result<IEnumerable<ExpensesDto>>.Success(expensesByCategory.Select(e => new ExpensesDto
             {
                 Category = e.Key,
                 TotalAmount = e.Value
-            });
+            }));
         }
     }
 }

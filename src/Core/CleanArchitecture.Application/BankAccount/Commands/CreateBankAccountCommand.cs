@@ -2,12 +2,13 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 
 namespace CleanArchitecture.Application.BankAccount
 {
-    public class CreateBankAccountCommand : IRequest<BankAccountDto>
+    public class CreateBankAccountCommand : IRequest<Result<BankAccountDto>>
     {
         public CreateBankAccountCommand(Guid currentUserId, string name)
         {
@@ -20,7 +21,7 @@ namespace CleanArchitecture.Application.BankAccount
         public string Name { get; }
     }
 
-    internal class CreateBankAccountCommandHandler : IRequestHandler<CreateBankAccountCommand, BankAccountDto>
+    internal class CreateBankAccountCommandHandler : IRequestHandler<CreateBankAccountCommand, Result<BankAccountDto>>
     {
         private readonly IBankAccountRepository accountRepository;
         private readonly IMapper mapper;
@@ -33,7 +34,7 @@ namespace CleanArchitecture.Application.BankAccount
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public Task<BankAccountDto> Handle(CreateBankAccountCommand request, CancellationToken cancellationToken)
+        public Task<Result<BankAccountDto>> Handle(CreateBankAccountCommand request, CancellationToken cancellationToken)
         {
             return this.accountRepository
                 .AddAsync(
@@ -41,7 +42,7 @@ namespace CleanArchitecture.Application.BankAccount
                         request.Name,
                         request.CurrentUserId),
                     cancellationToken)
-                .ContinueWith(a => this.mapper.Map<BankAccountDto>(a.Result));
+                .ContinueWith(a => Result<BankAccountDto>.Success(this.mapper.Map<BankAccountDto>(a.Result)));
         }
     }
 }

@@ -3,13 +3,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Core.Models;
 using MediatR;
 
 namespace CleanArchitecture.Application.Bill
 {
-    public class SearchBillsQuery : IRequest<PagedResult<BillDto>>
+    public class SearchBillsQuery : IRequest<Result<PagedResult<BillDto>>>
     {
         public SearchBillsQuery(
             Guid currentUserId,
@@ -36,7 +37,7 @@ namespace CleanArchitecture.Application.Bill
         public string Search { get; }
     }
 
-    internal class SearchBillsQueryHandler : IRequestHandler<SearchBillsQuery, PagedResult<BillDto>>
+    internal class SearchBillsQueryHandler : IRequestHandler<SearchBillsQuery, Result<PagedResult<BillDto>>>
     {
         private readonly IBillRepository billRepository;
         private readonly IMapper mapper;
@@ -49,7 +50,7 @@ namespace CleanArchitecture.Application.Bill
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<PagedResult<BillDto>> Handle(SearchBillsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<PagedResult<BillDto>>> Handle(SearchBillsQuery request, CancellationToken cancellationToken)
         {
             var result = await billRepository.SearchBillsAsync(
                 request.CurrentUserId,

@@ -1,5 +1,5 @@
 ﻿using CleanArchitecture.Core;
-using CleanArchitecture.Core.Exceptions;
+using System;
 
 namespace CleanArchitecture.Web.Api.Models
 {
@@ -33,7 +33,7 @@ namespace CleanArchitecture.Web.Api.Models
                 CategoryDto.Car => Category.Car,
                 CategoryDto.HygieneAndHealth => Category.HygieneAndHealth,
                 CategoryDto.Gift => Category.Gift,
-                _ => throw new BadRequestException($"Parameter '{nameof(category)}' with value {category} not valid.")
+                _ => throw new ArgumentException($"Value {category} is not valid.", nameof(category))
             };
         }
     }

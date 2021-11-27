@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Infrastructure.Repositories
 {
-    public class BankAccountRepository : EfRepository<BankAccount>, IBankAccountRepository
+    internal class BankAccountRepository : EfRepository<BankAccount>, IBankAccountRepository
     {
         private readonly BudgetContext context;
 

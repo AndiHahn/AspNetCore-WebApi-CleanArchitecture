@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Infrastructure.Repositories
 {
-    public class BillRepository : EfRepository<Bill>, IBillRepository
+    internal class BillRepository : EfRepository<Bill>, IBillRepository
     {
         private readonly BudgetContext context;
 

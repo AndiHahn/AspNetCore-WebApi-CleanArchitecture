@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Exceptions;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 using Microsoft.Extensions.Options;
@@ -13,7 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchitecture.Application.User
 {
-    public class AuthenticateUserCommand : IRequest<AuthenticationResponseDto>
+    public class AuthenticateUserCommand : IRequest<Result<AuthenticationResponseDto>>
     {
         public AuthenticateUserCommand(string username, string password)
         {
@@ -26,7 +26,7 @@ namespace CleanArchitecture.Application.User
         public string Password { get; }
     }
 
-    internal class AuthenticateUserCommandHandler : IRequestHandler<AuthenticateUserCommand, AuthenticationResponseDto>
+    internal class AuthenticateUserCommandHandler : IRequestHandler<AuthenticateUserCommand, Result<AuthenticationResponseDto>>
     {
         private readonly IIdentityUserRepository identityUserRepository;
         private readonly AuthenticationConfiguration configuration;
@@ -39,19 +39,19 @@ namespace CleanArchitecture.Application.User
             this.configuration = configuration?.Value ?? throw new ArgumentNullException(nameof(configuration));
         }
 
-        public async Task<AuthenticationResponseDto> Handle(
+        public async Task<Result<AuthenticationResponseDto>> Handle(
             AuthenticateUserCommand request,
             CancellationToken cancellationToken)
         {
             var user = await this.identityUserRepository.GetByNameAsync(request.Username);
             if (user == null)
             {
-                throw new UnauthorizedException($"User {request.Username} not found.");
+                return Result<AuthenticationResponseDto>.Unauthorized($"User {request.Username} not found.");
             }
 
             if (!await this.identityUserRepository.CheckPasswordAsync(user, request.Password))
             {
-                throw new UnauthorizedException("Invalid login credentials.");
+                return Result<AuthenticationResponseDto>.Unauthorized("Invalid login credentials.");
             }
 
             var expires = DateTime.UtcNow.AddDays(7);

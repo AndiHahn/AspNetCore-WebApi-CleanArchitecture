@@ -1,16 +1,17 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 
 namespace CleanArchitecture.Application.Bill
 {
-    public class GetBillTimeRangesQuery : IRequest<TimeRangeDto>
+    public class GetBillTimeRangesQuery : IRequest<Result<TimeRangeDto>>
     {
     }
 
-    internal class GetBillTimeRangesQueryHandler : IRequestHandler<GetBillTimeRangesQuery, TimeRangeDto>
+    internal class GetBillTimeRangesQueryHandler : IRequestHandler<GetBillTimeRangesQuery, Result<TimeRangeDto>>
     {
         private readonly IBillRepository billRepository;
 
@@ -20,7 +21,7 @@ namespace CleanArchitecture.Application.Bill
             this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
         }
 
-        public async Task<TimeRangeDto> Handle(GetBillTimeRangesQuery request, CancellationToken cancellationToken)
+        public async Task<Result<TimeRangeDto>> Handle(GetBillTimeRangesQuery request, CancellationToken cancellationToken)
         {
             var result = await this.billRepository.GetMinAndMaxBillDateAsync(cancellationToken);
 

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Exceptions;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 
 namespace CleanArchitecture.Application.BankAccount
 {
-    public class ShareAccountWithUserCommand : IRequest
+    public class ShareAccountWithUserCommand : IRequest<Result>
     {
         public ShareAccountWithUserCommand(Guid accountId, Guid shareWithUserId, Guid currentUserId)
         {
@@ -23,7 +23,7 @@ namespace CleanArchitecture.Application.BankAccount
         public Guid ShareWithUserId { get; }
     }
 
-    internal class ShareAccountWithUserCommandHandler : IRequestHandler<ShareAccountWithUserCommand>
+    internal class ShareAccountWithUserCommandHandler : IRequestHandler<ShareAccountWithUserCommand, Result>
     {
         private readonly IUserRepository userRepository;
         private readonly IBankAccountRepository bankAccountRepository;
@@ -36,30 +36,30 @@ namespace CleanArchitecture.Application.BankAccount
             this.bankAccountRepository = bankAccountRepository ?? throw new ArgumentNullException(nameof(bankAccountRepository));
         }
 
-        public async Task<Unit> Handle(ShareAccountWithUserCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(ShareAccountWithUserCommand request, CancellationToken cancellationToken)
         {
             var account = await this.bankAccountRepository.GetByIdWithUsersAsync(request.AccountId, cancellationToken);
             if (account == null)
             {
-                throw new NotFoundException($"Account with id {request.AccountId} not found.");
+                return Result.NotFound($"Account with id {request.AccountId} not found.");
             }
 
             if (!account.IsOwner(request.CurrentUserId))
             {
-                throw new ForbiddenException($"Current user does not have access to account {request.AccountId}");
+                return Result.Forbidden($"Current user does not have access to account {request.AccountId}");
             }
 
             var user = await this.userRepository.GetByIdAsync(request.ShareWithUserId);
             if (user == null)
             {
-                throw new NotFoundException($"User with id {request.ShareWithUserId} not found.");
+                return Result.NotFound($"User with id {request.ShareWithUserId} not found.");
             }
 
             account.ShareWithUser(user);
 
             await this.bankAccountRepository.UpdateAsync(account, cancellationToken);
 
-            return Unit.Value;
+            return Result.Success();
         }
     }
 }

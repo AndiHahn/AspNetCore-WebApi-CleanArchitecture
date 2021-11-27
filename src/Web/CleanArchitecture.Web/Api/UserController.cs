@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Application.User;
+using CleanArchitecture.Web.Api.Filter;
 using CleanArchitecture.Web.Api.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -9,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.Web.Api
 {
+    [MapToProblemDetails]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
@@ -26,7 +29,7 @@ namespace CleanArchitecture.Web.Api
         [ProducesResponseType(typeof(AuthenticationResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Authenticate([FromBody] SignInDto dto)
-            => Ok(await this.sender.Send(new AuthenticateUserCommand(dto.Username, dto.Password)));
+        public Task<Result<AuthenticationResponseDto>> Authenticate([FromBody] SignInDto dto)
+            => this.sender.Send(new AuthenticateUserCommand(dto.Username, dto.Password));
     }
 }

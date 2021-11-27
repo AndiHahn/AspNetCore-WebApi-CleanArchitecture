@@ -1,17 +1,14 @@
 ﻿using System.Text;
 using CleanArchitecture.Application;
 using CleanArchitecture.Application.User;
-using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Infrastructure;
 using CleanArchitecture.Infrastructure.Database.Identity;
 using CleanArchitecture.Infrastructure.Services.AzureStorage;
 using CleanArchitecture.Infrastructure.Services.Email;
-using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchitecture.Web.Api.Extensions
@@ -72,81 +69,6 @@ namespace CleanArchitecture.Web.Api.Extensions
                         ValidateAudience = true
                     };
                 });
-        }
-
-        /// <summary>
-        /// Configures the ProblemDetails for Hellang.Middleware.ProblemDetails
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddProblemDetails(
-            this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            services.AddProblemDetails(opts =>
-            {
-                opts.Map<BadRequestException>(ex =>
-                    new Microsoft.AspNetCore.Mvc.ProblemDetails
-                    {
-                        Title = "Bad Request",
-                        Detail = ex.Message,
-                        Status = 400,
-                        Type = "https://httpstatuses.com/400"
-                    });
-
-                opts.Map<UnauthorizedException>(ex =>
-                    new Microsoft.AspNetCore.Mvc.ProblemDetails
-                    {
-                        Title = "Unauthorized",
-                        Detail = ex.Message,
-                        Status = 401,
-                        Type = "https://httpstatuses.com/401"
-                    });
-
-                opts.Map<ForbiddenException>(ex =>
-                    new Microsoft.AspNetCore.Mvc.ProblemDetails
-                    {
-                        Title = "Forbidden",
-                        Detail = ex.Message,
-                        Status = 403,
-                        Type = "https://httpstatuses.com/403"
-                    });
-
-                opts.Map<NotFoundException>(ex =>
-                    new Microsoft.AspNetCore.Mvc.ProblemDetails
-                    {
-                        Title = "Not Found",
-                        Detail = ex.Message,
-                        Status = 404,
-                        Type = "https://httpstatuses.com/404"
-                    });
-
-                opts.Map<ConflictException>(ex =>
-                    new Microsoft.AspNetCore.Mvc.ProblemDetails
-                    {
-                        Title = "Conflict",
-                        Detail = ex.Message,
-                        Status = 409,
-                        Type = "https://httpstatuses.com/409"
-                    });
-
-                opts.IncludeExceptionDetails = (ctx, ex) =>
-                {
-                    var env = ctx.RequestServices.GetRequiredService<IHostEnvironment>();
-                    string includeStackTraceConfig = configuration.GetSection("Logging")
-                                                                  .GetSection("ProblemDetails")
-                                                                  .GetSection("ForceIncludeStackTrace").Value;
-                    if (bool.TryParse(includeStackTraceConfig, out bool includeStackTrace))
-                    {
-                        return env.IsDevelopment() || includeStackTrace;
-                    }
-
-                    return env.IsDevelopment();
-                };
-            });
-
-            return services;
         }
     }
 }

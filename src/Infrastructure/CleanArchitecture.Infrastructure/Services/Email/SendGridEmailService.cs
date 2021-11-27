@@ -11,7 +11,7 @@ using SendGrid.Helpers.Mail;
 
 namespace CleanArchitecture.Infrastructure.Services.Email
 {
-    public class SendGridEmailService : IEmailService
+    internal class SendGridEmailService : IEmailService
     {
         private readonly SendGridConfiguration sendGridConfig;
 

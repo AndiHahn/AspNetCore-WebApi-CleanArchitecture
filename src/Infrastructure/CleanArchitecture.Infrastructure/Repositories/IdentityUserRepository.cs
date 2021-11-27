@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Infrastructure.Repositories
 {
-    public class IdentityUserRepository : IIdentityUserRepository
+    internal class IdentityUserRepository : IIdentityUserRepository
     {
         private readonly UserManager<IdentityUser> userManager;
         private readonly SignInManager<IdentityUser> signInManager;
