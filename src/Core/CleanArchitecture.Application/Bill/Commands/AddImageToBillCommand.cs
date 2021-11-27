@@ -1,5 +1,6 @@
 ﻿using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Core.Interfaces;
+using CleanArchitecture.Core.Models;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -45,7 +46,10 @@ namespace CleanArchitecture.Application.Bill
                 throw new ForbiddenException($"Current user has no access to bill {request.BillId}");
             }
 
-            await this.billImageRepository.UploadImageAsync(request.BillId, request.Image);
+            await using var blob = new Blob(request.Image.ContentType);
+            await request.Image.CopyToAsync(blob.Content, cancellationToken);
+            blob.Reset();
+            await this.billImageRepository.UploadImageAsync(request.BillId, blob);
 
             return Unit.Value;
         }
