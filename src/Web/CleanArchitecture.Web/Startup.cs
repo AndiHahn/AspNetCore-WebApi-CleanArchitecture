@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using CleanArchitecture.Web.Api.Extensions;
-using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -52,7 +51,7 @@ namespace CleanArchitecture.Web.Api
                     options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
                 });
 
-            services.AddProblemDetails(Configuration);
+            //services.AddProblemDetails(Configuration);
 
             services.AddApplicationServices(Configuration);
 
@@ -105,7 +104,7 @@ namespace CleanArchitecture.Web.Api
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseProblemDetails();
+            //app.UseProblemDetails();
 
             app.UseHttpsRedirection();
 

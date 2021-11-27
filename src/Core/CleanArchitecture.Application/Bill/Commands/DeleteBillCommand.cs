@@ -1,13 +1,14 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 
 namespace CleanArchitecture.Application.Bill
 {
-    public class DeleteBillCommand : IRequest
+    public class DeleteBillCommand : IRequest<Result>
     {
         public DeleteBillCommand(Guid currentUserId, Guid billId)
         {
@@ -20,7 +21,7 @@ namespace CleanArchitecture.Application.Bill
         public Guid BillId { get; }
     }
 
-    internal class DeleteBillCommandHandler : IRequestHandler<DeleteBillCommand>
+    internal class DeleteBillCommandHandler : IRequestHandler<DeleteBillCommand, Result>
     {
         private readonly IBillRepository billRepository;
         private readonly IBillImageRepository billImageRepository;
@@ -33,11 +34,12 @@ namespace CleanArchitecture.Application.Bill
             this.billImageRepository = billImageRepository ?? throw new ArgumentNullException(nameof(billImageRepository));
         }
 
-        public async Task<Unit> Handle(DeleteBillCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(DeleteBillCommand request, CancellationToken cancellationToken)
         {
             var bill = await billRepository.GetByIdAsync(request.BillId);
             if (bill == null)
             {
+                return Result.NotFound($"Bill with id {request.BillId} not found.");
                 throw new NotFoundException($"Bill with id {request.BillId} not found.");
             }
 
@@ -53,7 +55,7 @@ namespace CleanArchitecture.Application.Bill
 
             await this.billRepository.DeleteAsync(bill, cancellationToken);
 
-            return Unit.Value;
+            return Result.Success();
         }
     }
 }

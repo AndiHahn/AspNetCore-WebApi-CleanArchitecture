@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CleanArchitecture.Application.Bill;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Application.User;
 using CleanArchitecture.Core.Models;
+using CleanArchitecture.Web.Api.Filter;
 using CleanArchitecture.Web.Api.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CleanArchitecture.Web.Api.Api
 {
+    [MapToProblemDetails]
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
@@ -43,8 +46,8 @@ namespace CleanArchitecture.Web.Api.Api
         [ProducesResponseType(typeof(BillDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetById(Guid id)
-            => Ok(await sender.Send(new GetBillByIdQuery(this.currentUserId, id)));
+        public Task<Result<BillDto>> GetById(Guid id)
+            => sender.Send(new GetBillByIdQuery(this.currentUserId, id));
 
         [HttpPost]
         [ProducesResponseType(typeof(BillDto), StatusCodes.Status201Created)]
@@ -60,7 +63,9 @@ namespace CleanArchitecture.Web.Api.Api
                 dto.Date,
                 dto.Notes));
 
-            return Created($"{HttpContext.Request.Path}/{bill.Id}", bill);
+            if (bill.Status != ResultStatus.Success) return this.ToActionResult(bill);
+
+            return Created($"{HttpContext.Request.Path}/{bill.Value.Id}", bill.Value);
         }
 
         [HttpPut("{id}")]

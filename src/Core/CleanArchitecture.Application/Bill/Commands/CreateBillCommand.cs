@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
@@ -10,7 +11,7 @@ using MediatR;
 
 namespace CleanArchitecture.Application.Bill
 {
-    public class CreateBillCommand : IRequest<BillDto>
+    public class CreateBillCommand : IRequest<Result<BillDto>>
     {
         public CreateBillCommand(
             Guid currentUserId,
@@ -45,7 +46,7 @@ namespace CleanArchitecture.Application.Bill
         public string? Notes { get; }
     }
 
-    internal class CreateBillCommandHandler : IRequestHandler<CreateBillCommand, BillDto>
+    internal class CreateBillCommandHandler : IRequestHandler<CreateBillCommand, Result<BillDto>>
     {
         private readonly IMapper mapper;
         private readonly IUserRepository userRepository;
@@ -64,7 +65,7 @@ namespace CleanArchitecture.Application.Bill
             this.bankAccountRepository = bankAccountRepository ?? throw new ArgumentNullException(nameof(bankAccountRepository));
         }
 
-        public async Task<BillDto> Handle(CreateBillCommand request, CancellationToken cancellationToken)
+        public async Task<Result<BillDto>> Handle(CreateBillCommand request, CancellationToken cancellationToken)
         {
             var account = await this.bankAccountRepository.GetByIdAsync(request.BankAccountId);
 

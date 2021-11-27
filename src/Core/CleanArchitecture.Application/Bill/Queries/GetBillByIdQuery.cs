@@ -3,13 +3,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Application.Models;
 using CleanArchitecture.Core.Exceptions;
 using CleanArchitecture.Core.Interfaces;
 using MediatR;
 
 namespace CleanArchitecture.Application.Bill
 {
-    public class GetBillByIdQuery : IRequest<BillDto>
+    public class GetBillByIdQuery : IRequest<Result<BillDto>>
     {
         public GetBillByIdQuery(Guid currentUserId, Guid billId)
         {
@@ -22,7 +23,7 @@ namespace CleanArchitecture.Application.Bill
         public Guid BillId { get; }
     }
 
-    internal class GetBillByIdQueryHandler : IRequestHandler<GetBillByIdQuery, BillDto>
+    internal class GetBillByIdQueryHandler : IRequestHandler<GetBillByIdQuery, Result<BillDto>>
     {
         private readonly IMapper mapper;
         private readonly IBillRepository billRepository;
@@ -35,21 +36,23 @@ namespace CleanArchitecture.Application.Bill
             this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
         }
 
-        public async Task<BillDto> Handle(GetBillByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Result<BillDto>> Handle(GetBillByIdQuery request, CancellationToken cancellationToken)
         {
             var bill = await billRepository.GetByIdWithUsersAsync(request.BillId, cancellationToken);
             if (bill == null)
             {
+                return Result<BillDto>.NotFound($"Bill with id {request.BillId} not found.");
                 throw new NotFoundException($"Bill with id {request.BillId} not found.");
             }
 
             if (bill.CreatedByUserId != request.CurrentUserId &&
                 bill.SharedWithUsers.All(ub => ub.UserId != request.CurrentUserId))
             {
+                return Result<BillDto>.Forbidden();
                 throw new ForbiddenException($"Current user has no access to bill {request.BillId}");
             }
 
-            return this.mapper.Map<BillDto>(bill);
+            return Result<BillDto>.Success(this.mapper.Map<BillDto>(bill));
         }
     }
 }
