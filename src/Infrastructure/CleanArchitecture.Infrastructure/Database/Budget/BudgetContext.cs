@@ -32,8 +32,6 @@ namespace CleanArchitecture.Infrastructure.Database.Budget
 
             modelBuilder.ConfigureEntities();
 
-            modelBuilder.ConfigureSmartEnum();
-
             modelBuilder.ApplyGlobalFilters<ISoftDeletableEntity>(s => !s.Deleted);
         }
 

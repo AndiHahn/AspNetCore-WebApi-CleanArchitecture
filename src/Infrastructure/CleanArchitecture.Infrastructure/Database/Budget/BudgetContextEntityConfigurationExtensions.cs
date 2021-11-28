@@ -40,6 +40,11 @@ namespace CleanArchitecture.Infrastructure.Database.Budget
                 .WithMany(u => u.CreatedBills)
                 .HasForeignKey(b => b.CreatedByUserId)
                 .OnDelete(DeleteBehavior.NoAction);
+            modelBuilder.Entity<Bill>()
+                .Property(b => b.Category)
+                .HasConversion(
+                    c => c.Value,
+                    c => Category.FromValue(c));
 
             modelBuilder.Entity<UserBill>()
                 .HasKey(ub => new { ub.BillId, ub.UserId });
