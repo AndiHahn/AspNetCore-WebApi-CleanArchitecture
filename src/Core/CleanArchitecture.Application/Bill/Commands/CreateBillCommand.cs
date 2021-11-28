@@ -68,8 +68,16 @@ namespace CleanArchitecture.Application.Bill
         public async Task<Result<BillDto>> Handle(CreateBillCommand request, CancellationToken cancellationToken)
         {
             var account = await this.bankAccountRepository.GetByIdAsync(request.BankAccountId);
+            if (account == null)
+            {
+                return Result<BillDto>.NotFound($"Account with id {request.BankAccountId} not found.");
+            }
 
             var user = await this.userRepository.GetByIdAsync(request.CurrentUserId);
+            if (user == null)
+            {
+                return Result<BillDto>.NotFound($"User with id {request.CurrentUserId} not found.");
+            }
 
             var bill = await this.billRepository.AddAsync(
                 new Core.Bill(user, account, request.ShopName, request.Price, request.Date, request.Notes, request.Category),

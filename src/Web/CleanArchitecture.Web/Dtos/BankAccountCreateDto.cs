@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace CleanArchitecture.Web.Api.Models
+namespace CleanArchitecture.Web.Api.Dtos
 {
     public class BankAccountCreateDto
     {

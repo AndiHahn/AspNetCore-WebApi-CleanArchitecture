@@ -4,7 +4,7 @@ namespace CleanArchitecture.Core
 {
     public sealed class Category : SmartEnum<Category>
     {
-        public Category(string name, int value) : base(name, value)
+        private Category(string name, int value) : base(name, value)
         {
         }
 

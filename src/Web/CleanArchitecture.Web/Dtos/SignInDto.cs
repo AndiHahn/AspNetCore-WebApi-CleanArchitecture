@@ -1,4 +1,4 @@
-namespace CleanArchitecture.Web.Api.Models
+namespace CleanArchitecture.Web.Api.Dtos
 {
     public class SignInDto
     {

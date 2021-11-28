@@ -1,9 +1,10 @@
+using CleanArchitecture.Application.Bill;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 #nullable enable
 
-namespace CleanArchitecture.Web.Api.Models
+namespace CleanArchitecture.Web.Api.Dtos
 {
     public class BillCreateDto
     {

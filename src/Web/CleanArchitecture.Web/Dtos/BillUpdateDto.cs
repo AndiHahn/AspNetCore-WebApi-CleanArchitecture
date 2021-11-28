@@ -1,8 +1,9 @@
+using CleanArchitecture.Application.Bill;
 using System;
 
 #nullable enable
 
-namespace CleanArchitecture.Web.Api.Models
+namespace CleanArchitecture.Web.Api.Dtos
 {
     public class BillUpdateDto
     {

@@ -5,7 +5,7 @@ using CleanArchitecture.Application.Models;
 using CleanArchitecture.Application.User;
 using CleanArchitecture.Core.Models;
 using CleanArchitecture.Web.Api.Filter;
-using CleanArchitecture.Web.Api.Models;
+using CleanArchitecture.Web.Api.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

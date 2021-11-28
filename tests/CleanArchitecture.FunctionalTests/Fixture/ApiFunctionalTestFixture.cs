@@ -8,7 +8,7 @@ using CleanArchitecture.Application.User;
 using CleanArchitecture.Infrastructure.Database.Budget;
 using CleanArchitecture.Infrastructure.Database.Identity;
 using CleanArchitecture.Web.Api;
-using CleanArchitecture.Web.Api.Models;
+using CleanArchitecture.Web.Api.Dtos;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;

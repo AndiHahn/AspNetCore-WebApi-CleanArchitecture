@@ -17,7 +17,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "BudgetManager.Web": {
+    "CleanArchitecture.Web.Api": {
       "commandName": "Project",
       "launchBrowser": false,
       "launchUrl": "swagger/index.html",
