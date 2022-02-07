@@ -23,8 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Infrastructure\CleanArchitecture.Infrastructure\CleanArchitecture.Infrastructure.csproj" />
-    <ProjectReference Include="..\CleanArchitecture.Tests.Shared\CleanArchitecture.Tests.Shared.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Shopping\CleanArchitecture.Shopping.Infrastructure\CleanArchitecture.Shopping.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

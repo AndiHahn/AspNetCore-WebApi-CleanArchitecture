@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using CleanArchitecture.Shopping.Api;
 using CleanArchitecture.Web.Api.Extensions;
 using CleanArchitecture.Web.Api.Middleware;
 using Microsoft.AspNetCore.Builder;
@@ -44,6 +45,7 @@ namespace CleanArchitecture.Web.Api
             });
 
             services.AddControllers()
+                .AddShoppingModule()
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -53,6 +55,7 @@ namespace CleanArchitecture.Web.Api
                 });
 
             services.AddApplicationServices(Configuration);
+            services.AddShoppingModule(Configuration);
 
             services.AddAuthenticationServices(Configuration);
 

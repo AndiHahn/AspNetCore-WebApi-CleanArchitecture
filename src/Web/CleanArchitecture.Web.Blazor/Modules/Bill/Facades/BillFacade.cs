@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using CleanArchitecture.Application.Bill;
+using CleanArchitecture.Shopping.Application.Bill;
+using CleanArchitecture.Shopping.Application.Bill.Queries;
 using CleanArchitecture.Web.Blazor.Modules.Core.Services;
 using MediatR;
 

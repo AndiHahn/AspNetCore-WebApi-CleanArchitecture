@@ -1,9 +1,11 @@
 using System;
 using System.Threading.Tasks;
-using CleanArchitecture.Core.Interfaces;
 using CleanArchitecture.Infrastructure.Database;
 using CleanArchitecture.Infrastructure.Database.Budget;
 using CleanArchitecture.Infrastructure.Database.Identity;
+using CleanArchitecture.Shared.Infrastructure.Database;
+using CleanArchitecture.Shared.Infrastructure.Database.Budget;
+using CleanArchitecture.Shared.Infrastructure.Database.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

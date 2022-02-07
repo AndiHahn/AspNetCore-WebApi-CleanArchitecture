@@ -1,3 +1,4 @@
+using CleanArchitecture.Shopping.Api;
 using CleanArchitecture.Web.Blazor.Data;
 using CleanArchitecture.Web.Blazor.Extensions;
 using Microsoft.AspNetCore.Builder;
@@ -5,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
 
 namespace CleanArchitecture.Web.Blazor
 {
@@ -22,9 +24,10 @@ namespace CleanArchitecture.Web.Blazor
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApplicationServices(Configuration);
+            services.AddShoppingModule(Configuration);
 
             services.AddAuthenticationServices(Configuration);
-
+            
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();

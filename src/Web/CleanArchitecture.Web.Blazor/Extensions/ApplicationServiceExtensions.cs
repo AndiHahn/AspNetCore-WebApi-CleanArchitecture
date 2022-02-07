@@ -1,9 +1,7 @@
-﻿using CleanArchitecture.Application;
-using CleanArchitecture.Application.User;
-using CleanArchitecture.Infrastructure;
-using CleanArchitecture.Infrastructure.Database.Identity;
-using CleanArchitecture.Infrastructure.Services.AzureStorage;
-using CleanArchitecture.Infrastructure.Services.Email;
+﻿using CleanArchitecture.Shared.Infrastructure.Database.Identity;
+using CleanArchitecture.Shared.Infrastructure.Email;
+using CleanArchitecture.Shopping.Application.User;
+using CleanArchitecture.Shopping.Infrastructure.AzureStorage;
 using CleanArchitecture.Web.Blazor.Modules.Bill.Facades;
 using CleanArchitecture.Web.Blazor.Modules.Core.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -22,9 +20,6 @@ namespace CleanArchitecture.Web.Blazor.Extensions
             this IServiceCollection services,
             IConfiguration configuration)
         {
-            services.RegisterInfrastructure(configuration);
-            services.RegisterApplicationCore();
-
             services.AddHttpContextAccessor();
             services.AddScoped<IBillFacade, BillFacade>();
             services.AddTransient<ICurrentUserService, CurrentUserService>();

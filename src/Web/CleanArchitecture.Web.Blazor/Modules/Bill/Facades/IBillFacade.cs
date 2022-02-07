@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using CleanArchitecture.Application.Bill;
+using CleanArchitecture.Shopping.Application.Bill;
 
 namespace CleanArchitecture.Web.Blazor.Modules.Bill.Facades
 {

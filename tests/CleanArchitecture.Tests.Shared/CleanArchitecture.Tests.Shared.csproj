@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Core\CleanArchitecture.Core\CleanArchitecture.Core.csproj" />
+    <ProjectReference Include="..\..\src\Modules\Shopping\CleanArchitecture.Shopping.Core\CleanArchitecture.Shopping.Core.csproj" />
   </ItemGroup>
 
 </Project>
