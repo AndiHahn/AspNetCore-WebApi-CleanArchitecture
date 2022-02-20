@@ -7,6 +7,7 @@ using CleanArchitecture.Shared.Tests.Builder;
 using CleanArchitecture.Shopping.Core.Bill;
 using CleanArchitecture.Shopping.Core.Interfaces;
 using CleanArchitecture.Shopping.Core.User;
+using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
 using CleanArchitecture.Shopping.IntegrationTests.Setup;
 using Xunit;
 
@@ -113,7 +114,7 @@ namespace CleanArchitecture.Shopping.IntegrationTests.Infrastructure
         }
 
         private IBillRepository SetupSystemUnderTest(
-            Shared.Infrastructure.Database.Budget.BudgetContext context)
+            ShoppingDbContext context)
         {
             return new Shopping.Infrastructure.Repositories.BillRepository(context);
         }

@@ -4,7 +4,7 @@ using CleanArchitecture.Shared.Core.Filter;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Api.Dtos;
 using CleanArchitecture.Shopping.Application.User;
-using CleanArchitecture.Shopping.Application.User.Commands;
+using CleanArchitecture.Shopping.Application.User.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Modules\BudgetPlan\CleanArchitecture.BudgetPlan.Api\CleanArchitecture.BudgetPlan.Api.csproj" />
     <ProjectReference Include="..\..\Modules\Shopping\CleanArchitecture.Shopping.Api\CleanArchitecture.Shopping.Api.csproj" />
   </ItemGroup>
 

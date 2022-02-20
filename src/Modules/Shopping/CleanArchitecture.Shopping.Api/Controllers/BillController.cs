@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using CleanArchitecture.Shared.Core;
 using CleanArchitecture.Shared.Core.Filter;
 using CleanArchitecture.Shared.Core.Models;
 using CleanArchitecture.Shared.Core.Models.Result;
@@ -61,7 +62,7 @@ namespace CleanArchitecture.Shopping.Api.Controllers
                 dto.BankAccountId,
                 dto.ShopName,
                 dto.Price,
-                dto.Category.ToClass(),
+                dto.Category.FromDto(),
                 dto.Date,
                 dto.Notes));
 
@@ -83,7 +84,7 @@ namespace CleanArchitecture.Shopping.Api.Controllers
                     dto.Price,
                     dto.Date,
                     dto.Notes,
-                    dto.Category?.ToClass(),
+                    dto.Category?.FromDto(),
                     dto.Version));
 
         [HttpDelete("{id}")]

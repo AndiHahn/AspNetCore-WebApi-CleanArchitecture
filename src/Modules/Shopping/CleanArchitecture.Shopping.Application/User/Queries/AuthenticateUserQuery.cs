@@ -11,7 +11,7 @@ using MediatR;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-namespace CleanArchitecture.Shopping.Application.User.Commands
+namespace CleanArchitecture.Shopping.Application.User.Queries
 {
     public class AuthenticateUserQuery : IRequest<Result<AuthenticationResponseDto>>
     {

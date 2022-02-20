@@ -1,3 +1,5 @@
+using CleanArchitecture.BudgetPlan.Api;
+using CleanArchitecture.Shared.Infrastructure;
 using CleanArchitecture.Shopping.Api;
 using CleanArchitecture.Web.Blazor.Data;
 using CleanArchitecture.Web.Blazor.Extensions;
@@ -24,7 +26,9 @@ namespace CleanArchitecture.Web.Blazor
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApplicationServices(Configuration);
+            services.AddSharedInfrastructure();
             services.AddShoppingModule(Configuration);
+            services.AddBudgetPlanModule(Configuration);
 
             services.AddAuthenticationServices(Configuration);
             

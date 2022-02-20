@@ -4,8 +4,9 @@ using CleanArchitecture.Infrastructure.Database;
 using CleanArchitecture.Infrastructure.Database.Budget;
 using CleanArchitecture.Infrastructure.Database.Identity;
 using CleanArchitecture.Shared.Infrastructure.Database;
-using CleanArchitecture.Shared.Infrastructure.Database.Budget;
-using CleanArchitecture.Shared.Infrastructure.Database.Identity;
+using CleanArchitecture.Shopping.Infrastructure.Database;
+using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
+using CleanArchitecture.Shopping.Infrastructure.Database.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,7 +32,7 @@ namespace CleanArchitecture.Web.Blazor
                 {
                     logger.LogInformation("Start database migration...");
 
-                    var budgetContext = services.GetRequiredService<BudgetContext>();
+                    var budgetContext = services.GetRequiredService<ShoppingDbContext>();
                     await budgetContext.Database.MigrateAsync();
                     var identityContext = services.GetRequiredService<IdentityContext>();
                     await identityContext.Database.MigrateAsync();

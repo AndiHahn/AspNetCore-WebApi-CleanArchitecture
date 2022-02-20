@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Shared.Core.Models;
-using CleanArchitecture.Shared.Infrastructure.Database.Budget;
 using CleanArchitecture.Shopping.Core.Interfaces;
+using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,9 +14,9 @@ namespace CleanArchitecture.Shopping.Infrastructure.Repositories
     internal abstract class EfRepository<TEntity> : IRepository<TEntity>
         where TEntity : Entity<Guid>
     {
-        private readonly BudgetContext context;
+        private readonly ShoppingDbContext context;
 
-        protected EfRepository(BudgetContext context)
+        protected EfRepository(ShoppingDbContext context)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
         }

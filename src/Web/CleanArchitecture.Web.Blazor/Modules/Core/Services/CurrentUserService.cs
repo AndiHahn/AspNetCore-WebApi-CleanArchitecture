@@ -1,5 +1,5 @@
 ﻿using System;
-using CleanArchitecture.Shopping.Application.User;
+using CleanArchitecture.Shared.Core;
 using Microsoft.AspNetCore.Http;
 
 namespace CleanArchitecture.Web.Blazor.Modules.Core.Services

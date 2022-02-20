@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{3B75
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shopping", "Shopping", "{3DEB339B-42A5-4E44-B3C5-453C04735447}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Shopping.Api", "src\Modules\Shopping\CleanArchitecture.Shopping.Api\CleanArchitecture.Shopping.Api.csproj", "{64432077-1010-41BD-98F6-10E1182CD671}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Shopping.Api", "src\Modules\Shopping\CleanArchitecture.Shopping.Api\CleanArchitecture.Shopping.Api.csproj", "{64432077-1010-41BD-98F6-10E1182CD671}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{7AFE6FBA-A27E-4DCC-8CD6-BC1C7FA33BC4}"
 EndProject
@@ -25,17 +25,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Shopping.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Shopping.Infrastructure", "src\Modules\Shopping\CleanArchitecture.Shopping.Infrastructure\CleanArchitecture.Shopping.Infrastructure.csproj", "{40955239-D9A5-4F4C-BF22-7DCB20716168}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Shopping.UnitTests", "src\Modules\Shopping\CleanArchitecture.Shopping.UnitTests\CleanArchitecture.Shopping.UnitTests.csproj", "{1E566057-D88E-471C-9E19-C2C41A2A1BAE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Shopping.UnitTests", "src\Modules\Shopping\CleanArchitecture.Shopping.UnitTests\CleanArchitecture.Shopping.UnitTests.csproj", "{1E566057-D88E-471C-9E19-C2C41A2A1BAE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Shared.Tests", "src\Modules\Shared\CleanArchitecture.Shared.Tests\CleanArchitecture.Shared.Tests.csproj", "{C1560AA1-5284-4B97-9A8F-DFED0E04F296}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Shared.Tests", "src\Modules\Shared\CleanArchitecture.Shared.Tests\CleanArchitecture.Shared.Tests.csproj", "{C1560AA1-5284-4B97-9A8F-DFED0E04F296}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Shopping.IntegrationTests", "src\Modules\Shopping\CleanArchitecture.Shopping.IntegrationTests\CleanArchitecture.Shopping.IntegrationTests.csproj", "{F5AE656E-362C-4164-B928-24ACD5E1AB5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Shopping.IntegrationTests", "src\Modules\Shopping\CleanArchitecture.Shopping.IntegrationTests\CleanArchitecture.Shopping.IntegrationTests.csproj", "{F5AE656E-362C-4164-B928-24ACD5E1AB5A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Web.Api.FunctionalTests", "src\Web\CleanArchitecture.Web.Api.FunctionalTests\CleanArchitecture.Web.Api.FunctionalTests.csproj", "{02DEF13A-F7D6-43BD-854E-A3659F83040B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Shared.Infrastructure", "src\Modules\Shared\CleanArchitecture.Shared.Infrastructure\CleanArchitecture.Shared.Infrastructure.csproj", "{88A1F46D-E86D-49E7-BA66-52D62F1F7C8F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Shared.Infrastructure", "src\Modules\Shared\CleanArchitecture.Shared.Infrastructure\CleanArchitecture.Shared.Infrastructure.csproj", "{88A1F46D-E86D-49E7-BA66-52D62F1F7C8F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Shared.Core", "src\Modules\Shared\CleanArchitecture.Shared.Core\CleanArchitecture.Shared.Core.csproj", "{54531D34-0308-4B2E-8F56-5BC5C4669F8A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BudgetPlan", "BudgetPlan", "{1BEBBF48-12DA-40C7-AA4C-7A322C9BE6FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.BudgetPlan.Api", "src\Modules\BudgetPlan\CleanArchitecture.BudgetPlan.Api\CleanArchitecture.BudgetPlan.Api.csproj", "{195B6784-6975-4BEC-B531-96E06AAEDE0C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.BudgetPlan.Application", "src\Modules\BudgetPlan\CleanArchitecture.BudgetPlan.Application\CleanArchitecture.BudgetPlan.Application.csproj", "{97F1F3D8-A8BA-4CE5-881C-4DFA07033137}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.BudgetPlan.Core", "src\Modules\BudgetPlan\CleanArchitecture.BudgetPlan.Core\CleanArchitecture.BudgetPlan.Core.csproj", "{5EA3AAE8-6FEE-4FFF-BF7F-6162FC923AEA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.BudgetPlan.Infrastructure", "src\Modules\BudgetPlan\CleanArchitecture.BudgetPlan.Infrastructure\CleanArchitecture.BudgetPlan.Infrastructure.csproj", "{18864D1C-6FB3-495C-99EC-D2B6D2C0D30D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -91,6 +101,22 @@ Global
 		{54531D34-0308-4B2E-8F56-5BC5C4669F8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{54531D34-0308-4B2E-8F56-5BC5C4669F8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{54531D34-0308-4B2E-8F56-5BC5C4669F8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{195B6784-6975-4BEC-B531-96E06AAEDE0C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{195B6784-6975-4BEC-B531-96E06AAEDE0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{195B6784-6975-4BEC-B531-96E06AAEDE0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{195B6784-6975-4BEC-B531-96E06AAEDE0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{97F1F3D8-A8BA-4CE5-881C-4DFA07033137}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{97F1F3D8-A8BA-4CE5-881C-4DFA07033137}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{97F1F3D8-A8BA-4CE5-881C-4DFA07033137}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{97F1F3D8-A8BA-4CE5-881C-4DFA07033137}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EA3AAE8-6FEE-4FFF-BF7F-6162FC923AEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EA3AAE8-6FEE-4FFF-BF7F-6162FC923AEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EA3AAE8-6FEE-4FFF-BF7F-6162FC923AEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EA3AAE8-6FEE-4FFF-BF7F-6162FC923AEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18864D1C-6FB3-495C-99EC-D2B6D2C0D30D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18864D1C-6FB3-495C-99EC-D2B6D2C0D30D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18864D1C-6FB3-495C-99EC-D2B6D2C0D30D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18864D1C-6FB3-495C-99EC-D2B6D2C0D30D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -112,6 +138,11 @@ Global
 		{02DEF13A-F7D6-43BD-854E-A3659F83040B} = {95A686FF-842B-457E-B26F-D2C868F18FCA}
 		{88A1F46D-E86D-49E7-BA66-52D62F1F7C8F} = {7AFE6FBA-A27E-4DCC-8CD6-BC1C7FA33BC4}
 		{54531D34-0308-4B2E-8F56-5BC5C4669F8A} = {7AFE6FBA-A27E-4DCC-8CD6-BC1C7FA33BC4}
+		{1BEBBF48-12DA-40C7-AA4C-7A322C9BE6FB} = {3B75D7D2-FD2F-4C7B-8CB9-FCAA8A658C14}
+		{195B6784-6975-4BEC-B531-96E06AAEDE0C} = {1BEBBF48-12DA-40C7-AA4C-7A322C9BE6FB}
+		{97F1F3D8-A8BA-4CE5-881C-4DFA07033137} = {1BEBBF48-12DA-40C7-AA4C-7A322C9BE6FB}
+		{5EA3AAE8-6FEE-4FFF-BF7F-6162FC923AEA} = {1BEBBF48-12DA-40C7-AA4C-7A322C9BE6FB}
+		{18864D1C-6FB3-495C-99EC-D2B6D2C0D30D} = {1BEBBF48-12DA-40C7-AA4C-7A322C9BE6FB}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {857F354F-022B-44CF-9FED-072A88C73D2D}

@@ -1,15 +1,15 @@
-﻿using CleanArchitecture.Shared.Infrastructure.Database.Budget;
-using CleanArchitecture.Shopping.Core.Interfaces;
+﻿using CleanArchitecture.Shopping.Core.Interfaces;
 using CleanArchitecture.Shopping.Infrastructure.Repositories;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
 
 namespace CleanArchitecture.Shopping.Infrastructure.UnitOfWork
 {
     internal class UnitOfWork : IDisposable, IUnitOfWork
     {
-        public UnitOfWork(BudgetContext context)
+        public UnitOfWork(ShoppingDbContext context)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
 
@@ -19,7 +19,7 @@ namespace CleanArchitecture.Shopping.Infrastructure.UnitOfWork
         }
 
         private bool disposed = false;
-        private readonly BudgetContext context;
+        private readonly ShoppingDbContext context;
 
         public IBankAccountRepository BankAccountRepository { get; }
         public IBillRepository BillRepository { get; }

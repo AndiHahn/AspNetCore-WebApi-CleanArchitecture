@@ -1,9 +1,8 @@
 ﻿using System.Text;
-using CleanArchitecture.Infrastructure.Database.Identity;
-using CleanArchitecture.Shared.Infrastructure.Database.Identity;
 using CleanArchitecture.Shared.Infrastructure.Email;
 using CleanArchitecture.Shopping.Application.User;
 using CleanArchitecture.Shopping.Infrastructure.AzureStorage;
+using CleanArchitecture.Shopping.Infrastructure.Database.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;

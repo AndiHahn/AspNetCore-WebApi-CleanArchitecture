@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Shared.Core.Models;
-using CleanArchitecture.Shared.Infrastructure.Database.Budget;
 using CleanArchitecture.Shopping.Core.Bill;
 using CleanArchitecture.Shopping.Core.Interfaces;
+using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
 using Microsoft.EntityFrameworkCore;
 
 #nullable enable
@@ -15,9 +15,9 @@ namespace CleanArchitecture.Shopping.Infrastructure.Repositories
 {
     internal class BillRepository : EfRepository<Bill>, IBillRepository
     {
-        private readonly BudgetContext context;
+        private readonly ShoppingDbContext context;
 
-        public BillRepository(BudgetContext context)
+        public BillRepository(ShoppingDbContext context)
         : base(context)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));

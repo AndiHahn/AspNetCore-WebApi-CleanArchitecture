@@ -19,7 +19,7 @@ namespace CleanArchitecture.Shopping.Application.Bill
 
     public static class CategoryExtensions
     {
-        public static Category ToClass(this CategoryDto category)
+        public static Category FromDto(this CategoryDto category)
         {
             return category switch
             {
@@ -37,7 +37,7 @@ namespace CleanArchitecture.Shopping.Application.Bill
             };
         }
 
-        public static CategoryDto ToEnum(this Category category)
+        public static CategoryDto ToDto(this Category category)
         {
             return category.Name switch
             {

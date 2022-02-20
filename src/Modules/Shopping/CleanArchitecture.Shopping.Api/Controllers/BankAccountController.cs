@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using CleanArchitecture.Shared.Core;
 using CleanArchitecture.Shared.Core.Filter;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Api.Dtos;
 using CleanArchitecture.Shopping.Application.BankAccount;
 using CleanArchitecture.Shopping.Application.BankAccount.Commands;
 using CleanArchitecture.Shopping.Application.BankAccount.Queries;
-using CleanArchitecture.Shopping.Application.User;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

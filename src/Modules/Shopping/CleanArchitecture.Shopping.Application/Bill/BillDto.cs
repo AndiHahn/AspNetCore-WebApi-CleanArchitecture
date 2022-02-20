@@ -26,7 +26,7 @@ namespace CleanArchitecture.Shopping.Application.Bill
         public static void ApplyMappingConfiguration(IMapperConfigurationExpression config)
         {
             config.CreateMap<Core.Bill.Bill, BillDto>()
-                .ForMember(b => b.Category, b => b.MapFrom(m => m.Category.ToEnum()));
+                .ForMember(b => b.Category, b => b.MapFrom(m => m.Category.ToDto()));
         }
     }
 }

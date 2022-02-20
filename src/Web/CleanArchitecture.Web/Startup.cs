@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using CleanArchitecture.BudgetPlan.Api;
+using CleanArchitecture.Shared.Infrastructure;
 using CleanArchitecture.Shopping.Api;
 using CleanArchitecture.Web.Api.Extensions;
 using CleanArchitecture.Web.Api.Middleware;
@@ -46,6 +48,7 @@ namespace CleanArchitecture.Web.Api
 
             services.AddControllers()
                 .AddShoppingModule()
+                .AddBudgetPlanModule()
                 .AddNewtonsoftJson(options =>
                 {
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -55,7 +58,9 @@ namespace CleanArchitecture.Web.Api
                 });
 
             services.AddApplicationServices(Configuration);
+            services.AddSharedInfrastructure();
             services.AddShoppingModule(Configuration);
+            services.AddBudgetPlanModule(Configuration);
 
             services.AddAuthenticationServices(Configuration);
 

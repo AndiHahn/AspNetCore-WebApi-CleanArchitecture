@@ -129,7 +129,7 @@ namespace CleanArchitecture.Web.Api.FunctionalTests
             Assert.Equal(model.Price, dto.Price);
             Assert.Equal(model.Date, dto.Date);
             Assert.Equal(model.Notes, dto.Notes);
-            Assert.Equal(model.Category, dto.Category.ToClass());
+            Assert.Equal(model.Category, dto.Category.FromDto());
         }
     }
 }

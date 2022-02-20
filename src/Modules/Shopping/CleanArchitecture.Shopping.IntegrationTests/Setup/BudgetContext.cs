@@ -1,4 +1,5 @@
 ﻿using System;
+using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,18 +7,18 @@ namespace CleanArchitecture.Shopping.IntegrationTests.Setup
 {
     public static class BudgetContext
     {
-        public static Shared.Infrastructure.Database.Budget.BudgetContext CreateInMemoryDataContext(Action<Shared.Infrastructure.Database.Budget.BudgetContext> setupCallback = null)
+        public static ShoppingDbContext CreateInMemoryDataContext(Action<ShoppingDbContext> setupCallback = null)
         {
             // In-memory database only exists while the connection is open
             var connection = new SqliteConnection("DataSource=:memory:");
             connection.Open();
 
-            var options = new DbContextOptionsBuilder<Shared.Infrastructure.Database.Budget.BudgetContext>()
+            var options = new DbContextOptionsBuilder<ShoppingDbContext>()
                 .UseSqlite(connection)
                 .Options;
 
             // Create the schema in the database
-            var context = new Shared.Infrastructure.Database.Budget.BudgetContext(
+            var context = new ShoppingDbContext(
                 options);
 
             // HACK: ef core wont put data into a rowversion column, but it is not null, so create a fake default

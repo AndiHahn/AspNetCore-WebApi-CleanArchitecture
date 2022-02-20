@@ -3,15 +3,11 @@ using System.Threading.Tasks;
 using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
-using CleanArchitecture.Infrastructure.Database;
-using CleanArchitecture.Infrastructure.Database.Budget;
-using CleanArchitecture.Infrastructure.Database.Identity;
+using CleanArchitecture.BudgetPlan.Api;
 using CleanArchitecture.Shared.Infrastructure.Database;
-using CleanArchitecture.Shared.Infrastructure.Database.Budget;
-using CleanArchitecture.Shared.Infrastructure.Database.Identity;
+using CleanArchitecture.Shopping.Api;
+using CleanArchitecture.Shopping.Infrastructure.Database;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,19 +29,12 @@ namespace CleanArchitecture.Web.Api
 
                 try
                 {
-                    logger.LogInformation("Start database migration...");
+                    logger.LogInformation("Start shopping db context migration and seed...");
 
-                    var budgetContext = services.GetRequiredService<BudgetContext>();
-                    await budgetContext.Database.MigrateAsync();
-                    var identityContext = services.GetRequiredService<IdentityContext>();
-                    await identityContext.Database.MigrateAsync();
+                    await ShoppingModule.MigrateAndSeedShoppingDbContextAsync(services);
+                    await BudgetPlanModule.MigrateAndSeedBudgetPlanDbContextAsync(services, new Guid(DatabaseSeed.TestUser1.Id));
 
-                    logger.LogInformation("Finished database migration.");
-
-                    logger.LogInformation("Start seed database...");
-                    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
-                    await DatabaseSeed.SeedAsync(budgetContext, userManager);
-                    logger.LogInformation("Finished seeding database.");
+                    logger.LogInformation("Finished seeding shopping db context.");
                 }
                 catch (Exception ex)
                 {
@@ -53,7 +42,7 @@ namespace CleanArchitecture.Web.Api
                 }
             }
 
-            host.Run();
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

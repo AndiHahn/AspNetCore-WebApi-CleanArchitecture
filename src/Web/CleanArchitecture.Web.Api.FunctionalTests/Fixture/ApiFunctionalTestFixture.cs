@@ -4,11 +4,11 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using CleanArchitecture.Shared.Infrastructure.Database.Budget;
-using CleanArchitecture.Shared.Infrastructure.Database.Identity;
 using CleanArchitecture.Shopping.Api.Dtos;
 using CleanArchitecture.Shopping.Application.User;
 using CleanArchitecture.Shopping.Core.User;
+using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
+using CleanArchitecture.Shopping.Infrastructure.Database.Identity;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -28,7 +28,7 @@ namespace CleanArchitecture.Web.Api.FunctionalTests.Fixture
             builder.ConfigureServices(services =>
             {
                 var budgetContextDescriptor = services.SingleOrDefault(
-                        d => d.ServiceType == typeof(DbContextOptions<BudgetContext>));
+                        d => d.ServiceType == typeof(DbContextOptions<ShoppingDbContext>));
 
                 if (budgetContextDescriptor != null)
                 {
@@ -50,7 +50,7 @@ namespace CleanArchitecture.Web.Api.FunctionalTests.Fixture
 
                 //Add a database context (ApplicationDbContext) using an in-memory 
                 //database for testing.
-                services.AddDbContext<BudgetContext>(options =>
+                services.AddDbContext<ShoppingDbContext>(options =>
                 {
                     options.UseInMemoryDatabase("InMemoryDbForTesting");
                     options.UseInternalServiceProvider(provider);
@@ -79,7 +79,7 @@ namespace CleanArchitecture.Web.Api.FunctionalTests.Fixture
 
                 Task.Run(async () => await userManager.CreateAsync(testUser, "password")).Wait();
 
-                var context = scopedServices.GetRequiredService<BudgetContext>();
+                var context = scopedServices.GetRequiredService<ShoppingDbContext>();
                 UserId = new Guid(testUser.Id);
 
                 context.User.Add(new User(new Guid(testUser.Id), "TestUser"));
@@ -112,12 +112,12 @@ namespace CleanArchitecture.Web.Api.FunctionalTests.Fixture
             return client;
         }
 
-        public void SetupDatabase(Action<BudgetContext> setupCallback = null)
+        public void SetupDatabase(Action<ShoppingDbContext> setupCallback = null)
         {
             //Create a scope to obtain a reference to the database context
             using var scope = serviceProvider.CreateScope();
             var scopedServices = scope.ServiceProvider;
-            var context = scopedServices.GetRequiredService<BudgetContext>();
+            var context = scopedServices.GetRequiredService<ShoppingDbContext>();
 
             ClearEntitiesInContext(context);
 
@@ -126,7 +126,7 @@ namespace CleanArchitecture.Web.Api.FunctionalTests.Fixture
             context.SaveChanges();
         }
 
-        private void ClearEntitiesInContext(BudgetContext context)
+        private void ClearEntitiesInContext(ShoppingDbContext context)
         {
             context.Bill.RemoveRange(context.Bill);
             context.UserBankAccount.RemoveRange(context.UserBankAccount);

@@ -1,7 +1,7 @@
-﻿using CleanArchitecture.Shared.Infrastructure.Database.Identity;
-using CleanArchitecture.Shared.Infrastructure.Email;
+﻿using CleanArchitecture.Shared.Infrastructure.Email;
 using CleanArchitecture.Shopping.Application.User;
 using CleanArchitecture.Shopping.Infrastructure.AzureStorage;
+using CleanArchitecture.Shopping.Infrastructure.Database.Identity;
 using CleanArchitecture.Web.Blazor.Modules.Bill.Facades;
 using CleanArchitecture.Web.Blazor.Modules.Core.Services;
 using Microsoft.AspNetCore.Authentication;
