@@ -58,7 +58,7 @@ namespace CleanArchitecture.Shopping.Infrastructure.Repositories
             return new PagedResult<Bill>(queryResult, totalCount);
         }
 
-        public Task<Bill> GetByIdWithUsersAsync(Guid id, CancellationToken cancellationToken = default)
+        public Task<Bill?> GetByIdWithUsersAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return context.Bill
                 .Include(b => b.SharedWithUsers)

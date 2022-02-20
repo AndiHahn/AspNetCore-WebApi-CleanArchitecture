@@ -18,7 +18,7 @@ namespace CleanArchitecture.Shopping.Core.Interfaces
             bool includeShared = false,
             CancellationToken cancellationToken = default);
 
-        Task<Bill.Bill> GetByIdWithUsersAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<Bill.Bill?> GetByIdWithUsersAsync(Guid id, CancellationToken cancellationToken = default);
 
         Task<(DateTime MinDate, DateTime MaxDate)> GetMinAndMaxBillDateAsync(CancellationToken cancellationToken = default);
 

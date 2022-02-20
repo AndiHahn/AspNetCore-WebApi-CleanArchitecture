@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using CleanArchitecture.Shared.Core.Models;
 using CSharpFunctionalExtensions;
 
+#nullable enable
+
 namespace CleanArchitecture.Shopping.Core.Interfaces
 {
     public interface IRepository<TEntity>
@@ -14,12 +16,12 @@ namespace CleanArchitecture.Shopping.Core.Interfaces
 
         Task<PagedResult<TEntity>> ListAsync(int pageSize, int pageIndex, CancellationToken cancellationToken = default);
 
-        Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
-        Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default);
+        TEntity Add(TEntity entity);
 
-        Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
+        void Update(TEntity entity);
 
-        Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
+        void Delete(TEntity entity);
     }
 }

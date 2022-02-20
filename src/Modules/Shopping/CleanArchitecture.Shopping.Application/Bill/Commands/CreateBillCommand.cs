@@ -49,39 +49,34 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
     internal class CreateBillCommandHandler : IRequestHandler<CreateBillCommand, Result<BillDto>>
     {
         private readonly IMapper mapper;
-        private readonly IUserRepository userRepository;
-        private readonly IBillRepository billRepository;
-        private readonly IBankAccountRepository bankAccountRepository;
+        private readonly IUnitOfWork unitOfWork;
 
         public CreateBillCommandHandler(
             IMapper mapper,
-            IUserRepository userRepository,
-            IBillRepository billRepository,
-            IBankAccountRepository bankAccountRepository)
+            IUnitOfWork unitOfWork)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
-            this.bankAccountRepository = bankAccountRepository ?? throw new ArgumentNullException(nameof(bankAccountRepository));
+            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task<Result<BillDto>> Handle(CreateBillCommand request, CancellationToken cancellationToken)
         {
-            var account = await this.bankAccountRepository.GetByIdAsync(request.BankAccountId);
+            var account = await this.unitOfWork.BankAccountRepository.GetByIdAsync(request.BankAccountId, cancellationToken);
             if (account == null)
             {
                 return Result<BillDto>.NotFound($"Account with id {request.BankAccountId} not found.");
             }
 
-            var user = await this.userRepository.GetByIdAsync(request.CurrentUserId);
+            var user = await this.unitOfWork.UserRepository.GetByIdAsync(request.CurrentUserId);
             if (user == null)
             {
                 return Result<BillDto>.NotFound($"User with id {request.CurrentUserId} not found.");
             }
 
-            var bill = await this.billRepository.AddAsync(
-                new Core.Bill.Bill(user, account, request.ShopName, request.Price, request.Date, request.Notes, request.Category),
-                cancellationToken);
+            var bill = this.unitOfWork.BillRepository.Add(
+                new Core.Bill.Bill(user, account, request.ShopName, request.Price, request.Date, request.Notes, request.Category));
+
+            await this.unitOfWork.CommitAsync(cancellationToken);
 
             return this.mapper.Map<BillDto>(bill);
         }

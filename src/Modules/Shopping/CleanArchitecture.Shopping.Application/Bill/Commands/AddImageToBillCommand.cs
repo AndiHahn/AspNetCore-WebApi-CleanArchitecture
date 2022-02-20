@@ -27,20 +27,20 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
 
     internal class AddImageToBillCommandHandler : IRequestHandler<AddImageToBillCommand, Result>
     {
-        private readonly IBillRepository billRepository;
+        private readonly IUnitOfWork unitOfWork;
         private readonly IBillImageRepository billImageRepository;
 
         public AddImageToBillCommandHandler(
-            IBillRepository billRepository,
+            IUnitOfWork unitOfWork,
             IBillImageRepository billImageRepository)
         {
-            this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
+            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             this.billImageRepository = billImageRepository ?? throw new ArgumentNullException(nameof(billImageRepository));
         }
 
         public async Task<Result> Handle(AddImageToBillCommand request, CancellationToken cancellationToken)
         {
-            var bill = await this.billRepository.GetByIdAsync(request.BillId, cancellationToken);
+            var bill = await this.unitOfWork.BillRepository.GetByIdAsync(request.BillId, cancellationToken);
             if (!bill.HasCreated(request.CurrentUserId))
             {
                 return Result.Forbidden($"Current user has no access to bill {request.BillId}");
@@ -49,7 +49,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
             await using var blob = new Blob(request.Image.ContentType);
             await request.Image.CopyToAsync(blob.Content, cancellationToken);
             blob.Reset();
-            await this.billImageRepository.UploadImageAsync(request.BillId, blob);
+            await this.billImageRepository.UploadImageAsync(request.BillId, blob, cancellationToken);
 
             return Result.Success();
         }

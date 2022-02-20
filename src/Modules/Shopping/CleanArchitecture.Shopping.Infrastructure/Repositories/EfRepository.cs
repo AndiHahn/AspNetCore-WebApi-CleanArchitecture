@@ -39,24 +39,19 @@ namespace CleanArchitecture.Shopping.Infrastructure.Repositories
             return await context.Set<TEntity>().FindAsync(new object[] { id }, cancellationToken);
         }
 
-        public async Task<TEntity> AddAsync(TEntity entity, CancellationToken cancellationToken = default)
+        public TEntity Add(TEntity entity)
         {
-            var addedEntity = context.Set<TEntity>().Add(entity).Entity;
-            await context.SaveChangesAsync(cancellationToken);
-
-            return addedEntity;
+            return context.Set<TEntity>().Add(entity).Entity;
         }
 
-        public async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
+        public void Delete(TEntity entity)
         {
             context.Set<TEntity>().Remove(entity);
-            await context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
+        public void Update(TEntity entity)
         {
             context.Entry(entity).State = EntityState.Modified;
-            await context.SaveChangesAsync(cancellationToken);
         }
     }
 }

@@ -52,20 +52,20 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
 
     internal class UpdateBillCommandHandler : IRequestHandler<UpdateBillCommand, Result<BillDto>>
     {
-        private readonly IBillRepository billRepository;
+        private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;
 
         public UpdateBillCommandHandler(
-            IBillRepository billRepository,
+            IUnitOfWork unitOfWork,
             IMapper mapper)
         {
-            this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
+            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<Result<BillDto>> Handle(UpdateBillCommand request, CancellationToken cancellationToken)
         {
-            var bill = await billRepository.GetByIdAsync(request.BillId);
+            var bill = await this.unitOfWork.BillRepository.GetByIdAsync(request.BillId, cancellationToken);
             if (bill == null)
             {
                 return Result<BillDto>.NotFound($"Bill with id {request.BillId} not found.");
@@ -78,7 +78,9 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
 
             bill.Update(request.Date, request.Category, request.Price, request.ShopName, request.Notes, request.Version);
 
-            await this.billRepository.UpdateAsync(bill);
+            this.unitOfWork.BillRepository.Update(bill);
+
+            await this.unitOfWork.CommitAsync(cancellationToken);
 
             return this.mapper.Map<BillDto>(bill);
         }

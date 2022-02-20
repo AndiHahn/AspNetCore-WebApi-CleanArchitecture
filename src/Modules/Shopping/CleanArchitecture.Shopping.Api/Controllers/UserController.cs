@@ -31,6 +31,6 @@ namespace CleanArchitecture.Shopping.Api.Controllers
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         public Task<Result<AuthenticationResponseDto>> Authenticate([FromBody] SignInDto dto)
-            => this.sender.Send(new AuthenticateUserCommand(dto.Username, dto.Password));
+            => this.sender.Send(new AuthenticateUserQuery(dto.Username, dto.Password));
     }
 }

@@ -25,21 +25,17 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
 
     internal class ShareBillWithUserCommandHandler : IRequestHandler<ShareBillWithUserCommand, Result>
     {
-        private readonly IUserRepository userRepository;
-        private readonly IBillRepository billRepository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public ShareBillWithUserCommandHandler(
-            IUserRepository userRepository,
-            IBillRepository billRepository)
+        public ShareBillWithUserCommandHandler(IUnitOfWork unitOfWork)
         {
-            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
+            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task<Result> Handle(ShareBillWithUserCommand request, CancellationToken cancellationToken)
         {
-            var bill = await billRepository.GetByIdWithUsersAsync(request.BillId, cancellationToken);
-            if (bill == null)
+            var bill = await this.unitOfWork.BillRepository.GetByIdWithUsersAsync(request.BillId, cancellationToken);
+            if (bill is null)
             {
                 return Result.NotFound($"Bill with id {request.BillId} not found.");
             }
@@ -49,15 +45,17 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
                 return Result.Forbidden($"Current user does not have access to bill {request.BillId}");
             }
 
-            var user = await this.userRepository.GetByIdAsync(request.ShareWithUserId);
-            if (user == null)
+            var user = await this.unitOfWork.UserRepository.GetByIdAsync(request.ShareWithUserId, cancellationToken);
+            if (user is null)
             {
                 return Result.NotFound($"User with id {request.ShareWithUserId} not found.");
             }
 
             bill.ShareWithUser(user);
 
-            await this.billRepository.UpdateAsync(bill, cancellationToken);
+            this.unitOfWork.BillRepository.Update(bill);
+
+            await this.unitOfWork.CommitAsync(cancellationToken);
 
             return Result.Success();
         }

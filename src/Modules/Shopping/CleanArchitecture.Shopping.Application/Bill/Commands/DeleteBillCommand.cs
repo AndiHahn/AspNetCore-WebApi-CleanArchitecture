@@ -22,20 +22,20 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
 
     internal class DeleteBillCommandHandler : IRequestHandler<DeleteBillCommand, Result>
     {
-        private readonly IBillRepository billRepository;
+        private readonly IUnitOfWork unitOfWork;
         private readonly IBillImageRepository billImageRepository;
 
         public DeleteBillCommandHandler(
-            IBillRepository billRepository,
+            IUnitOfWork unitOfWork,
             IBillImageRepository billImageRepository)
         {
-            this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
+            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
             this.billImageRepository = billImageRepository ?? throw new ArgumentNullException(nameof(billImageRepository));
         }
 
         public async Task<Result> Handle(DeleteBillCommand request, CancellationToken cancellationToken)
         {
-            var bill = await billRepository.GetByIdAsync(request.BillId);
+            var bill = await this.unitOfWork.BillRepository.GetByIdAsync(request.BillId, cancellationToken);
             if (bill == null)
             {
                 return Result.NotFound($"Bill with id {request.BillId} not found.");
@@ -51,7 +51,9 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
                 await this.billImageRepository.DeleteImageAsync(request.BillId, cancellationToken);
             }
 
-            await this.billRepository.DeleteAsync(bill, cancellationToken);
+            this.unitOfWork.BillRepository.Delete(bill);
+
+            await this.unitOfWork.CommitAsync(cancellationToken);
 
             return Result.Success();
         }

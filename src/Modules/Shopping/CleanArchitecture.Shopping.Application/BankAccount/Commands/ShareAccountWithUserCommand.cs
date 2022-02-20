@@ -25,20 +25,17 @@ namespace CleanArchitecture.Shopping.Application.BankAccount.Commands
 
     internal class ShareAccountWithUserCommandHandler : IRequestHandler<ShareAccountWithUserCommand, Result>
     {
-        private readonly IUserRepository userRepository;
-        private readonly IBankAccountRepository bankAccountRepository;
+        private readonly IUnitOfWork unitOfWork;
 
         public ShareAccountWithUserCommandHandler(
-            IUserRepository userRepository,
-            IBankAccountRepository bankAccountRepository)
+            IUnitOfWork unitOfWork)
         {
-            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-            this.bankAccountRepository = bankAccountRepository ?? throw new ArgumentNullException(nameof(bankAccountRepository));
+            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         }
 
         public async Task<Result> Handle(ShareAccountWithUserCommand request, CancellationToken cancellationToken)
         {
-            var account = await this.bankAccountRepository.GetByIdWithUsersAsync(request.AccountId, cancellationToken);
+            var account = await this.unitOfWork.BankAccountRepository.GetByIdWithUsersAsync(request.AccountId, cancellationToken);
             if (account == null)
             {
                 return Result.NotFound($"Account with id {request.AccountId} not found.");
@@ -49,7 +46,7 @@ namespace CleanArchitecture.Shopping.Application.BankAccount.Commands
                 return Result.Forbidden($"Current user does not have access to account {request.AccountId}");
             }
 
-            var user = await this.userRepository.GetByIdAsync(request.ShareWithUserId);
+            var user = await this.unitOfWork.UserRepository.GetByIdAsync(request.ShareWithUserId, cancellationToken);
             if (user == null)
             {
                 return Result.NotFound($"User with id {request.ShareWithUserId} not found.");
@@ -57,7 +54,9 @@ namespace CleanArchitecture.Shopping.Application.BankAccount.Commands
 
             account.ShareWithUser(user);
 
-            await this.bankAccountRepository.UpdateAsync(account, cancellationToken);
+            this.unitOfWork.BankAccountRepository.Update(account);
+
+            await this.unitOfWork.CommitAsync(cancellationToken);
 
             return Result.Success();
         }

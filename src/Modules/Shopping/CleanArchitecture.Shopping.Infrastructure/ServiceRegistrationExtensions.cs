@@ -12,6 +12,8 @@ namespace CleanArchitecture.Shopping.Infrastructure
             services.AddSingleton<IAzureStorageClientFactory, AzureStorageClientFactory>();
             services.AddSingleton<IBlobStorageRepository, BlobStorageRepository>();
 
+            services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
+
             services.RegisterRepositories();
         }
 

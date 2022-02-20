@@ -13,9 +13,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchitecture.Shopping.Application.User.Commands
 {
-    public class AuthenticateUserCommand : IRequest<Result<AuthenticationResponseDto>>
+    public class AuthenticateUserQuery : IRequest<Result<AuthenticationResponseDto>>
     {
-        public AuthenticateUserCommand(string username, string password)
+        public AuthenticateUserQuery(string username, string password)
         {
             this.Username = username;
             this.Password = password;
@@ -26,12 +26,12 @@ namespace CleanArchitecture.Shopping.Application.User.Commands
         public string Password { get; }
     }
 
-    internal class AuthenticateUserCommandHandler : IRequestHandler<AuthenticateUserCommand, Result<AuthenticationResponseDto>>
+    internal class AuthenticateUserQueryHandler : IRequestHandler<AuthenticateUserQuery, Result<AuthenticationResponseDto>>
     {
         private readonly IIdentityUserRepository identityUserRepository;
         private readonly AuthenticationConfiguration configuration;
 
-        public AuthenticateUserCommandHandler(
+        public AuthenticateUserQueryHandler(
             IIdentityUserRepository identityUserRepository,
             IOptions<AuthenticationConfiguration> configuration)
         {
@@ -40,7 +40,7 @@ namespace CleanArchitecture.Shopping.Application.User.Commands
         }
 
         public async Task<Result<AuthenticationResponseDto>> Handle(
-            AuthenticateUserCommand request,
+            AuthenticateUserQuery request,
             CancellationToken cancellationToken)
         {
             var user = await this.identityUserRepository.GetByNameAsync(request.Username);
