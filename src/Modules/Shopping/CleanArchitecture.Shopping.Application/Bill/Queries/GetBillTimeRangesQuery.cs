@@ -1,17 +1,17 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using MediatR;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Queries
 {
-    public class GetBillTimeRangesQuery : IRequest<Result<TimeRangeDto>>
+    public class GetBillTimeRangesQuery : IQuery<Result<TimeRangeDto>>
     {
     }
 
-    internal class GetBillTimeRangesQueryHandler : IRequestHandler<GetBillTimeRangesQuery, Result<TimeRangeDto>>
+    internal class GetBillTimeRangesQueryHandler : IQueryHandler<GetBillTimeRangesQuery, Result<TimeRangeDto>>
     {
         private readonly IBillRepository billRepository;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using CleanArchitecture.Shared.Application;
 using CleanArchitecture.Shared.Core;
 using CleanArchitecture.Shared.Core.Filter;
 using CleanArchitecture.Shared.Core.Models;

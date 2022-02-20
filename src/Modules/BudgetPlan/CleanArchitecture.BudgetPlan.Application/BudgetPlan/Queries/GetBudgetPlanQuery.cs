@@ -1,11 +1,11 @@
 ﻿using CleanArchitecture.BudgetPlan.Core;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.BudgetPlan.Application.BudgetPlan.Queries
 {
-    public class GetBudgetPlanQuery : IRequest<Result<BudgetPlanDto>>
+    public class GetBudgetPlanQuery : IQuery<Result<BudgetPlanDto>>
     {
         public GetBudgetPlanQuery(Guid userId)
         {
@@ -15,7 +15,7 @@ namespace CleanArchitecture.BudgetPlan.Application.BudgetPlan.Queries
         public Guid UserId { get; }
     }
 
-    internal class GetBudgetPlanQueryHandler : IRequestHandler<GetBudgetPlanQuery, Result<BudgetPlanDto>>
+    internal class GetBudgetPlanQueryHandler : IQueryHandler<GetBudgetPlanQuery, Result<BudgetPlanDto>>
     {
         private readonly IBudgetPlanDbContext dbContext;
 

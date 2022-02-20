@@ -5,15 +5,15 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using MediatR;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace CleanArchitecture.Shopping.Application.User.Queries
 {
-    public class AuthenticateUserQuery : IRequest<Result<AuthenticationResponseDto>>
+    public class AuthenticateUserQuery : IQuery<Result<AuthenticationResponseDto>>
     {
         public AuthenticateUserQuery(string username, string password)
         {
@@ -26,7 +26,7 @@ namespace CleanArchitecture.Shopping.Application.User.Queries
         public string Password { get; }
     }
 
-    internal class AuthenticateUserQueryHandler : IRequestHandler<AuthenticateUserQuery, Result<AuthenticationResponseDto>>
+    internal class AuthenticateUserQueryHandler : IQueryHandler<AuthenticateUserQuery, Result<AuthenticationResponseDto>>
     {
         private readonly IIdentityUserRepository identityUserRepository;
         private readonly AuthenticationConfiguration configuration;

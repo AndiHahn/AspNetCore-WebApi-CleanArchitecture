@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using CleanArchitecture.BudgetPlan.Core;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.BudgetPlan.Application.Income.Queries
 {
-    public class ListIncomesQuery : IRequest<Result<IEnumerable<IncomeDto>>>
+    public class ListIncomesQuery : IQuery<Result<IEnumerable<IncomeDto>>>
     {
         public ListIncomesQuery(Guid userId)
         {
@@ -16,7 +16,7 @@ namespace CleanArchitecture.BudgetPlan.Application.Income.Queries
         public Guid UserId { get; }
     }
 
-    internal class ListIncomesQueryHandler : IRequestHandler<ListIncomesQuery, Result<IEnumerable<IncomeDto>>>
+    internal class ListIncomesQueryHandler : IQueryHandler<ListIncomesQuery, Result<IEnumerable<IncomeDto>>>
     {
         private readonly IBudgetPlanDbContext dbContext;
         private readonly IMapper mapper;

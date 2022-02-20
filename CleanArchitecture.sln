@@ -39,13 +39,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.Shared.Co
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BudgetPlan", "BudgetPlan", "{1BEBBF48-12DA-40C7-AA4C-7A322C9BE6FB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.BudgetPlan.Api", "src\Modules\BudgetPlan\CleanArchitecture.BudgetPlan.Api\CleanArchitecture.BudgetPlan.Api.csproj", "{195B6784-6975-4BEC-B531-96E06AAEDE0C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.BudgetPlan.Api", "src\Modules\BudgetPlan\CleanArchitecture.BudgetPlan.Api\CleanArchitecture.BudgetPlan.Api.csproj", "{195B6784-6975-4BEC-B531-96E06AAEDE0C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.BudgetPlan.Application", "src\Modules\BudgetPlan\CleanArchitecture.BudgetPlan.Application\CleanArchitecture.BudgetPlan.Application.csproj", "{97F1F3D8-A8BA-4CE5-881C-4DFA07033137}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.BudgetPlan.Application", "src\Modules\BudgetPlan\CleanArchitecture.BudgetPlan.Application\CleanArchitecture.BudgetPlan.Application.csproj", "{97F1F3D8-A8BA-4CE5-881C-4DFA07033137}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.BudgetPlan.Core", "src\Modules\BudgetPlan\CleanArchitecture.BudgetPlan.Core\CleanArchitecture.BudgetPlan.Core.csproj", "{5EA3AAE8-6FEE-4FFF-BF7F-6162FC923AEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.BudgetPlan.Core", "src\Modules\BudgetPlan\CleanArchitecture.BudgetPlan.Core\CleanArchitecture.BudgetPlan.Core.csproj", "{5EA3AAE8-6FEE-4FFF-BF7F-6162FC923AEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.BudgetPlan.Infrastructure", "src\Modules\BudgetPlan\CleanArchitecture.BudgetPlan.Infrastructure\CleanArchitecture.BudgetPlan.Infrastructure.csproj", "{18864D1C-6FB3-495C-99EC-D2B6D2C0D30D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CleanArchitecture.BudgetPlan.Infrastructure", "src\Modules\BudgetPlan\CleanArchitecture.BudgetPlan.Infrastructure\CleanArchitecture.BudgetPlan.Infrastructure.csproj", "{18864D1C-6FB3-495C-99EC-D2B6D2C0D30D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Shared.Application", "src\Modules\Shared\CleanArchitecture.Shared.Application\CleanArchitecture.Shared.Application.csproj", "{3BC1D86B-644A-472F-9454-E87D2F246806}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -117,6 +119,10 @@ Global
 		{18864D1C-6FB3-495C-99EC-D2B6D2C0D30D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18864D1C-6FB3-495C-99EC-D2B6D2C0D30D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18864D1C-6FB3-495C-99EC-D2B6D2C0D30D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BC1D86B-644A-472F-9454-E87D2F246806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BC1D86B-644A-472F-9454-E87D2F246806}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BC1D86B-644A-472F-9454-E87D2F246806}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BC1D86B-644A-472F-9454-E87D2F246806}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -143,6 +149,7 @@ Global
 		{97F1F3D8-A8BA-4CE5-881C-4DFA07033137} = {1BEBBF48-12DA-40C7-AA4C-7A322C9BE6FB}
 		{5EA3AAE8-6FEE-4FFF-BF7F-6162FC923AEA} = {1BEBBF48-12DA-40C7-AA4C-7A322C9BE6FB}
 		{18864D1C-6FB3-495C-99EC-D2B6D2C0D30D} = {1BEBBF48-12DA-40C7-AA4C-7A322C9BE6FB}
+		{3BC1D86B-644A-472F-9454-E87D2F246806} = {7AFE6FBA-A27E-4DCC-8CD6-BC1C7FA33BC4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {857F354F-022B-44CF-9FED-072A88C73D2D}

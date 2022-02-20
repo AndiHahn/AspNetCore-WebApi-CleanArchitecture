@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using MediatR;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Commands
 {
-    public class DeleteImageFromBillCommand : IRequest<Result>
+    public class DeleteImageFromBillCommand : ICommand<Result>
     {
         public DeleteImageFromBillCommand(Guid currentUserId, Guid billId)
         {
@@ -20,7 +20,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
         public Guid BillId { get; }
     }
 
-    internal class DeleteImageFromBillCommandHandler : IRequestHandler<DeleteImageFromBillCommand, Result>
+    internal class DeleteImageFromBillCommandHandler : ICommandHandler<DeleteImageFromBillCommand, Result>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IBillImageRepository billImageRepository;

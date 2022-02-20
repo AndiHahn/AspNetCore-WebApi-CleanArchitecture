@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using MediatR;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Queries
 {
-    public class GetBillImageQuery : IRequest<Result<Blob>>
+    public class GetBillImageQuery : IQuery<Result<Blob>>
     {
         public GetBillImageQuery(Guid currentUserId, Guid billId)
         {
@@ -21,7 +21,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Queries
         public Guid BillId { get; }
     }
 
-    internal class GetBillImageQueryHandler : IRequestHandler<GetBillImageQuery, Result<Blob>>
+    internal class GetBillImageQueryHandler : IQueryHandler<GetBillImageQuery, Result<Blob>>
     {
         private readonly IBillRepository billRepository;
         private readonly IBillImageRepository billImageRepository;

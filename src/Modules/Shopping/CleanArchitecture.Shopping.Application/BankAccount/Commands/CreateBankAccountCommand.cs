@@ -2,13 +2,13 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using MediatR;
 
 namespace CleanArchitecture.Shopping.Application.BankAccount.Commands
 {
-    public class CreateBankAccountCommand : IRequest<Result<BankAccountDto>>
+    public class CreateBankAccountCommand : ICommand<Result<BankAccountDto>>
     {
         public CreateBankAccountCommand(Guid currentUserId, string name)
         {
@@ -21,7 +21,7 @@ namespace CleanArchitecture.Shopping.Application.BankAccount.Commands
         public string Name { get; }
     }
 
-    internal class CreateBankAccountCommandHandler : IRequestHandler<CreateBankAccountCommand, Result<BankAccountDto>>
+    internal class CreateBankAccountCommandHandler : ICommandHandler<CreateBankAccountCommand, Result<BankAccountDto>>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;

@@ -1,10 +1,10 @@
 ﻿using CleanArchitecture.BudgetPlan.Core;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
-using MediatR;
 
 namespace CleanArchitecture.BudgetPlan.Application.FixedCost.Commands
 {
-    public class DeleteFixedCostCommand : IRequest<Result>
+    public class DeleteFixedCostCommand : ICommand<Result>
     {
         public DeleteFixedCostCommand(Guid id)
         {
@@ -14,7 +14,7 @@ namespace CleanArchitecture.BudgetPlan.Application.FixedCost.Commands
         public Guid Id { get; }
     }
 
-    internal class DeleteFixedCostCommandHandler : IRequestHandler<DeleteFixedCostCommand, Result>
+    internal class DeleteFixedCostCommandHandler : ICommandHandler<DeleteFixedCostCommand, Result>
     {
         private readonly IBudgetPlanDbContext dbContext;
 

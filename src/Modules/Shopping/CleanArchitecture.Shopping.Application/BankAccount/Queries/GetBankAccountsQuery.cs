@@ -4,13 +4,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using MediatR;
 
 namespace CleanArchitecture.Shopping.Application.BankAccount.Queries
 {
-    public class GetBankAccountsQuery : IRequest<Result<IEnumerable<BankAccountDto>>>
+    public class GetBankAccountsQuery : IQuery<Result<IEnumerable<BankAccountDto>>>
     {
         public GetBankAccountsQuery(Guid currentUserId)
         {
@@ -20,7 +20,7 @@ namespace CleanArchitecture.Shopping.Application.BankAccount.Queries
         public Guid CurrentUserId { get; }
     }
 
-    internal class GetBankAccountsQueryHandler : IRequestHandler<GetBankAccountsQuery, Result<IEnumerable<BankAccountDto>>>
+    internal class GetBankAccountsQueryHandler : IQueryHandler<GetBankAccountsQuery, Result<IEnumerable<BankAccountDto>>>
     {
         private readonly IMapper mapper;
         private readonly IBankAccountRepository bankAccountRepository;

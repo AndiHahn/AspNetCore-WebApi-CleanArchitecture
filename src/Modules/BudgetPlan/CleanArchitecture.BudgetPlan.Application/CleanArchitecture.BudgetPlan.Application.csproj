@@ -15,6 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\CleanArchitecture.Shared.Application\CleanArchitecture.Shared.Application.csproj" />
     <ProjectReference Include="..\..\Shared\CleanArchitecture.Shared.Core\CleanArchitecture.Shared.Core.csproj" />
     <ProjectReference Include="..\CleanArchitecture.BudgetPlan.Core\CleanArchitecture.BudgetPlan.Core.csproj" />
   </ItemGroup>

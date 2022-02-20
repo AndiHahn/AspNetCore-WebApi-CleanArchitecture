@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using MediatR;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Commands
 {
-    public class ShareBillWithUserCommand : IRequest<Result>
+    public class ShareBillWithUserCommand : ICommand<Result>
     {
         public ShareBillWithUserCommand(Guid billId, Guid shareWithUserId, Guid currentUserId)
         {
@@ -23,7 +23,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
         public Guid ShareWithUserId { get; }
     }
 
-    internal class ShareBillWithUserCommandHandler : IRequestHandler<ShareBillWithUserCommand, Result>
+    internal class ShareBillWithUserCommandHandler : ICommandHandler<ShareBillWithUserCommand, Result>
     {
         private readonly IUnitOfWork unitOfWork;
 

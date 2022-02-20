@@ -2,13 +2,13 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using MediatR;
 
 namespace CleanArchitecture.Shopping.Application.User.Queries
 {
-    public class GetCurrentUserQuery : IRequest<Result<UserDto>>
+    public class GetCurrentUserQuery : IQuery<Result<UserDto>>
     {
         public GetCurrentUserQuery(Guid currentUserId)
         {
@@ -18,7 +18,7 @@ namespace CleanArchitecture.Shopping.Application.User.Queries
         public Guid CurrentUserId { get; }
     }
 
-    internal class GetUserQueryHandler : IRequestHandler<GetCurrentUserQuery, Result<UserDto>>
+    internal class GetUserQueryHandler : IQueryHandler<GetCurrentUserQuery, Result<UserDto>>
     {
         private readonly IUserRepository userRepository;
         private readonly IMapper mapper;

@@ -3,13 +3,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using MediatR;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Queries
 {
-    public class GetBillByIdQuery : IRequest<Result<BillDto>>
+    public class GetBillByIdQuery : IQuery<Result<BillDto>>
     {
         public GetBillByIdQuery(Guid currentUserId, Guid billId)
         {
@@ -22,7 +22,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Queries
         public Guid BillId { get; }
     }
 
-    internal class GetBillByIdQueryHandler : IRequestHandler<GetBillByIdQuery, Result<BillDto>>
+    internal class GetBillByIdQueryHandler : IQueryHandler<GetBillByIdQuery, Result<BillDto>>
     {
         private readonly IMapper mapper;
         private readonly IBillRepository billRepository;

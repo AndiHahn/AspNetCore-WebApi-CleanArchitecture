@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using MediatR;
 using Microsoft.AspNetCore.Http;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Commands
 {
-    public class AddImageToBillCommand : IRequest<Result>
+    public class AddImageToBillCommand : ICommand<Result>
     {
         public AddImageToBillCommand(Guid currentUserId, Guid billId, IFormFile image)
         {
@@ -25,7 +25,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
         public IFormFile Image { get; }
     }
 
-    internal class AddImageToBillCommandHandler : IRequestHandler<AddImageToBillCommand, Result>
+    internal class AddImageToBillCommandHandler : ICommandHandler<AddImageToBillCommand, Result>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IBillImageRepository billImageRepository;

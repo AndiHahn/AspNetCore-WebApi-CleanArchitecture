@@ -1,10 +1,10 @@
 ﻿using CleanArchitecture.BudgetPlan.Core;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
-using MediatR;
 
 namespace CleanArchitecture.BudgetPlan.Application.Income.Commands
 {
-    public class DeleteIncomeCommand : IRequest<Result>
+    public class DeleteIncomeCommand : ICommand<Result>
     {
         public DeleteIncomeCommand(Guid id)
         {
@@ -14,7 +14,7 @@ namespace CleanArchitecture.BudgetPlan.Application.Income.Commands
         public Guid Id { get; }
     }
 
-    internal class DeleteIncomeCommandHandler : IRequestHandler<DeleteIncomeCommand, Result>
+    internal class DeleteIncomeCommandHandler : ICommandHandler<DeleteIncomeCommand, Result>
     {
         private readonly IBudgetPlanDbContext dbContext;
 

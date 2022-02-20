@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using MediatR;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Queries
 {
-    public class GetTotalExpensesByCategoryQuery : IRequest<Result<IEnumerable<ExpensesDto>>>
+    public class GetTotalExpensesByCategoryQuery : IQuery<Result<IEnumerable<ExpensesDto>>>
     {
         public GetTotalExpensesByCategoryQuery(Guid currentUserId)
         {
@@ -19,7 +19,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Queries
         public Guid CurrentUserId { get; }
     }
 
-    internal class GetTotalExpensesQueryHandler : IRequestHandler<GetTotalExpensesByCategoryQuery, Result<IEnumerable<ExpensesDto>>>
+    internal class GetTotalExpensesQueryHandler : IQueryHandler<GetTotalExpensesByCategoryQuery, Result<IEnumerable<ExpensesDto>>>
     {
         private readonly IBillRepository billRepository;
 

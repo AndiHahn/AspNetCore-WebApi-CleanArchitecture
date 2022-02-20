@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using CleanArchitecture.BudgetPlan.Core;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
-using MediatR;
 
 namespace CleanArchitecture.BudgetPlan.Application.FixedCost.Commands
 {
-    public class AddFixedCostCommand : IRequest<Result<FixedCostDto>>
+    public class AddFixedCostCommand : ICommand<Result<FixedCostDto>>
     {
         public AddFixedCostCommand(
             Guid userId,
@@ -32,7 +32,7 @@ namespace CleanArchitecture.BudgetPlan.Application.FixedCost.Commands
         public CostCategory Category { get; }
     }
 
-    internal class AddFixedCostCommandHandler : IRequestHandler<AddFixedCostCommand, Result<FixedCostDto>>
+    internal class AddFixedCostCommandHandler : ICommandHandler<AddFixedCostCommand, Result<FixedCostDto>>
     {
         private readonly IBudgetPlanDbContext dbContext;
         private readonly IMapper mapper;

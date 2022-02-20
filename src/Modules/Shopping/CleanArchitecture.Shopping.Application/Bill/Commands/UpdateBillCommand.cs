@@ -2,16 +2,16 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Bill;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using MediatR;
 
 #nullable enable
 
 namespace CleanArchitecture.Shopping.Application.Bill.Commands
 {
-    public class UpdateBillCommand : IRequest<Result<BillDto>>
+    public class UpdateBillCommand : ICommand<Result<BillDto>>
     {
         public UpdateBillCommand(
             Guid currentUserId,
@@ -50,7 +50,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
         public byte[] Version { get; }
     }
 
-    internal class UpdateBillCommandHandler : IRequestHandler<UpdateBillCommand, Result<BillDto>>
+    internal class UpdateBillCommandHandler : ICommandHandler<UpdateBillCommand, Result<BillDto>>
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly IMapper mapper;

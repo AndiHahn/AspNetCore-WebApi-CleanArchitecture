@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using CleanArchitecture.BudgetPlan.Core;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.BudgetPlan.Application.FixedCost.Queries
 {
-    public class ListFixedCostsQuery : IRequest<Result<IEnumerable<FixedCostDto>>>
+    public class ListFixedCostsQuery : IQuery<Result<IEnumerable<FixedCostDto>>>
     {
         public ListFixedCostsQuery(Guid userId)
         {
@@ -16,7 +16,7 @@ namespace CleanArchitecture.BudgetPlan.Application.FixedCost.Queries
         public Guid UserId { get; }
     }
 
-    internal class ListFixedCostsQueryHandler : IRequestHandler<ListFixedCostsQuery, Result<IEnumerable<FixedCostDto>>>
+    internal class ListFixedCostsQueryHandler : IQueryHandler<ListFixedCostsQuery, Result<IEnumerable<FixedCostDto>>>
     {
         private readonly IBudgetPlanDbContext dbContext;
         private readonly IMapper mapper;

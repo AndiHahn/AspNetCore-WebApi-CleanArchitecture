@@ -2,16 +2,16 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Bill;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using MediatR;
 
 #nullable enable
 
 namespace CleanArchitecture.Shopping.Application.Bill.Commands
 {
-    public class CreateBillCommand : IRequest<Result<BillDto>>
+    public class CreateBillCommand : ICommand<Result<BillDto>>
     {
         public CreateBillCommand(
             Guid currentUserId,
@@ -46,7 +46,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
         public string? Notes { get; }
     }
 
-    internal class CreateBillCommandHandler : IRequestHandler<CreateBillCommand, Result<BillDto>>
+    internal class CreateBillCommandHandler : ICommandHandler<CreateBillCommand, Result<BillDto>>
     {
         private readonly IMapper mapper;
         private readonly IUnitOfWork unitOfWork;

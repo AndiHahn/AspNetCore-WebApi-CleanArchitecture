@@ -1,4 +1,5 @@
 ﻿using System;
+using CleanArchitecture.Shared.Application;
 using CleanArchitecture.Shared.Core;
 using Microsoft.AspNetCore.Http;
 

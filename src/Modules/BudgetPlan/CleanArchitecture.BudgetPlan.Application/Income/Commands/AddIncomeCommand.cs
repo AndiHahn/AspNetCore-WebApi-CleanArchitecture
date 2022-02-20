@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using CleanArchitecture.BudgetPlan.Core;
+using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Models.Result;
-using MediatR;
 
 namespace CleanArchitecture.BudgetPlan.Application.Income.Commands
 {
-    public class AddIncomeCommand : IRequest<Result<IncomeDto>>
+    public class AddIncomeCommand : ICommand<Result<IncomeDto>>
     {
         public AddIncomeCommand(Guid userId, string name, double value, Duration duration)
         {
@@ -24,7 +24,7 @@ namespace CleanArchitecture.BudgetPlan.Application.Income.Commands
         public Duration Duration { get; }
     }
 
-    internal class AddIncomeCommandHandler : IRequestHandler<AddIncomeCommand, Result<IncomeDto>>
+    internal class AddIncomeCommandHandler : ICommandHandler<AddIncomeCommand, Result<IncomeDto>>
     {
         private readonly IBudgetPlanDbContext dbContext;
         private readonly IMapper mapper;

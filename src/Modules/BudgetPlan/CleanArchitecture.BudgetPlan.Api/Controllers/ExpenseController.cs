@@ -3,6 +3,7 @@ using CleanArchitecture.BudgetPlan.Application;
 using CleanArchitecture.BudgetPlan.Application.FixedCost;
 using CleanArchitecture.BudgetPlan.Application.FixedCost.Commands;
 using CleanArchitecture.BudgetPlan.Application.FixedCost.Queries;
+using CleanArchitecture.Shared.Application;
 using CleanArchitecture.Shared.Core;
 using CleanArchitecture.Shared.Core.Filter;
 using CleanArchitecture.Shared.Core.Models.Result;
