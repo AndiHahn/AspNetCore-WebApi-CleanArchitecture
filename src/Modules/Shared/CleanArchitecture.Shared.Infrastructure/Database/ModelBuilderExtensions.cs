@@ -22,5 +22,18 @@ namespace CleanArchitecture.Shared.Infrastructure.Database
                 }
             }
         }
+
+        public static void ApplyRowVersion<TInterface>(this ModelBuilder builder, string propertyName)
+        {
+            foreach (var clrType in builder.Model.GetEntityTypes().Select(e => e.ClrType))
+            {
+                if (clrType.GetInterface(typeof(TInterface).Name) != null)
+                {
+                    builder.Entity(clrType)
+                        .Property(propertyName)
+                        .IsRowVersion();
+                }
+            }
+        }
     }
 }

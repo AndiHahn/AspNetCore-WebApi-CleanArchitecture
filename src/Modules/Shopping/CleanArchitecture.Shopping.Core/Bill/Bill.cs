@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using CleanArchitecture.Shared.Core.Interfaces.Entities;
 using CSharpFunctionalExtensions;
@@ -61,7 +60,6 @@ namespace CleanArchitecture.Shopping.Core.Bill
 
         public Category Category { get; private set; }
 
-        [Timestamp]
         public byte[] Version { get; set; }
 
         public virtual User.User CreatedByUser { get; private set; }

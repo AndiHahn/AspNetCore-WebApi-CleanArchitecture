@@ -89,8 +89,7 @@ namespace CleanArchitecture.Web.Api.FunctionalTests
 
             var user = new UserBuilder().Id(apiFunctionalTestFixture.UserId).Build();
             var account = new AccountBuilder().Owner(user).Build();
-            var bill = new BillBuilder()
-                .WithAccount(account).CreatedByUser(user).Build();
+            var bill = new BillBuilder().WithAccount(account).CreatedByUser(user).Build();
             apiFunctionalTestFixture.SetupDatabase(db =>
             {
                 db.Bill.Add(bill);

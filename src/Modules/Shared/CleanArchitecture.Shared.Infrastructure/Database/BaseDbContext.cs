@@ -16,6 +16,7 @@ namespace CleanArchitecture.Shared.Infrastructure.Database
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyGlobalFilters<ISoftDeletableEntity>(s => !s.Deleted);
+            modelBuilder.ApplyRowVersion<IVersionableEntity>(nameof(IVersionableEntity.Version));
         }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

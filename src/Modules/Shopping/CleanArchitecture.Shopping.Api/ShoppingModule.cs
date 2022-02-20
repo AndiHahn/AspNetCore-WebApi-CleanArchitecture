@@ -1,5 +1,4 @@
-﻿using CleanArchitecture.Shared.Infrastructure.Database;
-using CleanArchitecture.Shopping.Application;
+﻿using CleanArchitecture.Shopping.Application;
 using CleanArchitecture.Shopping.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

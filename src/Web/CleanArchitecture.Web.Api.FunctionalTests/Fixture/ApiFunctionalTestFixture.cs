@@ -52,13 +52,13 @@ namespace CleanArchitecture.Web.Api.FunctionalTests.Fixture
                 //database for testing.
                 services.AddDbContext<ShoppingDbContext>(options =>
                 {
-                    options.UseInMemoryDatabase("InMemoryDbForTesting");
+                    options.UseInMemoryDatabase("InMemoryDbForTesting", opt => opt.EnableNullChecks(false));
                     options.UseInternalServiceProvider(provider);
                 });
 
                 services.AddDbContext<IdentityContext>(options =>
                 {
-                    options.UseInMemoryDatabase("InMemoryDbForTesting");
+                    options.UseInMemoryDatabase("InMemoryDbForTesting", opt => opt.EnableNullChecks(false));
                     options.UseInternalServiceProvider(provider);
                 });
 

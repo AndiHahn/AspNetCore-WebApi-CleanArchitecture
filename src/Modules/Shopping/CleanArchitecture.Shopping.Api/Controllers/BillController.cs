@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using CleanArchitecture.Shared.Application;
-using CleanArchitecture.Shared.Core;
 using CleanArchitecture.Shared.Core.Filter;
 using CleanArchitecture.Shared.Core.Models;
 using CleanArchitecture.Shared.Core.Models.Result;
@@ -9,7 +8,6 @@ using CleanArchitecture.Shopping.Api.Dtos;
 using CleanArchitecture.Shopping.Application.Bill;
 using CleanArchitecture.Shopping.Application.Bill.Commands;
 using CleanArchitecture.Shopping.Application.Bill.Queries;
-using CleanArchitecture.Shopping.Application.User;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
