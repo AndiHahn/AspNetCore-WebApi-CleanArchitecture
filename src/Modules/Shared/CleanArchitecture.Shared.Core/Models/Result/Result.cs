@@ -49,12 +49,12 @@ namespace CleanArchitecture.Shared.Core.Models.Result
     public class Result<T> : Result, IResult
         where T : class
     {
-        private Result(ResultStatus status, string? error = null)
+        protected Result(ResultStatus status, string? error = null)
             : base(status, error)
         {
         }
 
-        private Result(T value)
+        protected Result(T value)
             : base(ResultStatus.Success)
         {
            this.Value = value;
@@ -72,19 +72,19 @@ namespace CleanArchitecture.Shared.Core.Models.Result
 
         public static Result<T> Success(T value) => new Result<T>(value);
 
-        public static new Result<T> BadRequest(string errorIdentifier, string errorDescription)
+        public new static Result<T> BadRequest(string errorIdentifier, string errorDescription)
         {
             var result = new Result<T>(ResultStatus.BadRequest);
             result.AddError(errorIdentifier, errorDescription);
             return result;
         }
 
-        public static new Result<T> BadRequest(string? error = null) => new(ResultStatus.BadRequest, error);
+        public new static Result<T> BadRequest(string? error = null) => new(ResultStatus.BadRequest, error);
 
-        public static new Result<T> Unauthorized(string? error = null) => new(ResultStatus.Unauthorized, error);
+        public new static Result<T> Unauthorized(string? error = null) => new(ResultStatus.Unauthorized, error);
 
-        public static new Result<T> Forbidden(string? error = null) => new(ResultStatus.Forbidden, error);
+        public new static Result<T> Forbidden(string? error = null) => new(ResultStatus.Forbidden, error);
 
-        public static new Result<T> NotFound(string? error = null) => new(ResultStatus.NotFound, error);
+        public new static Result<T> NotFound(string? error = null) => new(ResultStatus.NotFound, error);
     }
 }

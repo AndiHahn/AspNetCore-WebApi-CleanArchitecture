@@ -17,7 +17,9 @@ namespace CleanArchitecture.Shared.Core.Models
         }
 
         public Stream? Content { get; set; }
+
         public string ContentType { get; private set; }
+
         public DateTime LastModified { get; private set; }
 
         public void Reset()

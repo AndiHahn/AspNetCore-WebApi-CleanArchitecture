@@ -24,9 +24,15 @@ namespace CleanArchitecture.Shared.Core.Filter
                 return controller.ValidationProblem(result.ErrorMessage, null, status, title, GetType(status), errors);
             }
 
+            object GetResultValue(IResult result)
+            {
+                if (result is IPagedResult pagedResult) return new PagedResultDto(pagedResult.GetValue(), pagedResult.TotalCount);
+                return result.GetValue();
+            }
+
             return result.Status switch
             {
-                ResultStatus.Success => controller.Ok(result.GetValue()),
+                ResultStatus.Success => controller.Ok(GetResultValue(result)),
                 ResultStatus.SuccessNoResult => controller.NoContent(),
                 ResultStatus.BadRequest => ValidationProblemDetails("Bad Request", StatusCodes.Status400BadRequest),
                 ResultStatus.Unauthorized => ProblemDetails("Unauthorized", StatusCodes.Status401Unauthorized),

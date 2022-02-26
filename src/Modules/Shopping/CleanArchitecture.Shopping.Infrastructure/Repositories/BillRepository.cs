@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Shared.Core.Models;
+using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Bill;
 using CleanArchitecture.Shopping.Core.Interfaces;
 using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
@@ -65,15 +65,16 @@ namespace CleanArchitecture.Shopping.Infrastructure.Repositories
                 .FirstOrDefaultAsync(b => b.Id == id, cancellationToken);
         }
 
-        public async Task<(DateTime MinDate, DateTime MaxDate)> GetMinAndMaxBillDateAsync(CancellationToken cancellationToken = default)
+        public async Task<(DateTime MinDate, DateTime MaxDate)?> GetMinAndMaxBillDateAsync(CancellationToken cancellationToken = default)
         {
-            return (await this.context.Bill
+            var values = await this.context.Bill
                 .Select(b => new Tuple<DateTime, DateTime>(
                     this.context.Bill.Min(b => b.Date),
                     this.context.Bill.Max(b => b.Date)
                 ))
-                .FirstOrDefaultAsync(cancellationToken))
-                .ToValueTuple();
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return values?.ToValueTuple() ?? null;
         }
 
         public Task<Dictionary<Category, double>> GetExpensesByCategoryAsync(

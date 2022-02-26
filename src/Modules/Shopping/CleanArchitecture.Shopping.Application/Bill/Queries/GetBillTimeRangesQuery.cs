@@ -24,13 +24,12 @@ namespace CleanArchitecture.Shopping.Application.Bill.Queries
         public async Task<Result<TimeRangeDto>> Handle(GetBillTimeRangesQuery request, CancellationToken cancellationToken)
         {
             var result = await this.billRepository.GetMinAndMaxBillDateAsync(cancellationToken);
-
-            if (result.MinDate == default || result.MaxDate == default)
+            if (result is null)
             {
                 return new TimeRangeDto();
             }
 
-            return new TimeRangeDto(result.MinDate, result.MaxDate);
+            return new TimeRangeDto(result.Value.MinDate, result.Value.MaxDate);
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Shared.Core.Models;
+using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Bill;
 
 #nullable enable
@@ -20,7 +20,7 @@ namespace CleanArchitecture.Shopping.Core.Interfaces
 
         Task<Bill.Bill?> GetByIdWithUsersAsync(Guid id, CancellationToken cancellationToken = default);
 
-        Task<(DateTime MinDate, DateTime MaxDate)> GetMinAndMaxBillDateAsync(CancellationToken cancellationToken = default);
+        Task<(DateTime MinDate, DateTime MaxDate)?> GetMinAndMaxBillDateAsync(CancellationToken cancellationToken = default);
 
         Task<Dictionary<Category, double>> GetExpensesByCategoryAsync(Guid currentUserId, CancellationToken cancellationToken = default);
     }

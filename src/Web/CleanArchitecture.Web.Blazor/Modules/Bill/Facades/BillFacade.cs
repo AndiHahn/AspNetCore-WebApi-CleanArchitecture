@@ -27,7 +27,7 @@ namespace CleanArchitecture.Web.Blazor.Modules.Bill.Facades
 
             var result = await this.sender.Send(new SearchBillsQuery(currentUserId, pageSize, pageIndex));
 
-            return result.Value.Result;
+            return result.Value;
         }
     }
 }

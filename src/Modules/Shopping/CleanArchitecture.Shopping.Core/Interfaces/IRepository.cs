@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Shared.Core.Models;
+using CleanArchitecture.Shared.Core.Models.Result;
 using CSharpFunctionalExtensions;
 
 #nullable enable

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Shared.Core.Models;
+using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
 using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
 using CSharpFunctionalExtensions;
 using Microsoft.EntityFrameworkCore;
+
+#nullable enable
 
 namespace CleanArchitecture.Shopping.Infrastructure.Repositories
 {
@@ -34,7 +36,7 @@ namespace CleanArchitecture.Shopping.Infrastructure.Repositories
             return new PagedResult<TEntity>(result, totalCount);
         }
 
-        public async Task<TEntity> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             return await context.Set<TEntity>().FindAsync(new object[] { id }, cancellationToken);
         }

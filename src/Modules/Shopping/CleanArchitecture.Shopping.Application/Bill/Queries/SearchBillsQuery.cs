@@ -10,7 +10,7 @@ using CleanArchitecture.Shopping.Core.Interfaces;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Queries
 {
-    public class SearchBillsQuery : IQuery<Result<PagedResult<BillDto>>>
+    public class SearchBillsQuery : IQuery<PagedResult<BillDto>>
     {
         public SearchBillsQuery(
             Guid currentUserId,
@@ -37,7 +37,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Queries
         public string Search { get; }
     }
 
-    internal class SearchBillsQueryHandler : IQueryHandler<SearchBillsQuery, Result<PagedResult<BillDto>>>
+    internal class SearchBillsQueryHandler : IQueryHandler<SearchBillsQuery, PagedResult<BillDto>>
     {
         private readonly IBillRepository billRepository;
         private readonly IMapper mapper;
@@ -50,7 +50,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Queries
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<Result<PagedResult<BillDto>>> Handle(SearchBillsQuery request, CancellationToken cancellationToken)
+        public async Task<PagedResult<BillDto>> Handle(SearchBillsQuery request, CancellationToken cancellationToken)
         {
             var result = await billRepository.SearchBillsAsync(
                 request.CurrentUserId,
@@ -61,7 +61,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Queries
                 cancellationToken);
 
             return new PagedResult<BillDto>(
-                result.Result.Select(this.mapper.Map<BillDto>),
+                result.Value!.Select(this.mapper.Map<BillDto>),
                 result.TotalCount);
         }
     }

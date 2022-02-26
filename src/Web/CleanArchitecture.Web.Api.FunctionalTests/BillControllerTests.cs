@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using CleanArchitecture.Shared.Core.Models;
+using CleanArchitecture.Shared.Core.Models.Result;
 using CleanArchitecture.Shared.Tests.Builder;
 using CleanArchitecture.Shopping.Application.Bill;
 using CleanArchitecture.Shopping.Core.Bill;
@@ -44,9 +45,9 @@ namespace CleanArchitecture.Web.Api.FunctionalTests
             // Assert
             response.EnsureSuccessStatusCode();
             Assert.NotNull(result);
-            Assert.Single(result.Result);
+            Assert.Single(result.Value);
             Assert.Equal(1, result.TotalCount);
-            AssertBillDtoEqualModel(bill, result.Result.First());
+            AssertBillDtoEqualModel(bill, result.Value.First());
         }
 
         [Fact]
@@ -64,7 +65,7 @@ namespace CleanArchitecture.Web.Api.FunctionalTests
             // Assert
             response.EnsureSuccessStatusCode();
             Assert.NotNull(result);
-            Assert.Empty(result.Result);
+            Assert.Empty(result.Value);
             Assert.Equal(0, result.TotalCount);
         }
 

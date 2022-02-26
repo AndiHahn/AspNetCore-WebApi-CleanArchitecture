@@ -37,6 +37,11 @@ namespace CleanArchitecture.Shopping.Application.Bill.Queries
         public async Task<Result<Blob>> Handle(GetBillImageQuery request, CancellationToken cancellationToken)
         {
             var bill = await this.billRepository.GetByIdAsync(request.BillId, cancellationToken);
+            if (bill is null)
+            {
+                return Result<Blob>.NotFound();
+            }
+
             if (!bill.HasCreated(request.CurrentUserId))
             {
                 return Result<Blob>.Forbidden($"Current user has no access to bill {request.BillId}");

@@ -40,7 +40,7 @@ namespace CleanArchitecture.Shopping.IntegrationTests.Infrastructure
 
             // Assert
             Assert.Equal(2, result.TotalCount);
-            Assert.Equal(2, result.Result.Count());
+            Assert.Equal(2, result.Value.Count());
         }
 
         [Fact]
@@ -56,7 +56,7 @@ namespace CleanArchitecture.Shopping.IntegrationTests.Infrastructure
 
             // Assert
             Assert.Equal(0, result.TotalCount);
-            Assert.Empty(result.Result);
+            Assert.Empty(result.Value);
         }
 
         [Fact]
@@ -78,8 +78,8 @@ namespace CleanArchitecture.Shopping.IntegrationTests.Infrastructure
             var result = await sut.SearchBillsAsync(user.Id);
 
             // Assert
-            DateTime previousDate = result.Result.First().Date;
-            foreach (var bill in result.Result)
+            DateTime previousDate = result.Value.First().Date;
+            foreach (var bill in result.Value)
             {
                 Assert.True(bill.Date <= previousDate);
                 previousDate = bill.Date;
