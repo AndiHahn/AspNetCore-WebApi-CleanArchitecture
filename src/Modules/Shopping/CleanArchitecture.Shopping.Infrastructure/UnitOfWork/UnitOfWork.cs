@@ -12,29 +12,76 @@ namespace CleanArchitecture.Shopping.Infrastructure.UnitOfWork
         public UnitOfWork(ShoppingDbContext context)
         {
             this.context = context ?? throw new ArgumentNullException(nameof(context));
-
-            this.BankAccountRepository = new BankAccountRepository(context);
-            this.BillRepository = new BillRepository(context);
-            this.UserRepository = new UserRepository(context);
         }
 
         private bool disposed = false;
         private readonly ShoppingDbContext context;
+        private readonly object lockObject = new();
 
-        public IBankAccountRepository BankAccountRepository { get; }
-        public IBillRepository BillRepository { get; }
-        public IUserRepository UserRepository { get; }
+        private IBankAccountRepository bankAccountRepository;
+        private IBillRepository billRepository;
+        private IUserRepository userRepository;
+
+        public IBankAccountRepository BankAccountRepository
+        {
+            get
+            {
+                if (this.bankAccountRepository is not null)
+                {
+                    return this.bankAccountRepository;
+                }
+
+                lock (lockObject)
+                {
+                    this.bankAccountRepository ??= new BankAccountRepository(context);
+                }
+
+                return this.bankAccountRepository;
+            }
+        }
+
+        public IBillRepository BillRepository
+        {
+            get
+            {
+                if (this.billRepository is not null)
+                {
+                    return this.billRepository;
+                }
+
+                lock (lockObject)
+                {
+                    this.billRepository ??= new BillRepository(context);
+                }
+
+                return this.billRepository;
+            }
+        }
+        public IUserRepository UserRepository
+        {
+            get
+            {
+                if (this.userRepository is not null)
+                {
+                    return this.userRepository;
+                }
+
+                lock (lockObject)
+                {
+                    this.userRepository ??= new UserRepository(context);
+                }
+
+                return this.userRepository;
+            }
+        }
 
         public Task CommitAsync(CancellationToken cancellationToken) => this.context.SaveChangesAsync(cancellationToken);
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            if (!this.disposed && disposing)
             {
-                if (disposing)
-                {
-                    context.Dispose();
-                }
+                context.Dispose();
             }
             this.disposed = true;
         }
