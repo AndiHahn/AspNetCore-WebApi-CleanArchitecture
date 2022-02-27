@@ -2,6 +2,7 @@
 using CleanArchitecture.Shared.Application.Behaviors;
 using FluentValidation.AspNetCore;
 using MediatR;
+using MediatR.Pipeline;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
@@ -13,6 +14,7 @@ namespace CleanArchitecture.BudgetPlan.Application
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            services.AddTransient(typeof(IRequestPreProcessor<>), typeof(RequestLogger<>));
             services.AddAutoMapper(config => config.AddProfile<MappingProfile>());
             services.AddFluentValidation(config => config.RegisterValidatorsFromAssembly(Assembly.GetExecutingAssembly()));
         }
