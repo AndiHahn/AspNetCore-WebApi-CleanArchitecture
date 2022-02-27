@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using CleanArchitecture.BudgetPlan.Core;
+using CleanArchitecture.Shared.Application.Mapping;
 
 namespace CleanArchitecture.BudgetPlan.Application.FixedCost
 {
-    public class FixedCostDto
+    public class FixedCostDto : IMappableDto<Core.FixedCost>
     {
         public Guid Id { get; set; }
 
@@ -15,9 +15,11 @@ namespace CleanArchitecture.BudgetPlan.Application.FixedCost
 
         public CostCategoryDto CostCategory { get; set; }
 
-        internal static void ApplyMappingConfiguration(IMapperConfigurationExpression config)
+        public void MappingConfig(Profile profile)
         {
-            config.CreateMap<CostCategory, CostCategoryDto>();
+            profile.CreateMap<Core.FixedCost, FixedCostDto>()
+                .ForMember(f => f.Duration, f => f.MapFrom(m => m.Duration.ToDto()))
+                .ForMember(f => f.CostCategory, f => f.MapFrom(m => m.Category.ToDto()));
         }
     }
 }

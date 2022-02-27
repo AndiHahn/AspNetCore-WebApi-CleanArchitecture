@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Modules\Shared\CleanArchitecture.Shared.Tests\CleanArchitecture.Shared.Tests.csproj" />
+    <ProjectReference Include="..\..\Modules\Shopping\CleanArchitecture.Shopping.UnitTests\CleanArchitecture.Shopping.UnitTests.csproj" />
     <ProjectReference Include="..\CleanArchitecture.Web\CleanArchitecture.Web.Api.csproj" />
   </ItemGroup>
 

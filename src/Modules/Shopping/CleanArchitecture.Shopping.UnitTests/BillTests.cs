@@ -1,6 +1,6 @@
 ﻿using System;
-using CleanArchitecture.Shared.Tests.Builder;
 using CleanArchitecture.Shopping.Core.User;
+using CleanArchitecture.Shopping.UnitTests.Builder;
 using Xunit;
 
 namespace CleanArchitecture.Shopping.UnitTests

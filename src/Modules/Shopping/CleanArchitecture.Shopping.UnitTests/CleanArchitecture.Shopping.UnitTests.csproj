@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Shared\CleanArchitecture.Shared.Tests\CleanArchitecture.Shared.Tests.csproj" />
+    <ProjectReference Include="..\CleanArchitecture.Shopping.Core\CleanArchitecture.Shopping.Core.csproj" />
   </ItemGroup>
 
 </Project>

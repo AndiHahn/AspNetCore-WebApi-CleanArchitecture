@@ -1,17 +1,12 @@
 using System;
-using AutoMapper;
+using CleanArchitecture.Shared.Application.Mapping;
 
 namespace CleanArchitecture.Shopping.Application.BankAccount
 {
-    public class BankAccountDto
+    public class BankAccountDto : IMappableDto<Core.BankAccount.BankAccount>
     {
         public Guid Id { get; set; }
 
         public string Name { get; set; }
-
-        public static void ApplyMappingConfiguration(IMapperConfigurationExpression config)
-        {
-            config.CreateMap<Core.BankAccount.BankAccount, BankAccountDto>();
-        }
     }
 }

@@ -1,5 +1,4 @@
-﻿using CleanArchitecture.BudgetPlan.Application.FixedCost;
-using CleanArchitecture.BudgetPlan.Application.Income;
+﻿using CleanArchitecture.BudgetPlan.Application.Mapping;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -10,17 +9,8 @@ namespace CleanArchitecture.BudgetPlan.Application
     {
         public static void AddApplication(this IServiceCollection services)
         {
-            services.ConfigureDtoMapper();
             services.AddMediatR(Assembly.GetExecutingAssembly());
-        }
-
-        private static void ConfigureDtoMapper(this IServiceCollection services)
-        {
-            services.AddAutoMapper(config =>
-            {
-                IncomeDto.ApplyMappingConfiguration(config);
-                FixedCostDto.ApplyMappingConfiguration(config);
-            });
+            services.AddAutoMapper(config => config.AddProfile<MappingProfile>());
         }
     }
 }

@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
+using CleanArchitecture.Shared.Application.Mapping;
 
 namespace CleanArchitecture.BudgetPlan.Application.Income
 {
-    public class IncomeDto
+    public class IncomeDto : IMappableDto<Core.Income>
     {
         public Guid Id { get; set; }
 
@@ -12,9 +13,10 @@ namespace CleanArchitecture.BudgetPlan.Application.Income
 
         public DurationDto Duration { get; set; }
 
-        internal static void ApplyMappingConfiguration(IMapperConfigurationExpression config)
+        public void MappingConfig(Profile profile)
         {
-            config.CreateMap<Core.Income, IncomeDto>();
+            profile.CreateMap<Core.Income, IncomeDto>()
+                .ForMember(i => i.Duration, i => i.MapFrom(m => m.Duration.ToDto()));
         }
     }
 }

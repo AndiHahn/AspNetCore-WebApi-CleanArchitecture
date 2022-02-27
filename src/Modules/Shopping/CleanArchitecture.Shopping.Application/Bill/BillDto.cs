@@ -1,9 +1,10 @@
 using System;
 using AutoMapper;
+using CleanArchitecture.Shared.Application.Mapping;
 
 namespace CleanArchitecture.Shopping.Application.Bill
 {
-    public class BillDto
+    public class BillDto : IMappableDto<BillDto>
     {
         public Guid Id { get; set; }
 
@@ -23,9 +24,9 @@ namespace CleanArchitecture.Shopping.Application.Bill
 
         public byte[] Version { get; set; }
 
-        public static void ApplyMappingConfiguration(IMapperConfigurationExpression config)
+        public void MappingConfig(Profile profile)
         {
-            config.CreateMap<Core.Bill.Bill, BillDto>()
+            profile.CreateMap<Core.Bill.Bill, BillDto>()
                 .ForMember(b => b.Category, b => b.MapFrom(m => m.Category.ToDto()));
         }
     }

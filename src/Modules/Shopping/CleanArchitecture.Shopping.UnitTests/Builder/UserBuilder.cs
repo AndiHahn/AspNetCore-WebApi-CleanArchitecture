@@ -1,7 +1,7 @@
 ﻿using System;
 using CleanArchitecture.Shopping.Core.User;
 
-namespace CleanArchitecture.Shared.Tests.Builder
+namespace CleanArchitecture.Shopping.UnitTests.Builder
 {
     public class UserBuilder
     {
