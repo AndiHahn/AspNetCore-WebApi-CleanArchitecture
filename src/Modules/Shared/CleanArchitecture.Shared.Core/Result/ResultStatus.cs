@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Shared.Core.Models.Result
+﻿namespace CleanArchitecture.Shared.Core.Result
 {
     public enum ResultStatus
     {

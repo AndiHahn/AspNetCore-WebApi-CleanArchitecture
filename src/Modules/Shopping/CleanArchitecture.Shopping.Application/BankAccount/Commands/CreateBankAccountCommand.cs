@@ -3,8 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using CleanArchitecture.Shared.Application.Cqrs;
-using CleanArchitecture.Shared.Core.Models.Result;
+using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
+using FluentValidation;
 
 namespace CleanArchitecture.Shopping.Application.BankAccount.Commands
 {
@@ -19,6 +20,14 @@ namespace CleanArchitecture.Shopping.Application.BankAccount.Commands
         public Guid CurrentUserId { get; }
 
         public string Name { get; }
+    }
+
+    public class CreateBankAccountCommandValidator : AbstractValidator<CreateBankAccountCommand>
+    {
+        public CreateBankAccountCommandValidator()
+        {
+            RuleFor(c => c.Name).NotNull().NotEmpty();
+        }
     }
 
     internal class CreateBankAccountCommandHandler : ICommandHandler<CreateBankAccountCommand, Result<BankAccountDto>>

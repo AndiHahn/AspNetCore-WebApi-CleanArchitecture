@@ -1,6 +1,8 @@
 ﻿#nullable enable
 
-namespace CleanArchitecture.Shared.Core.Models.Result
+using FluentValidation.Results;
+
+namespace CleanArchitecture.Shared.Core.Result
 {
     public interface IResult
     {
@@ -8,7 +10,7 @@ namespace CleanArchitecture.Shared.Core.Models.Result
 
         public string? ErrorMessage { get; }
 
-        public IList<(string Identifier, string Description)>? ValidationErrors { get; }
+        public IList<ValidationFailure>? ValidationErrors { get; }
 
         object? GetValue();
     }

@@ -1,6 +1,6 @@
 ﻿using CleanArchitecture.BudgetPlan.Core;
 using CleanArchitecture.Shared.Application.Cqrs;
-using CleanArchitecture.Shared.Core.Models.Result;
+using CleanArchitecture.Shared.Core.Result;
 
 namespace CleanArchitecture.BudgetPlan.Application.FixedCost.Commands
 {

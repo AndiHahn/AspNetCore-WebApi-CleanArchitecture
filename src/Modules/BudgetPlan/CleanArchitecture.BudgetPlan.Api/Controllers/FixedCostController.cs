@@ -4,9 +4,8 @@ using CleanArchitecture.BudgetPlan.Application.FixedCost;
 using CleanArchitecture.BudgetPlan.Application.FixedCost.Commands;
 using CleanArchitecture.BudgetPlan.Application.FixedCost.Queries;
 using CleanArchitecture.Shared.Application;
-using CleanArchitecture.Shared.Core;
 using CleanArchitecture.Shared.Core.Filter;
-using CleanArchitecture.Shared.Core.Models.Result;
+using CleanArchitecture.Shared.Core.Result;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,12 +17,12 @@ namespace CleanArchitecture.BudgetPlan.Api.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class ExpenseController : ControllerBase
+    public class FixedCostController : ControllerBase
     {
         private readonly ISender sender;
         private readonly Guid currentUserId;
 
-        public ExpenseController(
+        public FixedCostController(
             ISender sender,
             IHttpContextAccessor httpContextAccessor)
         {

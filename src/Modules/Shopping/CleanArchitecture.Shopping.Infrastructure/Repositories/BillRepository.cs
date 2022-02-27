@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Shared.Core.Models.Result;
+using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Bill;
 using CleanArchitecture.Shopping.Core.Interfaces;
 using CleanArchitecture.Shopping.Infrastructure.Database.Budget;

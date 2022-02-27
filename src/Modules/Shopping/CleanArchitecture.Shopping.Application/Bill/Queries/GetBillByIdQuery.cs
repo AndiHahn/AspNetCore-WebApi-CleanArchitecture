@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using CleanArchitecture.Shared.Application.Cqrs;
-using CleanArchitecture.Shared.Core.Models.Result;
+using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Queries

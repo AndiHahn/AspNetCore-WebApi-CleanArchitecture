@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using CleanArchitecture.Shared.Application;
 using CleanArchitecture.Shared.Core;
 using CleanArchitecture.Shared.Core.Filter;
-using CleanArchitecture.Shared.Core.Models.Result;
+using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Api.Dtos;
 using CleanArchitecture.Shopping.Application.BankAccount;
 using CleanArchitecture.Shopping.Application.BankAccount.Commands;

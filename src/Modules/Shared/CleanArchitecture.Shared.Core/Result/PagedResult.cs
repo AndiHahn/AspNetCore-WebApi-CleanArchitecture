@@ -1,4 +1,4 @@
-﻿namespace CleanArchitecture.Shared.Core.Models.Result
+﻿namespace CleanArchitecture.Shared.Core.Result
 {
     public class PagedResult<T> : Result<IEnumerable<T>>, IPagedResult
         where T : class

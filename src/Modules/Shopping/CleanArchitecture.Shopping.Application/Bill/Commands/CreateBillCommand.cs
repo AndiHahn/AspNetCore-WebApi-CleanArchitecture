@@ -3,9 +3,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using CleanArchitecture.Shared.Application.Cqrs;
-using CleanArchitecture.Shared.Core.Models.Result;
+using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Bill;
 using CleanArchitecture.Shopping.Core.Interfaces;
+using FluentValidation;
 
 #nullable enable
 
@@ -44,6 +45,16 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
         public DateTime? Date { get; }
 
         public string? Notes { get; }
+    }
+
+    public class CreateBillCommandValidator : AbstractValidator<CreateBillCommand>
+    {
+        public CreateBillCommandValidator()
+        {
+            RuleFor(c => c.BankAccountId).NotEmpty();
+            RuleFor(c => c.ShopName).NotNull().NotEmpty().MaximumLength(100);
+            RuleFor(c => c.Price).GreaterThan(0);
+        }
     }
 
     internal class CreateBillCommandHandler : ICommandHandler<CreateBillCommand, Result<BillDto>>

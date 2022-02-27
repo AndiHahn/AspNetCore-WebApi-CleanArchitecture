@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using CleanArchitecture.Shared.Application.Cqrs;
-using CleanArchitecture.Shared.Core.Models.Result;
+using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
 
 namespace CleanArchitecture.Shopping.Application.User.Queries
@@ -35,7 +35,7 @@ namespace CleanArchitecture.Shopping.Application.User.Queries
         {
             return this.userRepository
                 .GetByIdAsync(request.CurrentUserId, cancellationToken)
-                .ContinueWith(u => Result<UserDto>.Success(this.mapper.Map<UserDto>(u.Result)));
+                .ContinueWith(u => Result<UserDto>.Success(this.mapper.Map<UserDto>(u.Result)), cancellationToken);
         }
     }
 }

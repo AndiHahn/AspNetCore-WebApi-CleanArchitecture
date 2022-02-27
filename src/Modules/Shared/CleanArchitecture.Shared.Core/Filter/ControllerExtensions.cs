@@ -1,8 +1,8 @@
-﻿using CleanArchitecture.Shared.Core.Models.Result;
+﻿using CleanArchitecture.Shared.Core.Result;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using IResult = CleanArchitecture.Shared.Core.Models.Result.IResult;
+using IResult = CleanArchitecture.Shared.Core.Result.IResult;
 
 namespace CleanArchitecture.Shared.Core.Filter
 {
@@ -18,7 +18,7 @@ namespace CleanArchitecture.Shared.Core.Filter
                 ModelStateDictionary errors = new ModelStateDictionary();
                 foreach (var error in result.ValidationErrors)
                 {
-                    errors.AddModelError(error.Identifier, error.Description);
+                    errors.AddModelError(error.PropertyName, error.ErrorMessage);
                 }
 
                 return controller.ValidationProblem(result.ErrorMessage, null, status, title, GetType(status), errors);

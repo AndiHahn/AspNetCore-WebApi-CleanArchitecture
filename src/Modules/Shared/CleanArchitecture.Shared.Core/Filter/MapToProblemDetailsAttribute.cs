@@ -1,4 +1,4 @@
-﻿using CleanArchitecture.Shared.Core.Models.Result;
+﻿using CleanArchitecture.Shared.Core.Result;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

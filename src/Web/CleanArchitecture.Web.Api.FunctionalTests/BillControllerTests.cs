@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using CleanArchitecture.Shared.Core.Models;
-using CleanArchitecture.Shared.Core.Models.Result;
+using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Application.Bill;
 using CleanArchitecture.Shopping.Core.Bill;
 using CleanArchitecture.Shopping.UnitTests.Builder;

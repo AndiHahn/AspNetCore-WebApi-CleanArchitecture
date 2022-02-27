@@ -4,7 +4,6 @@ namespace CleanArchitecture.Shopping.Api.Dtos
 {
     public class BankAccountCreateDto
     {
-        [Required]
         public string Name { get; set; }
     }
 }
