@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using CleanArchitecture.BudgetPlan.Core;
 using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Result;
@@ -31,11 +32,10 @@ namespace CleanArchitecture.BudgetPlan.Application.Income.Queries
 
         public async Task<Result<IEnumerable<IncomeDto>>> Handle(ListIncomesQuery request, CancellationToken cancellationToken)
         {
-            var incomes = await this.dbContext.Income
+            return await this.dbContext.Income
                 .Where(i => i.UserId == request.UserId)
+                .ProjectTo<IncomeDto>(this.mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
-
-            return Result<IEnumerable<IncomeDto>>.Success(incomes.Select(this.mapper.Map<IncomeDto>));
         }
     }
 }

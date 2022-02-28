@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using CleanArchitecture.BudgetPlan.Core;
 using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Result;
@@ -31,11 +32,10 @@ namespace CleanArchitecture.BudgetPlan.Application.FixedCost.Queries
 
         public async Task<Result<IEnumerable<FixedCostDto>>> Handle(ListFixedCostsQuery request, CancellationToken cancellationToken)
         {
-            var incomes = await this.dbContext.FixedCost
+            return await this.dbContext.FixedCost
                 .Where(i => i.UserId == request.UserId)
+                .ProjectTo<FixedCostDto>(this.mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
-
-            return Result<IEnumerable<FixedCostDto>>.Success(incomes.Select(this.mapper.Map<FixedCostDto>));
         }
     }
 }
