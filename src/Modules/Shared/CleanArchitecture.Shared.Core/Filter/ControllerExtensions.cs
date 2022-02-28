@@ -26,8 +26,13 @@ namespace CleanArchitecture.Shared.Core.Filter
 
             object GetResultValue(IResult result)
             {
-                if (result is IPagedResult pagedResult) return new PagedResultDto(pagedResult.GetValue(), pagedResult.TotalCount);
-                return result.GetValue();
+                if (result is IPagedResult pagedResult)
+                {
+                    Type dtoType = typeof(PagedResultDto<>).MakeGenericType(pagedResult.GetValueType());
+                    return Activator.CreateInstance(dtoType, pagedResult.GetValue()!, pagedResult.TotalCount)!;
+                }
+
+                return result.GetValue()!;
             }
 
             return result.Status switch

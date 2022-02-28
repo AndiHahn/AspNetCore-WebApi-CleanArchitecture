@@ -33,7 +33,7 @@ namespace CleanArchitecture.Shared.Application.Behaviors
                 {
                     MethodInfo? errorMethod = responseType.GetMethod(nameof(Result.Error));
                     var result = errorMethod?.Invoke(responseType, new[] { failures });
-                    return Task.FromResult((TResponse)result);
+                    return Task.FromResult((TResponse)result!);
                 }
 
                 throw new ArgumentException($"Response is not of type {nameof(Result)}.");

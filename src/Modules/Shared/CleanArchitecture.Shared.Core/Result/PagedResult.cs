@@ -9,5 +9,7 @@
         }
 
         public int TotalCount { get; }
+
+        public Type GetValueType() => typeof(T);
     }
 }

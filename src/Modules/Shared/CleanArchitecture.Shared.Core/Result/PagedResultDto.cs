@@ -1,14 +1,14 @@
 ﻿namespace CleanArchitecture.Shared.Core.Result
 {
-    public class PagedResultDto
+    public class PagedResultDto<T>
     {
-        public PagedResultDto(object values, int totalCount)
+        public PagedResultDto(IEnumerable<T> values, int totalCount)
         {
             Values = values;
             TotalCount = totalCount;
         }
 
-        public object Values { get; set; }
+        public IEnumerable<T> Values { get; set; }
 
         public int TotalCount { get; set; }
     }

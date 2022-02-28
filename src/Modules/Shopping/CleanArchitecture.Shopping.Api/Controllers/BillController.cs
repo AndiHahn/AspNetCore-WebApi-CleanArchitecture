@@ -33,7 +33,7 @@ namespace CleanArchitecture.Shopping.Api.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(PagedResult<BillDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(PagedResultDto<BillDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         public Task<PagedResult<BillDto>> List([FromQuery] SearchBillsParameters parameters)
             => sender.Send(
