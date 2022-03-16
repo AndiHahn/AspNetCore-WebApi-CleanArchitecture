@@ -6,7 +6,7 @@ using CSharpFunctionalExtensions;
 
 #nullable enable
 
-namespace CleanArchitecture.Shopping.Core.Bill
+namespace CleanArchitecture.Shopping.Core
 {
     public class Bill : Entity<Guid>, IVersionableEntity
     {
@@ -17,8 +17,8 @@ namespace CleanArchitecture.Shopping.Core.Bill
         }
 
         public Bill(
-            User.User user,
-            BankAccount.BankAccount account,
+            Core.User user,
+            Core.BankAccount account,
             string shopName,
             double price,
             DateTime? date,
@@ -62,9 +62,9 @@ namespace CleanArchitecture.Shopping.Core.Bill
 
         public byte[] Version { get; set; }
 
-        public virtual User.User CreatedByUser { get; private set; }
+        public virtual Core.User CreatedByUser { get; private set; }
 
-        public virtual BankAccount.BankAccount BankAccount {get; private set; }
+        public virtual Core.BankAccount BankAccount {get; private set; }
 
         public virtual IReadOnlyCollection<UserBill> SharedWithUsers => this.sharedWithUsers.AsReadOnly();
 
@@ -78,7 +78,7 @@ namespace CleanArchitecture.Shopping.Core.Bill
             this.Version = version;
         }
 
-        public void ShareWithUser(User.User user)
+        public void ShareWithUser(Core.User user)
         {
             if (user == null)
             {

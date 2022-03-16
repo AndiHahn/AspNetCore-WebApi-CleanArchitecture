@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Result;
-using CleanArchitecture.Shopping.Core.Bill;
+using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.Core.Interfaces;
 using FluentValidation;
 
@@ -85,7 +85,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
             }
 
             var bill = this.unitOfWork.BillRepository.Add(
-                new Core.Bill.Bill(user, account, request.ShopName, request.Price, request.Date, request.Notes, request.Category));
+                new Core.Bill(user, account, request.ShopName, request.Price, request.Date, request.Notes, request.Category));
 
             await this.unitOfWork.CommitAsync(cancellationToken);
 

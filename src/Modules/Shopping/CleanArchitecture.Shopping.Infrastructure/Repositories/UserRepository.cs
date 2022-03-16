@@ -1,5 +1,5 @@
 ﻿using CleanArchitecture.Shopping.Core.Interfaces;
-using CleanArchitecture.Shopping.Core.User;
+using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
 
 namespace CleanArchitecture.Shopping.Infrastructure.Repositories

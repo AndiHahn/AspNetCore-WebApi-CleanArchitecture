@@ -1,4 +1,4 @@
-using CleanArchitecture.Shopping.Core.Bill;
+using CleanArchitecture.Shopping.Core;
 
 namespace CleanArchitecture.Shopping.Application.Bill
 {

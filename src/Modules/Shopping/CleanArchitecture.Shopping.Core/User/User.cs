@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using CleanArchitecture.Shopping.Core.BankAccount;
-using CleanArchitecture.Shopping.Core.Bill;
 using CSharpFunctionalExtensions;
 
 #nullable enable
 
-namespace CleanArchitecture.Shopping.Core.User
+namespace CleanArchitecture.Shopping.Core
 {
     public class User : Entity<Guid>
     {
@@ -14,9 +12,9 @@ namespace CleanArchitecture.Shopping.Core.User
 
         private readonly List<UserBankAccount> sharedAccounts = new List<UserBankAccount>();
 
-        private readonly List<BankAccount.BankAccount> ownedAccounts = new List<BankAccount.BankAccount>();
+        private readonly List<Core.BankAccount> ownedAccounts = new List<Core.BankAccount>();
 
-        private readonly List<Bill.Bill> createdBills = new List<Bill.Bill>();
+        private readonly List<Core.Bill> createdBills = new List<Core.Bill>();
 
         private User()
         {
@@ -44,18 +42,18 @@ namespace CleanArchitecture.Shopping.Core.User
 
         public virtual IReadOnlyList<UserBankAccount> SharedAccounts => this.sharedAccounts.AsReadOnly();
 
-        public virtual IReadOnlyList<BankAccount.BankAccount> OwnedAccounts => this.ownedAccounts.AsReadOnly();
+        public virtual IReadOnlyList<Core.BankAccount> OwnedAccounts => this.ownedAccounts.AsReadOnly();
 
-        public virtual IReadOnlyList<Bill.Bill> CreatedBills => this.createdBills.AsReadOnly();
+        public virtual IReadOnlyList<Core.Bill> CreatedBills => this.createdBills.AsReadOnly();
 
-        public BankAccount.BankAccount CreateAccount(string name)
+        public Core.BankAccount CreateAccount(string name)
         {
             if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentException($"{nameof(name)} must not be null or empty.");
             }
 
-            var account = new BankAccount.BankAccount(name, this);
+            var account = new Core.BankAccount(name, this);
 
             this.sharedAccounts.Add(new UserBankAccount(account, this));
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CleanArchitecture.Shopping.Core.BankAccount
+namespace CleanArchitecture.Shopping.Core
 {
     public class UserBankAccount
     {
@@ -14,7 +14,7 @@ namespace CleanArchitecture.Shopping.Core.BankAccount
             this.UserId = userId;
         }
 
-        public UserBankAccount(BankAccount bankAccount, User.User user)
+        public UserBankAccount(BankAccount bankAccount, Core.User user)
             : this(bankAccount.Id, user.Id)
         {
             if (bankAccount == null)
@@ -37,6 +37,6 @@ namespace CleanArchitecture.Shopping.Core.BankAccount
 
         public Guid UserId { get; private set; }
 
-        public User.User User { get; private set; }
+        public Core.User User { get; private set; }
     }
 }

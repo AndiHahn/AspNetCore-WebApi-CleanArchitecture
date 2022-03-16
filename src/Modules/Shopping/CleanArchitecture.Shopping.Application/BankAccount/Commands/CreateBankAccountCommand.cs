@@ -46,7 +46,7 @@ namespace CleanArchitecture.Shopping.Application.BankAccount.Commands
         public async Task<Result<BankAccountDto>> Handle(CreateBankAccountCommand request, CancellationToken cancellationToken)
         {
             var entity = this.unitOfWork.BankAccountRepository
-                .Add(new Core.BankAccount.BankAccount(request.Name, request.CurrentUserId));
+                .Add(new Core.BankAccount(request.Name, request.CurrentUserId));
 
             await this.unitOfWork.CommitAsync(cancellationToken);
 

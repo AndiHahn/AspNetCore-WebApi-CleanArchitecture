@@ -1,7 +1,5 @@
 ﻿using System;
-using CleanArchitecture.Shopping.Core.BankAccount;
-using CleanArchitecture.Shopping.Core.Bill;
-using CleanArchitecture.Shopping.Core.User;
+using CleanArchitecture.Shopping.Core;
 
 namespace CleanArchitecture.Shopping.UnitTests.Builder
 {

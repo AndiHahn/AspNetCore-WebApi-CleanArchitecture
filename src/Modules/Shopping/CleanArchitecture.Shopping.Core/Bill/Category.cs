@@ -1,6 +1,6 @@
 ﻿using Ardalis.SmartEnum;
 
-namespace CleanArchitecture.Shopping.Core.Bill
+namespace CleanArchitecture.Shopping.Core
 {
     public sealed class Category : SmartEnum<Category>
     {

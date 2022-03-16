@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 namespace CleanArchitecture.Shopping.Core.Interfaces
 {
-    public interface IBankAccountRepository : IRepository<BankAccount.BankAccount>
+    public interface IBankAccountRepository : IRepository<Core.BankAccount>
     {
-        Task<IReadOnlyList<BankAccount.BankAccount>> ListOwnAsync(Guid userId, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<Core.BankAccount>> ListOwnAsync(Guid userId, CancellationToken cancellationToken = default);
 
-        Task<IReadOnlyList<BankAccount.BankAccount>> ListSharedAsync(Guid userId, CancellationToken cancellationToken = default);
+        Task<IReadOnlyList<Core.BankAccount>> ListSharedAsync(Guid userId, CancellationToken cancellationToken = default);
 
-        Task<BankAccount.BankAccount> GetByIdWithUsersAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<Core.BankAccount> GetByIdWithUsersAsync(Guid id, CancellationToken cancellationToken = default);
     }
 }

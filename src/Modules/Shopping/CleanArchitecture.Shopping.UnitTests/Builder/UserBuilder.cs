@@ -1,5 +1,5 @@
 ﻿using System;
-using CleanArchitecture.Shopping.Core.User;
+using CleanArchitecture.Shopping.Core;
 
 namespace CleanArchitecture.Shopping.UnitTests.Builder
 {

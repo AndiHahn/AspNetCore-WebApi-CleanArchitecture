@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CleanArchitecture.Shopping.Core.Bill
+namespace CleanArchitecture.Shopping.Core
 {
     public class UserBill
     {
@@ -14,7 +14,7 @@ namespace CleanArchitecture.Shopping.Core.Bill
             this.UserId = userId;
         }
 
-        public UserBill(Bill bill, User.User user)
+        public UserBill(Bill bill, Core.User user)
             : this(bill.Id, user.Id)
         {
             if (bill == null)
@@ -37,6 +37,6 @@ namespace CleanArchitecture.Shopping.Core.Bill
 
         public Guid UserId { get; private set; }
 
-        public User.User User { get; private set; }
+        public Core.User User { get; private set; }
     }
 }

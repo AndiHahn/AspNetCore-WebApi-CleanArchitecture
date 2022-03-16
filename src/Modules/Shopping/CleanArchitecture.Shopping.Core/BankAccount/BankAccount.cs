@@ -5,11 +5,11 @@ using CSharpFunctionalExtensions;
 
 #nullable enable
 
-namespace CleanArchitecture.Shopping.Core.BankAccount
+namespace CleanArchitecture.Shopping.Core
 {
     public class BankAccount : Entity<Guid>
     {
-        private readonly List<Bill.Bill> bills = new List<Bill.Bill>();
+        private readonly List<Core.Bill> bills = new List<Core.Bill>();
         private readonly List<UserBankAccount> sharedWithUsers = new List<UserBankAccount>();
 
         private BankAccount()
@@ -33,7 +33,7 @@ namespace CleanArchitecture.Shopping.Core.BankAccount
             this.OwnerId = userId;
         }
 
-        public BankAccount(string name, User.User owner)
+        public BankAccount(string name, Core.User owner)
             : this(name, owner.Id)
         {
             if (owner == null)
@@ -48,13 +48,13 @@ namespace CleanArchitecture.Shopping.Core.BankAccount
 
         public string Name { get; private set; }
 
-        public User.User Owner { get; private set; }
+        public Core.User Owner { get; private set; }
 
-        public IReadOnlyCollection<Bill.Bill> Bills => this.bills.AsReadOnly();
+        public IReadOnlyCollection<Core.Bill> Bills => this.bills.AsReadOnly();
 
         public IReadOnlyCollection<UserBankAccount> SharedWithUsers => this.sharedWithUsers.AsReadOnly();
 
-        public void ShareWithUser(User.User user)
+        public void ShareWithUser(Core.User user)
         {
             if (user == null)
             {
@@ -69,10 +69,10 @@ namespace CleanArchitecture.Shopping.Core.BankAccount
 
         public bool IsOwner(Guid userId) => this.OwnerId == userId;
 
-        public bool IsOwner(User.User user) => this.Owner == user;
+        public bool IsOwner(Core.User user) => this.Owner == user;
 
         public bool HasAccess(Guid userId) => IsOwner(userId) || this.sharedWithUsers.Any(u => u.UserId == userId);
 
-        public bool HasAccess(User.User user) => IsOwner(user) || this.sharedWithUsers.Any(u => u.User == user);
+        public bool HasAccess(Core.User user) => IsOwner(user) || this.sharedWithUsers.Any(u => u.User == user);
     }
 }

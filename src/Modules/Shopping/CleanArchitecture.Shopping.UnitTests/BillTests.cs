@@ -1,5 +1,5 @@
 ﻿using System;
-using CleanArchitecture.Shopping.Core.User;
+using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.UnitTests.Builder;
 using Xunit;
 

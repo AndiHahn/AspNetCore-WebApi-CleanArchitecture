@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using CleanArchitecture.Shopping.Core.BankAccount;
-using CleanArchitecture.Shopping.Core.Bill;
-using CleanArchitecture.Shopping.Core.User;
+using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

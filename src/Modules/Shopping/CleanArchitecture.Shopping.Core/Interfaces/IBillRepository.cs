@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Shared.Core.Result;
-using CleanArchitecture.Shopping.Core.Bill;
+using CleanArchitecture.Shopping.Core;
 
 #nullable enable
 
 namespace CleanArchitecture.Shopping.Core.Interfaces
 {
-    public interface IBillRepository : IRepository<Bill.Bill>
+    public interface IBillRepository : IRepository<Core.Bill>
     {
-        Task<PagedResult<Bill.Bill>> SearchBillsAsync(Guid userId,
+        Task<PagedResult<Core.Bill>> SearchBillsAsync(Guid userId,
             string? searchString = null,
             int pageSize = 100,
             int pageIndex = 0,
             bool includeShared = false,
             CancellationToken cancellationToken = default);
 
-        Task<Bill.Bill?> GetByIdWithUsersAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<Core.Bill?> GetByIdWithUsersAsync(Guid id, CancellationToken cancellationToken = default);
 
         Task<(DateTime MinDate, DateTime MaxDate)?> GetMinAndMaxBillDateAsync(CancellationToken cancellationToken = default);
 

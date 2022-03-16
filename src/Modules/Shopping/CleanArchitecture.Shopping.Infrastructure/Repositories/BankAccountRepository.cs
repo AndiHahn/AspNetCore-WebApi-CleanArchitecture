@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using CleanArchitecture.Shopping.Core.BankAccount;
+using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.Core.Interfaces;
 using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
 using Microsoft.EntityFrameworkCore;

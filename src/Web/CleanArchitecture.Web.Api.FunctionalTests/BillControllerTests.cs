@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using CleanArchitecture.Shared.Core.Models;
 using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Application.Bill;
-using CleanArchitecture.Shopping.Core.Bill;
+using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.UnitTests.Builder;
 using CleanArchitecture.Web.Api.FunctionalTests.Extensions;
 using CleanArchitecture.Web.Api.FunctionalTests.Fixture;

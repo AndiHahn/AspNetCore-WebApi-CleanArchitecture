@@ -1,8 +1,6 @@
 ﻿using CleanArchitecture.Shared.Core.Interfaces;
 using CleanArchitecture.Shared.Infrastructure.Database;
-using CleanArchitecture.Shopping.Core.BankAccount;
-using CleanArchitecture.Shopping.Core.Bill;
-using CleanArchitecture.Shopping.Core.User;
+using CleanArchitecture.Shopping.Core;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Shopping.Infrastructure.Database.Budget

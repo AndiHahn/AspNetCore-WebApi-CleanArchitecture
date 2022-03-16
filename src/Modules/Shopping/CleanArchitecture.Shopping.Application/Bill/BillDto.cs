@@ -26,7 +26,7 @@ namespace CleanArchitecture.Shopping.Application.Bill
 
         public void MappingConfig(Profile profile)
         {
-            profile.CreateMap<Core.Bill.Bill, BillDto>()
+            profile.CreateMap<Core.Bill, BillDto>()
                 .ForMember(b => b.Category, b => b.MapFrom(m => m.Category.ToDto()));
         }
     }

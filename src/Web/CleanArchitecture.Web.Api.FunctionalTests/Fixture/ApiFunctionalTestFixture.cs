@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CleanArchitecture.Shopping.Api.Dtos;
 using CleanArchitecture.Shopping.Application.User;
-using CleanArchitecture.Shopping.Core.User;
+using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
 using CleanArchitecture.Shopping.Infrastructure.Database.Identity;
 using Microsoft.AspNetCore.Hosting;

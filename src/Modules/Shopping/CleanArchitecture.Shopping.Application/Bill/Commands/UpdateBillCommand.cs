@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Result;
-using CleanArchitecture.Shopping.Core.Bill;
+using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.Core.Interfaces;
 
 #nullable enable
