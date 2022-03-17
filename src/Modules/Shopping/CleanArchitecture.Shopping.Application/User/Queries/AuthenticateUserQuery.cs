@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Result;
-using CleanArchitecture.Shopping.Core.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -28,36 +28,39 @@ namespace CleanArchitecture.Shopping.Application.User.Queries
 
     internal class AuthenticateUserQueryHandler : IQueryHandler<AuthenticateUserQuery, Result<AuthenticationResponseDto>>
     {
-        private readonly IIdentityUserRepository identityUserRepository;
         private readonly AuthenticationConfiguration configuration;
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly SignInManager<IdentityUser> signInManager;
 
         public AuthenticateUserQueryHandler(
-            IIdentityUserRepository identityUserRepository,
+            UserManager<IdentityUser> userManager,
+            SignInManager<IdentityUser> signInManager,
             IOptions<AuthenticationConfiguration> configuration)
         {
-            this.identityUserRepository = identityUserRepository ?? throw new ArgumentNullException(nameof(identityUserRepository));
             this.configuration = configuration?.Value ?? throw new ArgumentNullException(nameof(configuration));
+            this.userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            this.signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
         }
 
         public async Task<Result<AuthenticationResponseDto>> Handle(
             AuthenticateUserQuery request,
             CancellationToken cancellationToken)
         {
-            var user = await this.identityUserRepository.GetByNameAsync(request.Username);
-            if (user == null)
+            var user = await this.userManager.FindByNameAsync(request.Username);
+            if (user is null)
             {
                 return Result<AuthenticationResponseDto>.Unauthorized($"User {request.Username} not found.");
             }
 
-            if (!await this.identityUserRepository.CheckPasswordAsync(user, request.Password))
+            if (!await this.userManager.CheckPasswordAsync(user, request.Password))
             {
                 return Result<AuthenticationResponseDto>.Unauthorized("Invalid login credentials.");
             }
 
             var expires = DateTime.UtcNow.AddDays(7);
 
-            var principal = await this.identityUserRepository.CreatePrincipalAsync(user);
-            var userRoles = await this.identityUserRepository.GetRolesForUserAsync(user);
+            var principal = await this.signInManager.CreateUserPrincipalAsync(user);
+            var userRoles = await this.userManager.GetRolesAsync(user);
 
             string token = this.GenerateToken(principal, userRoles, expires);
 

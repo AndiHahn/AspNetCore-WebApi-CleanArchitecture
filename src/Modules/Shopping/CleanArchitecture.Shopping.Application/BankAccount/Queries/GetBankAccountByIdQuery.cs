@@ -5,6 +5,7 @@ using AutoMapper;
 using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Shopping.Application.BankAccount.Queries
 {
@@ -23,20 +24,26 @@ namespace CleanArchitecture.Shopping.Application.BankAccount.Queries
 
     internal class GetBankAccountByIdQueryHandler : IQueryHandler<GetBankAccountByIdQuery, Result<BankAccountDto>>
     {
-        private readonly IBankAccountRepository bankAccountRepository;
+        private readonly IShoppingDbContext dbContext;
         private readonly IMapper mapper;
 
         public GetBankAccountByIdQueryHandler(
-            IBankAccountRepository bankAccountRepository,
+            IShoppingDbContext dbContext,
             IMapper mapper)
         {
-            this.bankAccountRepository = bankAccountRepository ?? throw new ArgumentNullException(nameof(bankAccountRepository));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<Result<BankAccountDto>> Handle(GetBankAccountByIdQuery request, CancellationToken cancellationToken)
         {
-            var account = await this.bankAccountRepository.GetByIdWithUsersAsync(request.Id, cancellationToken);
+            var account = await this.dbContext.BankAccount
+                .Include(b => b.SharedWithUsers)
+                .FirstOrDefaultAsync(b => b.Id == request.Id, cancellationToken);
+            if (account is null)
+            {
+                return Result<BankAccountDto>.NotFound($"Bank account with id {request.Id} not found.");
+            }
 
             if (!account.HasAccess(request.CurrentUserId))
             {

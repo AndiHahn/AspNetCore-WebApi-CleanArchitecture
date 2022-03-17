@@ -6,6 +6,7 @@ using CleanArchitecture.Shared.Core.Models;
 using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Commands
 {
@@ -27,20 +28,25 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
 
     internal class AddImageToBillCommandHandler : ICommandHandler<AddImageToBillCommand, Result>
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IShoppingDbContext dbContext;
         private readonly IBillImageRepository billImageRepository;
 
         public AddImageToBillCommandHandler(
-            IUnitOfWork unitOfWork,
+            IShoppingDbContext dbContext,
             IBillImageRepository billImageRepository)
         {
-            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.billImageRepository = billImageRepository ?? throw new ArgumentNullException(nameof(billImageRepository));
         }
 
         public async Task<Result> Handle(AddImageToBillCommand request, CancellationToken cancellationToken)
         {
-            var bill = await this.unitOfWork.BillRepository.GetByIdAsync(request.BillId, cancellationToken);
+            var bill = await this.dbContext.Bill.FindByIdAsync(request.BillId, cancellationToken);
+            if (bill is null)
+            {
+                return Result.NotFound($"Bill with id {request.BillId} not found.");
+            }
+
             if (!bill.HasCreated(request.CurrentUserId))
             {
                 return Result.Forbidden($"Current user has no access to bill {request.BillId}");

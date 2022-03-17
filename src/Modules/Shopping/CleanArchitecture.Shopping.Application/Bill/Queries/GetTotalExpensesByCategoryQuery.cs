@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Queries
 {
@@ -21,19 +22,28 @@ namespace CleanArchitecture.Shopping.Application.Bill.Queries
 
     internal class GetTotalExpensesQueryHandler : IQueryHandler<GetTotalExpensesByCategoryQuery, Result<IEnumerable<ExpensesDto>>>
     {
-        private readonly IBillRepository billRepository;
+        private readonly IShoppingDbContext dbContext;
 
         public GetTotalExpensesQueryHandler(
-            IBillRepository billRepository)
+            IShoppingDbContext dbContext)
         {
-            this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<Result<IEnumerable<ExpensesDto>>> Handle(
             GetTotalExpensesByCategoryQuery request,
             CancellationToken cancellationToken)
         {
-            var expensesByCategory = await this.billRepository.GetExpensesByCategoryAsync(request.CurrentUserId, cancellationToken);
+            var expensesByCategory = await this.dbContext.Bill
+                .Where(b => b.CreatedByUserId == request.CurrentUserId ||
+                            b.SharedWithUsers.Any(ub => ub.UserId == request.CurrentUserId))
+                .GroupBy(b => b.Category)
+                .Select(b => new
+                {
+                    Category = b.Key,
+                    Total = b.Select(x => x.Price).Sum()
+                })
+                .ToDictionaryAsync(k => k.Category, v => v.Total, cancellationToken);
 
             return Result<IEnumerable<ExpensesDto>>.Success(expensesByCategory.Select(e => new ExpensesDto
             {

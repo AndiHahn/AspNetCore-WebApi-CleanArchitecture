@@ -2,26 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Bogus;
+using CleanArchitecture.Shopping.Application.Bill.Queries;
+using CleanArchitecture.Shopping.Application.Mapping;
 using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.Core.Interfaces;
-using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
-using CleanArchitecture.Shopping.IntegrationTests.Setup;
 using CleanArchitecture.Shopping.UnitTests.Builder;
+using CleanArchitecture.Shopping.UnitTests.Setup;
 using Xunit;
 
-namespace CleanArchitecture.Shopping.IntegrationTests.Infrastructure
+namespace CleanArchitecture.Shopping.UnitTests
 {
-    public class BillRepositoryTests
+    public class SearchBillsQueryTests
     {
         private readonly User user = new UserBuilder().Build();
 
-        public BillRepositoryTests()
+        public SearchBillsQueryTests()
         {
         }
 
         [Fact]
-        public async Task SearchBills_ShouldReturn_CorrectNumberOfBills()
+        public async Task SearchBillsQuery_ShouldReturn_CorrectNumberOfBills()
         {
             // Arrange
             var billEntity1 = CreateBasicBill();
@@ -35,7 +37,7 @@ namespace CleanArchitecture.Shopping.IntegrationTests.Infrastructure
             var sut = SetupSystemUnderTest(context);
 
             // Act
-            var result = await sut.SearchBillsAsync(user.Id);
+            var result = await sut.Handle(new SearchBillsQuery(user.Id), default);
 
             // Assert
             Assert.Equal(2, result.TotalCount);
@@ -43,7 +45,7 @@ namespace CleanArchitecture.Shopping.IntegrationTests.Infrastructure
         }
 
         [Fact]
-        public async Task SearchBills_ShouldReturnEmptyResult_IfNoDataAvailable()
+        public async Task SearchBillsQuery_ShouldReturnEmptyResult_IfNoDataAvailable()
         {
             // Arrange
             var context = BudgetContext.CreateInMemoryDataContext();
@@ -51,7 +53,7 @@ namespace CleanArchitecture.Shopping.IntegrationTests.Infrastructure
             var sut = SetupSystemUnderTest(context);
 
             // Act
-            var result = await sut.SearchBillsAsync(user.Id);
+            var result = await sut.Handle(new SearchBillsQuery(user.Id), default);
 
             // Assert
             Assert.Equal(0, result.TotalCount);
@@ -59,7 +61,7 @@ namespace CleanArchitecture.Shopping.IntegrationTests.Infrastructure
         }
 
         [Fact]
-        public async Task SearchBills_ShouldReturnBills_OrderedByDateDescending()
+        public async Task SearchBillsQuery_ShouldReturnBills_OrderedByDateDescending()
         {
             // Arrange
             var billEntities = CreateBillEntitiesWithRandomDates();
@@ -74,7 +76,7 @@ namespace CleanArchitecture.Shopping.IntegrationTests.Infrastructure
             var sut = SetupSystemUnderTest(context);
 
             // Act
-            var result = await sut.SearchBillsAsync(user.Id);
+            var result = await sut.Handle(new SearchBillsQuery(user.Id), default);
 
             // Assert
             DateTime previousDate = result.Value.First().Date;
@@ -112,10 +114,15 @@ namespace CleanArchitecture.Shopping.IntegrationTests.Infrastructure
             };
         }
 
-        private IBillRepository SetupSystemUnderTest(
-            ShoppingDbContext context)
+        private SearchBillsQueryHandler SetupSystemUnderTest(
+            IShoppingDbContext context)
         {
-            return new Shopping.Infrastructure.Repositories.BillRepository(context);
+            var configuration = new MapperConfiguration(config =>
+            {
+                config.AddProfile<MappingProfile>();
+            });
+
+            return new SearchBillsQueryHandler(context, configuration.CreateMapper());
         }
     }
 }

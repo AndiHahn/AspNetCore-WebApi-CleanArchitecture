@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using CleanArchitecture.Shared.Core.Models;
 using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Application.Bill;
 using CleanArchitecture.Shopping.Core;
@@ -40,14 +39,14 @@ namespace CleanArchitecture.Web.Api.FunctionalTests
 
             // Act
             var response = await client.GetAsync("/api/bill");
-            var result = await response.ResolveAsync<PagedResult<BillDto>>();
+            var result = await response.ResolveAsync<PagedResultDto<BillDto>>();
 
             // Assert
             response.EnsureSuccessStatusCode();
             Assert.NotNull(result);
-            Assert.Single(result.Value);
+            Assert.Single(result.Values);
             Assert.Equal(1, result.TotalCount);
-            AssertBillDtoEqualModel(bill, result.Value.First());
+            AssertBillDtoEqualModel(bill, result.Values.First());
         }
 
         [Fact]
@@ -60,12 +59,12 @@ namespace CleanArchitecture.Web.Api.FunctionalTests
 
             // Act
             var response = await client.GetAsync("/api/bill");
-            var result = await response.ResolveAsync<PagedResult<BillDto>>();
+            var result = await response.ResolveAsync<PagedResultDto<BillDto>>();
 
             // Assert
             response.EnsureSuccessStatusCode();
             Assert.NotNull(result);
-            Assert.Empty(result.Value);
+            Assert.Empty(result.Values);
             Assert.Equal(0, result.TotalCount);
         }
 

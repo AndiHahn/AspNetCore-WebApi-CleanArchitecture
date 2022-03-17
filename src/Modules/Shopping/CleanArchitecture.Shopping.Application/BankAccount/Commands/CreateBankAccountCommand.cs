@@ -32,25 +32,26 @@ namespace CleanArchitecture.Shopping.Application.BankAccount.Commands
 
     internal class CreateBankAccountCommandHandler : ICommandHandler<CreateBankAccountCommand, Result<BankAccountDto>>
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IShoppingDbContext dbContext;
         private readonly IMapper mapper;
 
         public CreateBankAccountCommandHandler(
-            IUnitOfWork unitOfWork,
+            IShoppingDbContext dbContext,
             IMapper mapper)
         {
-            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<Result<BankAccountDto>> Handle(CreateBankAccountCommand request, CancellationToken cancellationToken)
         {
-            var entity = this.unitOfWork.BankAccountRepository
-                .Add(new Core.BankAccount(request.Name, request.CurrentUserId));
+            var entity = await this.dbContext.BankAccount.AddAsync(
+                new Core.BankAccount(request.Name, request.CurrentUserId),
+                cancellationToken);
 
-            await this.unitOfWork.CommitAsync(cancellationToken);
+            await this.dbContext.SaveChangesAsync(cancellationToken);
 
-            return Result<BankAccountDto>.Success(this.mapper.Map<BankAccountDto>(entity));
+            return Result<BankAccountDto>.Success(this.mapper.Map<BankAccountDto>(entity.Entity));
         }
     }
 }

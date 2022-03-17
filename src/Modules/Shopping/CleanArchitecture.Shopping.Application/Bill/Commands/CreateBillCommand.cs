@@ -7,6 +7,7 @@ using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.Core.Interfaces;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 #nullable enable
 
@@ -60,36 +61,36 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
     internal class CreateBillCommandHandler : ICommandHandler<CreateBillCommand, Result<BillDto>>
     {
         private readonly IMapper mapper;
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IShoppingDbContext dbContext;
 
         public CreateBillCommandHandler(
             IMapper mapper,
-            IUnitOfWork unitOfWork)
+            IShoppingDbContext dbContext)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<Result<BillDto>> Handle(CreateBillCommand request, CancellationToken cancellationToken)
         {
-            var account = await this.unitOfWork.BankAccountRepository.GetByIdAsync(request.BankAccountId, cancellationToken);
-            if (account == null)
+            var account = await this.dbContext.BankAccount.FindByIdAsync(request.BankAccountId, cancellationToken);
+            if (account is null)
             {
                 return Result<BillDto>.NotFound($"Account with id {request.BankAccountId} not found.");
             }
 
-            var user = await this.unitOfWork.UserRepository.GetByIdAsync(request.CurrentUserId);
-            if (user == null)
+            var user = await this.dbContext.User.FindByIdAsync(request.CurrentUserId, cancellationToken);
+            if (user is null)
             {
                 return Result<BillDto>.NotFound($"User with id {request.CurrentUserId} not found.");
             }
 
-            var bill = this.unitOfWork.BillRepository.Add(
+            var bill = await this.dbContext.Bill.AddAsync(
                 new Core.Bill(user, account, request.ShopName, request.Price, request.Date, request.Notes, request.Category));
 
-            await this.unitOfWork.CommitAsync(cancellationToken);
+            await this.dbContext.SaveChangesAsync(cancellationToken);
 
-            return this.mapper.Map<BillDto>(bill);
+            return this.mapper.Map<BillDto>(bill.Entity);
         }
     }
 }

@@ -1,11 +1,11 @@
-﻿using CleanArchitecture.Shared.Core.Interfaces;
-using CleanArchitecture.Shared.Infrastructure.Database;
+﻿using CleanArchitecture.Shared.Infrastructure.Database;
 using CleanArchitecture.Shopping.Core;
+using CleanArchitecture.Shopping.Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Shopping.Infrastructure.Database.Budget
 {
-    public class ShoppingDbContext : BaseDbContext<ShoppingDbContext>, IDbContext
+    public class ShoppingDbContext : BaseDbContext<ShoppingDbContext>, IShoppingDbContext
     {
         public DbSet<Bill> Bill { get; set; }
 

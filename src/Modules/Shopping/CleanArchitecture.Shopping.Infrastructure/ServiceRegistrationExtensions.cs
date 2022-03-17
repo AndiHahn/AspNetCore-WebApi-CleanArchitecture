@@ -17,27 +17,15 @@ namespace CleanArchitecture.Shopping.Infrastructure
         {
             services.AddSingleton<IAzureStorageClientFactory, AzureStorageClientFactory>();
             services.AddSingleton<IBlobStorageRepository, BlobStorageRepository>();
+            services.AddSingleton<IBillImageRepository, BillImageRepository>();
 
-            services.AddScoped<IUnitOfWork, UnitOfWork.UnitOfWork>();
-
-            services.RegisterRepositories();
-
-            services.AddDbContext<ShoppingDbContext>(
+            services.AddDbContext<IShoppingDbContext, ShoppingDbContext>(
                 options => options
                     .UseSqlServer(configuration.GetConnectionString("ApplicationDbConnection")));
 
             services.AddDbContext<IdentityContext>(
                 options => options
                     .UseSqlServer(configuration.GetConnectionString("IdentityDbConnection")));
-        }
-
-        private static void RegisterRepositories(this IServiceCollection services)
-        {
-            services.AddScoped<IBillRepository, BillRepository>();
-            services.AddSingleton<IBillImageRepository, BillImageRepository>();
-            services.AddScoped<IBankAccountRepository, BankAccountRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IIdentityUserRepository, IdentityUserRepository>();
         }
     }
 }

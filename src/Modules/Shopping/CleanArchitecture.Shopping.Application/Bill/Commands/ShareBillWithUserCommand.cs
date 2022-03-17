@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Commands
 {
@@ -25,16 +26,18 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
 
     internal class ShareBillWithUserCommandHandler : ICommandHandler<ShareBillWithUserCommand, Result>
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IShoppingDbContext dbContext;
 
-        public ShareBillWithUserCommandHandler(IUnitOfWork unitOfWork)
+        public ShareBillWithUserCommandHandler(IShoppingDbContext dbContext)
         {
-            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<Result> Handle(ShareBillWithUserCommand request, CancellationToken cancellationToken)
         {
-            var bill = await this.unitOfWork.BillRepository.GetByIdWithUsersAsync(request.BillId, cancellationToken);
+            var bill = await this.dbContext.Bill
+                .Include(b => b.SharedWithUsers)
+                .FirstOrDefaultAsync(b => b.Id == request.BillId, cancellationToken);
             if (bill is null)
             {
                 return Result.NotFound($"Bill with id {request.BillId} not found.");
@@ -45,7 +48,7 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
                 return Result.Forbidden($"Current user does not have access to bill {request.BillId}");
             }
 
-            var user = await this.unitOfWork.UserRepository.GetByIdAsync(request.ShareWithUserId, cancellationToken);
+            var user = await this.dbContext.User.FindByIdAsync(request.ShareWithUserId, cancellationToken);
             if (user is null)
             {
                 return Result.NotFound($"User with id {request.ShareWithUserId} not found.");
@@ -53,9 +56,9 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
 
             bill.ShareWithUser(user);
 
-            this.unitOfWork.BillRepository.Update(bill);
+            this.dbContext.Bill.Update(bill);
 
-            await this.unitOfWork.CommitAsync(cancellationToken);
+            await this.dbContext.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }

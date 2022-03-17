@@ -6,6 +6,7 @@ using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 #nullable enable
 
@@ -52,21 +53,21 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
 
     internal class UpdateBillCommandHandler : ICommandHandler<UpdateBillCommand, Result<BillDto>>
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IShoppingDbContext dbContext;
         private readonly IMapper mapper;
 
         public UpdateBillCommandHandler(
-            IUnitOfWork unitOfWork,
+            IShoppingDbContext dbContext,
             IMapper mapper)
         {
-            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<Result<BillDto>> Handle(UpdateBillCommand request, CancellationToken cancellationToken)
         {
-            var bill = await this.unitOfWork.BillRepository.GetByIdAsync(request.BillId, cancellationToken);
-            if (bill == null)
+            var bill = await this.dbContext.Bill.FindByIdAsync(request.BillId, cancellationToken);
+            if (bill is null)
             {
                 return Result<BillDto>.NotFound($"Bill with id {request.BillId} not found.");
             }
@@ -78,9 +79,9 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
 
             bill.Update(request.Date, request.Category, request.Price, request.ShopName, request.Notes, request.Version);
 
-            this.unitOfWork.BillRepository.Update(bill);
+            this.dbContext.Bill.Update(bill);
 
-            await this.unitOfWork.CommitAsync(cancellationToken);
+            await this.dbContext.SaveChangesAsync(cancellationToken);
 
             return this.mapper.Map<BillDto>(bill);
         }

@@ -6,6 +6,7 @@ using AutoMapper;
 using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Queries
 {
@@ -25,20 +26,22 @@ namespace CleanArchitecture.Shopping.Application.Bill.Queries
     internal class GetBillByIdQueryHandler : IQueryHandler<GetBillByIdQuery, Result<BillDto>>
     {
         private readonly IMapper mapper;
-        private readonly IBillRepository billRepository;
+        private readonly IShoppingDbContext dbContext;
 
         public GetBillByIdQueryHandler(
             IMapper mapper,
-            IBillRepository billRepository)
+            IShoppingDbContext dbContext)
         {
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<Result<BillDto>> Handle(GetBillByIdQuery request, CancellationToken cancellationToken)
         {
-            var bill = await billRepository.GetByIdWithUsersAsync(request.BillId, cancellationToken);
-            if (bill == null)
+            var bill = await this.dbContext.Bill
+                .Include(b => b.SharedWithUsers)
+                .FirstOrDefaultAsync(b => b.Id == request.BillId, cancellationToken);
+            if (bill is null)
             {
                 return Result<BillDto>.NotFound($"Bill with id {request.BillId} not found.");
             }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Commands
 {
@@ -22,21 +23,21 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
 
     internal class DeleteBillCommandHandler : ICommandHandler<DeleteBillCommand, Result>
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IShoppingDbContext dbContext;
         private readonly IBillImageRepository billImageRepository;
 
         public DeleteBillCommandHandler(
-            IUnitOfWork unitOfWork,
+            IShoppingDbContext dbContext,
             IBillImageRepository billImageRepository)
         {
-            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.billImageRepository = billImageRepository ?? throw new ArgumentNullException(nameof(billImageRepository));
         }
 
         public async Task<Result> Handle(DeleteBillCommand request, CancellationToken cancellationToken)
         {
-            var bill = await this.unitOfWork.BillRepository.GetByIdAsync(request.BillId, cancellationToken);
-            if (bill == null)
+            var bill = await this.dbContext.Bill.FindByIdAsync(request.BillId, cancellationToken);
+            if (bill is null)
             {
                 return Result.NotFound($"Bill with id {request.BillId} not found.");
             }
@@ -51,9 +52,9 @@ namespace CleanArchitecture.Shopping.Application.Bill.Commands
                 await this.billImageRepository.DeleteImageAsync(request.BillId, cancellationToken);
             }
 
-            this.unitOfWork.BillRepository.Delete(bill);
+            this.dbContext.Bill.Remove(bill);
 
-            await this.unitOfWork.CommitAsync(cancellationToken);
+            await this.dbContext.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }

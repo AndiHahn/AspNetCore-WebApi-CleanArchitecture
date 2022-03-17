@@ -3,7 +3,7 @@ using CleanArchitecture.Shopping.Infrastructure.Database.Budget;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
-namespace CleanArchitecture.Shopping.IntegrationTests.Setup
+namespace CleanArchitecture.Shopping.UnitTests.Setup
 {
     public static class BudgetContext
     {

@@ -4,9 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
 using CleanArchitecture.Shared.Application.Cqrs;
-using CleanArchitecture.Shared.Core.Models;
 using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Shopping.Application.Bill.Queries
 {
@@ -39,30 +39,46 @@ namespace CleanArchitecture.Shopping.Application.Bill.Queries
 
     internal class SearchBillsQueryHandler : IQueryHandler<SearchBillsQuery, PagedResult<BillDto>>
     {
-        private readonly IBillRepository billRepository;
+        private readonly IShoppingDbContext dbContext;
         private readonly IMapper mapper;
 
         public SearchBillsQueryHandler(
-            IBillRepository billRepository,
+            IShoppingDbContext dbContext,
             IMapper mapper)
         {
-            this.billRepository = billRepository ?? throw new ArgumentNullException(nameof(billRepository));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         public async Task<PagedResult<BillDto>> Handle(SearchBillsQuery request, CancellationToken cancellationToken)
         {
-            var result = await billRepository.SearchBillsAsync(
-                request.CurrentUserId,
-                request.Search,
-                request.PageSize,
-                request.PageIndex,
-                request.IncludeShared,
-                cancellationToken);
+            var query = this.dbContext.Bill
+                .Include(b => b.SharedWithUsers)
+                .OrderByDescending(b => b.Date)
+                .Where(b => b.CreatedByUserId == request.CurrentUserId);
+
+            if (request.IncludeShared)
+            {
+                query = query.Where(b => b.CreatedByUserId == request.CurrentUserId ||
+                                         b.SharedWithUsers.Any(ub => ub.UserId == request.CurrentUserId));
+            }
+
+            if (request.Search is not null)
+            {
+                query = query.Where(b => b.ShopName.Contains(request.Search) ||
+                                         b.Notes.Contains(request.Search));
+            }
+
+            int totalCount = await query.CountAsync(cancellationToken);
+
+            var queryResult = await query
+                .Skip(request.PageSize * request.PageIndex)
+                .Take(request.PageSize)
+                .ToListAsync(cancellationToken);
 
             return new PagedResult<BillDto>(
-                result.Value!.Select(this.mapper.Map<BillDto>),
-                result.TotalCount);
+                queryResult.Select(this.mapper.Map<BillDto>),
+                totalCount);
         }
     }
 }

@@ -5,6 +5,7 @@ using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Shopping.Application.BankAccount.Commands
 {
@@ -35,18 +36,20 @@ namespace CleanArchitecture.Shopping.Application.BankAccount.Commands
 
     internal class ShareAccountWithUserCommandHandler : ICommandHandler<ShareAccountWithUserCommand, Result>
     {
-        private readonly IUnitOfWork unitOfWork;
+        private readonly IShoppingDbContext dbContext;
 
         public ShareAccountWithUserCommandHandler(
-            IUnitOfWork unitOfWork)
+            IShoppingDbContext dbContext)
         {
-            this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
 
         public async Task<Result> Handle(ShareAccountWithUserCommand request, CancellationToken cancellationToken)
         {
-            var account = await this.unitOfWork.BankAccountRepository.GetByIdWithUsersAsync(request.AccountId, cancellationToken);
-            if (account == null)
+            var account = await this.dbContext.BankAccount
+                .Include(b => b.SharedWithUsers)
+                .FirstOrDefaultAsync(b => b.Id == request.AccountId, cancellationToken);
+            if (account is null)
             {
                 return Result.NotFound($"Account with id {request.AccountId} not found.");
             }
@@ -56,17 +59,17 @@ namespace CleanArchitecture.Shopping.Application.BankAccount.Commands
                 return Result.Forbidden($"Current user does not have access to account {request.AccountId}");
             }
 
-            var user = await this.unitOfWork.UserRepository.GetByIdAsync(request.ShareWithUserId, cancellationToken);
-            if (user == null)
+            var user = await this.dbContext.User.FindByIdAsync(request.ShareWithUserId, cancellationToken);
+            if (user is null)
             {
                 return Result.NotFound($"User with id {request.ShareWithUserId} not found.");
             }
 
             account.ShareWithUser(user);
 
-            this.unitOfWork.BankAccountRepository.Update(account);
+            this.dbContext.BankAccount.Update(account);
 
-            await this.unitOfWork.CommitAsync(cancellationToken);
+            await this.dbContext.SaveChangesAsync(cancellationToken);
 
             return Result.Success();
         }

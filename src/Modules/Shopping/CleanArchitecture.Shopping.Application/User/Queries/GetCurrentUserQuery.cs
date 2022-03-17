@@ -5,6 +5,7 @@ using AutoMapper;
 using CleanArchitecture.Shared.Application.Cqrs;
 using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Core.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace CleanArchitecture.Shopping.Application.User.Queries
 {
@@ -20,22 +21,21 @@ namespace CleanArchitecture.Shopping.Application.User.Queries
 
     internal class GetUserQueryHandler : IQueryHandler<GetCurrentUserQuery, Result<UserDto>>
     {
-        private readonly IUserRepository userRepository;
+        private readonly IShoppingDbContext dbContext;
         private readonly IMapper mapper;
 
         public GetUserQueryHandler(
-            IUserRepository userRepository,
+            IShoppingDbContext dbContext,
             IMapper mapper)
         {
-            this.userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
+            this.dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
             this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public Task<Result<UserDto>> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
+        public async Task<Result<UserDto>> Handle(GetCurrentUserQuery request, CancellationToken cancellationToken)
         {
-            return this.userRepository
-                .GetByIdAsync(request.CurrentUserId, cancellationToken)
-                .ContinueWith(u => Result<UserDto>.Success(this.mapper.Map<UserDto>(u.Result)), cancellationToken);
+            var user = await this.dbContext.User.FindByIdAsync(request.CurrentUserId, cancellationToken);
+            return Result<UserDto>.Success(this.mapper.Map<UserDto>(user));
         }
     }
 }

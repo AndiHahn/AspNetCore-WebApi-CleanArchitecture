@@ -2,9 +2,7 @@
 
 This repository shows clean architecture in practice in a ASP .NET Core Api Project.  
 
-The project includes a modular monolithic application with 2 modules:  
-- Shopping module: shows usage of repository and unit of work pattern  
-- BudgetPlan module: shows usage of db context with an interface directly in business logic
+The project's architecture is a modular monolithic application with 2 modules.
 
 See detailed Information regarding clean architecture concept in the Wiki:  
 [Wiki Clean Architecture](https://github.com/AndiHahn/AspNetCore-WebApi-CleanArchitecture/wiki)  
