@@ -13,7 +13,9 @@ namespace CleanArchitecture.BudgetPlan.Infrastructure
         {
             services.AddDbContext<IBudgetPlanDbContext, BudgetPlanDbContext>(
                 options => options
-                    .UseSqlServer(configuration.GetConnectionString("ApplicationDbConnection")));
+                    .UseSqlServer(
+                        configuration.GetConnectionString("ApplicationDbConnection"),
+                        opt => opt.MigrationsHistoryTable("__EFMigrationsHistory_BudgetPlan")));
         }
     }
 }

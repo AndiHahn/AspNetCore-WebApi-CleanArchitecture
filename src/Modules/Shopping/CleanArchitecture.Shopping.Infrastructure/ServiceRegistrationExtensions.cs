@@ -21,7 +21,9 @@ namespace CleanArchitecture.Shopping.Infrastructure
 
             services.AddDbContext<IShoppingDbContext, ShoppingDbContext>(
                 options => options
-                    .UseSqlServer(configuration.GetConnectionString("ApplicationDbConnection")));
+                    .UseSqlServer(
+                        configuration.GetConnectionString("ApplicationDbConnection"),
+                        opt => opt.MigrationsHistoryTable("__EFMigrationsHistory_Shopping")));
 
             services.AddDbContext<IdentityContext>(
                 options => options
