@@ -5,6 +5,7 @@ using CleanArchitecture.Shared.Core.Result;
 using CleanArchitecture.Shopping.Api.Dtos;
 using CleanArchitecture.Shopping.Application.User;
 using CleanArchitecture.Shopping.Application.User.Queries;
+using CleanArchitecture.Shopping.Application.User.Queries.AuthenticateUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

@@ -1,5 +1,6 @@
 ﻿using CleanArchitecture.BudgetPlan.Application.BudgetPlan;
 using CleanArchitecture.BudgetPlan.Application.BudgetPlan.Queries;
+using CleanArchitecture.BudgetPlan.Application.BudgetPlan.Queries.GetBudgetPlan;
 using CleanArchitecture.Shared.Application;
 using CleanArchitecture.Shared.Core;
 using CleanArchitecture.Shared.Core.Filter;

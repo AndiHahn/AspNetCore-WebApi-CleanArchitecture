@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CleanArchitecture.Shopping.Application.Bill;
 using CleanArchitecture.Shopping.Application.Bill.Queries;
+using CleanArchitecture.Shopping.Application.Bill.Queries.SearchBills;
 using CleanArchitecture.Web.Blazor.Modules.Core.Services;
 using MediatR;
 

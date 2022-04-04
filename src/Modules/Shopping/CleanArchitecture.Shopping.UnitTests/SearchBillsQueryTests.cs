@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Bogus;
 using CleanArchitecture.Shopping.Application.Bill.Queries;
+using CleanArchitecture.Shopping.Application.Bill.Queries.SearchBills;
 using CleanArchitecture.Shopping.Application.Mapping;
 using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.Core.Interfaces;

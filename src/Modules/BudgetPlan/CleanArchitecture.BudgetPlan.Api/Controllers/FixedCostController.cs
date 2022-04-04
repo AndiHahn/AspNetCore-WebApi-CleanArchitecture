@@ -2,7 +2,10 @@
 using CleanArchitecture.BudgetPlan.Application;
 using CleanArchitecture.BudgetPlan.Application.FixedCost;
 using CleanArchitecture.BudgetPlan.Application.FixedCost.Commands;
+using CleanArchitecture.BudgetPlan.Application.FixedCost.Commands.AddFixedCost;
+using CleanArchitecture.BudgetPlan.Application.FixedCost.Commands.DeleteFixedCost;
 using CleanArchitecture.BudgetPlan.Application.FixedCost.Queries;
+using CleanArchitecture.BudgetPlan.Application.FixedCost.Queries.ListFixedCosts;
 using CleanArchitecture.Shared.Application;
 using CleanArchitecture.Shared.Core.Filter;
 using CleanArchitecture.Shared.Core.Result;
