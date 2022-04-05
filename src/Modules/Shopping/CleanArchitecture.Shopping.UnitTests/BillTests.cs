@@ -1,6 +1,7 @@
 ﻿using System;
 using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.UnitTests.Builder;
+using FluentAssertions;
 using Xunit;
 
 namespace CleanArchitecture.Shopping.UnitTests
@@ -15,8 +16,11 @@ namespace CleanArchitecture.Shopping.UnitTests
             var account = user.CreateAccount("Checking account");
             var bill = new BillBuilder().CreatedByUser(user).WithAccount(account).Build();
 
-            // Act && Assert
-            Assert.True(bill.HasCreated(user.Id));
+            // Act
+            bool result = bill.HasCreated(user.Id);
+
+            // Assert
+            result.Should().BeTrue();
         }
 
         [Fact]
@@ -32,10 +36,8 @@ namespace CleanArchitecture.Shopping.UnitTests
             bill.ShareWithUser(anotherUser);
 
             // Assert
-            Assert.Collection(bill.SharedWithUsers, b =>
-            {
-                Assert.Equal(anotherUser, b.User);
-            });
+            bill.SharedWithUsers.Should().Contain(userBill => userBill.User == anotherUser)
+                .And.HaveCount(1);
         }
     }
 }

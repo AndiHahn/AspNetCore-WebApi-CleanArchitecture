@@ -11,6 +11,7 @@ using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.Core.Interfaces;
 using CleanArchitecture.Shopping.UnitTests.Builder;
 using CleanArchitecture.Shopping.UnitTests.Setup;
+using FluentAssertions;
 using Xunit;
 
 namespace CleanArchitecture.Shopping.UnitTests
@@ -41,8 +42,8 @@ namespace CleanArchitecture.Shopping.UnitTests
             var result = await sut.Handle(new SearchBillsQuery(user.Id), default);
 
             // Assert
-            Assert.Equal(2, result.TotalCount);
-            Assert.Equal(2, result.Value.Count());
+            result.TotalCount.Should().Be(2);
+            result.Value.Should().HaveCount(2);
         }
 
         [Fact]
@@ -57,8 +58,8 @@ namespace CleanArchitecture.Shopping.UnitTests
             var result = await sut.Handle(new SearchBillsQuery(user.Id), default);
 
             // Assert
-            Assert.Equal(0, result.TotalCount);
-            Assert.Empty(result.Value);
+            result.TotalCount.Should().Be(0);
+            result.Value.Should().BeEmpty();
         }
 
         [Fact]
@@ -80,12 +81,7 @@ namespace CleanArchitecture.Shopping.UnitTests
             var result = await sut.Handle(new SearchBillsQuery(user.Id), default);
 
             // Assert
-            DateTime previousDate = result.Value.First().Date;
-            foreach (var bill in result.Value)
-            {
-                Assert.True(bill.Date <= previousDate);
-                previousDate = bill.Date;
-            }
+            result.Value.Should().BeInDescendingOrder(dto => dto.Date);
         }
 
         private Bill CreateBasicBill()

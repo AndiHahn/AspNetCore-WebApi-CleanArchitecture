@@ -7,7 +7,7 @@ namespace CleanArchitecture.Shopping.UnitTests.Builder
     {
         private string name = "Name";
         private Guid ownerId;
-        private User owner;
+        private User? owner;
 
         public AccountBuilder Name(string name)
         {
@@ -33,7 +33,8 @@ namespace CleanArchitecture.Shopping.UnitTests.Builder
             {
                 return new BankAccount(this.name, this.owner);
             }
-            else if (ownerId != Guid.Empty)
+            
+            if (ownerId != Guid.Empty)
             {
                 return new BankAccount(this.name, this.ownerId);
             }

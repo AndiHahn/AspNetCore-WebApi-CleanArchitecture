@@ -7,6 +7,7 @@ using CleanArchitecture.Shopping.Core;
 using CleanArchitecture.Shopping.UnitTests.Builder;
 using CleanArchitecture.Web.Api.FunctionalTests.Extensions;
 using CleanArchitecture.Web.Api.FunctionalTests.Fixture;
+using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Xunit;
 
@@ -42,11 +43,12 @@ namespace CleanArchitecture.Web.Api.FunctionalTests
             var result = await response.ResolveAsync<PagedResultDto<BillDto>>();
 
             // Assert
+            var expectedDto = ToBillDto(bill, account.Id, user.Id);
+
             response.EnsureSuccessStatusCode();
-            Assert.NotNull(result);
-            Assert.Single(result.Values);
-            Assert.Equal(1, result.TotalCount);
-            AssertBillDtoEqualModel(bill, result.Values.First());
+            result.Should().NotBeNull();
+            result.Values.Should().HaveCount(1);
+            result.Values.First().Should().BeEquivalentTo(expectedDto, options => options.Excluding(dto => dto.Version));
         }
 
         [Fact]
@@ -63,9 +65,9 @@ namespace CleanArchitecture.Web.Api.FunctionalTests
 
             // Assert
             response.EnsureSuccessStatusCode();
-            Assert.NotNull(result);
-            Assert.Empty(result.Values);
-            Assert.Equal(0, result.TotalCount);
+            result.Should().NotBeNull();
+            result.Values.Should().BeEmpty();
+            result.TotalCount.Should().Be(0);
         }
 
         [Fact]
@@ -78,7 +80,7 @@ namespace CleanArchitecture.Web.Api.FunctionalTests
             var response = await client.GetAsync("/api/bill");
 
             // Assert
-            Assert.Equal(System.Net.HttpStatusCode.Unauthorized, response.StatusCode);
+            response.StatusCode.Should().Be(System.Net.HttpStatusCode.Unauthorized);
         }
 
         [Fact]
@@ -100,9 +102,11 @@ namespace CleanArchitecture.Web.Api.FunctionalTests
             var result = await response.ResolveAsync<BillDto>();
 
             // Assert
+            var expectedDto = ToBillDto(bill, account.Id, user.Id);
+
             response.EnsureSuccessStatusCode();
-            Assert.NotNull(result);
-            AssertBillDtoEqualModel(bill, result);
+            result.Should().NotBeNull();
+            result.Should().BeEquivalentTo(expectedDto, options => options.Excluding(dto => dto.Version));
         }
 
         [Fact]
@@ -121,14 +125,17 @@ namespace CleanArchitecture.Web.Api.FunctionalTests
             Assert.Equal(404, result.Status);
         }
 
-        private void AssertBillDtoEqualModel(Bill model, BillDto dto)
-        {
-            Assert.Equal(model.Id, dto.Id);
-            Assert.Equal(model.ShopName, dto.ShopName);
-            Assert.Equal(model.Price, dto.Price);
-            Assert.Equal(model.Date, dto.Date);
-            Assert.Equal(model.Notes, dto.Notes);
-            Assert.Equal(model.Category, dto.Category.FromDto());
-        }
+        private static BillDto ToBillDto(Bill bill, Guid accountId, Guid userId)
+            => new BillDto
+            {
+                Id = bill.Id,
+                ShopName = bill.ShopName,
+                Category = bill.Category.ToDto(),
+                Date = bill.Date,
+                Notes = bill.Notes,
+                Price = bill.Price,
+                BankAccountId = accountId,
+                CreatedByUserId = userId,
+            };
     }
 }

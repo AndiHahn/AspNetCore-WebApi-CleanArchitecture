@@ -5,6 +5,7 @@ using CleanArchitecture.BudgetPlan.Core;
 using System;
 using CleanArchitecture.BudgetPlan.Application.Mapping;
 using Xunit;
+using FluentAssertions;
 
 namespace CleanArchitecture.BudgetPlan.UnitTests.Mapping
 {
@@ -32,8 +33,8 @@ namespace CleanArchitecture.BudgetPlan.UnitTests.Mapping
             var result = this.mapper.Map<IncomeDto>(entity);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.IsType<IncomeDto>(result);
+            result.Should().NotBeNull();
+            result.Should().BeOfType<IncomeDto>();
         }
 
         [Fact]
@@ -46,8 +47,8 @@ namespace CleanArchitecture.BudgetPlan.UnitTests.Mapping
             var result = this.mapper.Map<FixedCostDto>(entity);
 
             // Assert
-            Assert.NotNull(result);
-            Assert.IsType<FixedCostDto>(result);
+            result.Should().NotBeNull();
+            result.Should().BeOfType<FixedCostDto>();
         }
     }
 }

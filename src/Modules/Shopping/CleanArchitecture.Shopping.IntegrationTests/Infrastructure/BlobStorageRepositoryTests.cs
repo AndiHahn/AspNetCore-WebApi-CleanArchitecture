@@ -6,6 +6,7 @@ using CleanArchitecture.Shared.Core.Models;
 using CleanArchitecture.Shopping.Core.Interfaces;
 using CleanArchitecture.Shopping.Infrastructure.AzureStorage;
 using CleanArchitecture.Shopping.Infrastructure.Repositories;
+using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Xunit;
 
@@ -32,11 +33,12 @@ namespace CleanArchitecture.Shopping.IntegrationTests.Infrastructure
             
             // Assert
             var downloadedBlob = await repository.DownloadBlobAsync(containerName, blobUrl);
-            Assert.NotNull(downloadedBlob);
-            Assert.Equal(blobEntity.ContentType, downloadedBlob.ContentType);
+            downloadedBlob.Should().NotBeNull();
+            downloadedBlob.ContentType.Should().Be(blobEntity.ContentType);
+
             using StreamReader reader = new StreamReader(downloadedBlob.Content);
-            string downloadedText = reader.ReadToEnd();
-            Assert.Equal(uploadText, downloadedText);
+            string downloadedText = await reader.ReadToEndAsync();
+            downloadedText.Should().Be(uploadText);
         }
 
         [Fact]
@@ -47,8 +49,9 @@ namespace CleanArchitecture.Shopping.IntegrationTests.Infrastructure
 
             // Act
             var result = await repository.DownloadBlobAsync(containerName, blobUrl);
+
             // Assert
-            Assert.Null(result);
+            result.Should().BeNull();
         }
 
         private async Task<IBlobStorageRepository> SetupRepositoryAsync()
