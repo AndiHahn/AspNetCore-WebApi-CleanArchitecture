@@ -1,10 +1,8 @@
 ﻿using CleanArchitecture.BudgetPlan.Api.Dtos;
 using CleanArchitecture.BudgetPlan.Application;
 using CleanArchitecture.BudgetPlan.Application.FixedCost;
-using CleanArchitecture.BudgetPlan.Application.FixedCost.Commands;
 using CleanArchitecture.BudgetPlan.Application.FixedCost.Commands.AddFixedCost;
 using CleanArchitecture.BudgetPlan.Application.FixedCost.Commands.DeleteFixedCost;
-using CleanArchitecture.BudgetPlan.Application.FixedCost.Queries;
 using CleanArchitecture.BudgetPlan.Application.FixedCost.Queries.ListFixedCosts;
 using CleanArchitecture.Shared.Application;
 using CleanArchitecture.Shared.Core.Filter;
@@ -29,28 +27,31 @@ namespace CleanArchitecture.BudgetPlan.Api.Controllers
             ISender sender,
             IHttpContextAccessor httpContextAccessor)
         {
-            currentUserId = httpContextAccessor.HttpContext.User.GetUserId();
+            currentUserId = httpContextAccessor.HttpContext?.User.GetUserId() ?? Guid.Empty;
             this.sender = sender ?? throw new ArgumentNullException(nameof(sender));
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<FixedCostDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-        public Task<Result<IEnumerable<FixedCostDto>>> ListFixedCosts()
-            => this.sender.Send(new ListFixedCostsQuery(currentUserId));
+        public Task<Result<IEnumerable<FixedCostDto>>> ListFixedCosts(CancellationToken cancellationToken)
+            => this.sender.Send(new ListFixedCostsQuery(currentUserId), cancellationToken);
 
         [HttpPost]
         [ProducesResponseType(typeof(FixedCostDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> AddFixedCost([FromBody] FixedCostCreateDto dto)
+        public async Task<IActionResult> AddFixedCost(
+            [FromBody] FixedCostCreateDto dto,
+            CancellationToken cancellationToken)
         {
             var income = await this.sender.Send(new AddFixedCostCommand(
                 this.currentUserId,
                 dto.Name,
                 dto.Value,
                 dto.Duration.FromDto(),
-                dto.Category.FromDto()));
+                dto.Category.FromDto()),
+                cancellationToken);
 
             if (income.Status != ResultStatus.Success) return this.ToActionResult(income);
 
@@ -61,7 +62,7 @@ namespace CleanArchitecture.BudgetPlan.Api.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-        public Task<Result> DeleteFixedCost(Guid id)
-            => this.sender.Send(new DeleteFixedCostCommand(id));
+        public Task<Result> DeleteFixedCost(Guid id, CancellationToken cancellationToken)
+            => this.sender.Send(new DeleteFixedCostCommand(id), cancellationToken);
     }
 }

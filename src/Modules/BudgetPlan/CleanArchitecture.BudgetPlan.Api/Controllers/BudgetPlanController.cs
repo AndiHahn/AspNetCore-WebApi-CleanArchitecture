@@ -1,8 +1,6 @@
 ﻿using CleanArchitecture.BudgetPlan.Application.BudgetPlan;
-using CleanArchitecture.BudgetPlan.Application.BudgetPlan.Queries;
 using CleanArchitecture.BudgetPlan.Application.BudgetPlan.Queries.GetBudgetPlan;
 using CleanArchitecture.Shared.Application;
-using CleanArchitecture.Shared.Core;
 using CleanArchitecture.Shared.Core.Filter;
 using CleanArchitecture.Shared.Core.Result;
 using MediatR;
@@ -25,14 +23,14 @@ namespace CleanArchitecture.BudgetPlan.Api.Controllers
             ISender sender,
             IHttpContextAccessor httpContextAccessor)
         {
-            currentUserId = httpContextAccessor.HttpContext.User.GetUserId();
+            currentUserId = httpContextAccessor.HttpContext?.User.GetUserId() ?? Guid.Empty;
             this.sender = sender ?? throw new ArgumentNullException(nameof(sender));
         }
 
         [HttpGet]
         [ProducesResponseType(typeof(BudgetPlanDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status401Unauthorized)]
-        public Task<Result<BudgetPlanDto>> GetBudgetPlan()
-            => this.sender.Send(new GetBudgetPlanQuery(currentUserId));
+        public Task<Result<BudgetPlanDto>> GetBudgetPlan(CancellationToken cancellationToken)
+            => this.sender.Send(new GetBudgetPlanQuery(currentUserId), cancellationToken);
     }
 }
